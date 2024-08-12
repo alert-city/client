@@ -8,11 +8,12 @@
 4. Add a `.env` file, and include the following
 
     ```
-    NEXT_PUBLIC_DEV_SERVER_URL=http://localhost:51005/graphql
+    NEXT_PUBLIC_API_URL=http://localhost:51004/graphql
+    NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:51004/graphql
     ```
 
 ## Start developing work
-1. run `yarn dev` and have fun
+1. run `yarn run dev` to start the development server.
 
 ## To run the frontend within the docker container:
 
