@@ -1,8 +1,8 @@
 import React from 'react';
-import LoginPage from '@/app/(auth)/login/page';
+import  RootPage  from '@/modules/rootPage/RootPage';
 
 const HomePage: React.FC = () => {
-  return <LoginPage />
+  return <RootPage />;
 };
 
 export default HomePage;

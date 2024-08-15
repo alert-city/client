@@ -10,12 +10,13 @@ import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
-import { STAY_SIGNED_IN,LOGIN_INFO } from '@/shared/constants/storage';
+import { IS_STAY_SIGNED_IN, LOGIN_INFO,AUTH_TOKEN } from '@/shared/constants/storage';
+import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
 
 type LoginFormInputs = {
   username: string;
   password: string;
-  stay_signed_in: boolean;
+  isStaySignedIn: boolean;
 };
 
 const LoginForm: React.FC = () => {
@@ -27,44 +28,52 @@ const LoginForm: React.FC = () => {
     defaultValues: {
       username: '',
       password: '',
-      stay_signed_in: true,
+      isStaySignedIn: true,
     },
     resolver: zodResolver(loginSchema),
   });
 
-  const { handleSubmit, watch,formState: { errors },register, } = methods
+  const { handleSubmit, watch, formState: { errors }, register } = methods;
 
-  const staySignedIn = watch('stay_signed_in');
+  const isStaySignedIn = watch('isStaySignedIn');
 
   useEffect(() => {
-    if (staySignedIn !== undefined && typeof window !== 'undefined') {
-      localStorage.setItem(STAY_SIGNED_IN, staySignedIn.toString());
+    if (isStaySignedIn !== undefined && typeof window !== 'undefined') {
+      localStorage.setItem(IS_STAY_SIGNED_IN, isStaySignedIn.toString());
     }
-  }, [staySignedIn]);
+  }, [isStaySignedIn]);
 
   const onSubmit = async (data: LoginFormInputs) => {
     setLoginError(null);
     try {
       const response = await login({ variables: { input: data } });
-      console.log('response', response);
       const role: string = response.data.login.role;
+      const accountType = response.data.login.accountType;
+      const organization = response.data.login.organization;
 
       const loginData = {
         accessToken: response.data.login.accessToken,
         role: role,
         name: response.data.login.name,
+        organization: organization,
+        accountType: accountType,
       };
 
       if (typeof window !== 'undefined') {
         localStorage.setItem(LOGIN_INFO, JSON.stringify(loginData));
+        localStorage.setItem(AUTH_TOKEN, response.data.login.accessToken);
       }
 
-      if (role === 'admin') {
-        router.push('/admin');
-      } else if (role === 'normal') {
-        router.push('/normal');
+      if (accountType === 'organization') {
+        router.push(getRouteByKey(ROUTE_KEY.ADMIN).path);
+      } else if (accountType === 'personal') {
+        if (role.includes('staff')) {
+          router.push(getRouteByKey(ROUTE_KEY.STAFF).path);
+        } else if (!role.includes('staff')) {
+          setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
+        }
       }
-    } catch (err : any) {
+    } catch (err: any) {
       console.error(err);
       setLoginError(err.message || 'Login failed');
     }
@@ -76,7 +85,7 @@ const LoginForm: React.FC = () => {
         <CssBaseline />
         <Box className="flex flex-col items-center mt-[2.5rem]">
           <Typography component="h1" variant="h5">
-            Sign in
+            Welcome to Alert City
           </Typography>
           <Box onSubmit={handleSubmit(onSubmit)} component="form" noValidate sx={{ mt: 1 }}>
             <CustomTextField
@@ -101,15 +110,15 @@ const LoginForm: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={methods.watch('stay_signed_in')}
-                    {...methods.register('stay_signed_in')}
+                    checked={methods.watch('isStaySignedIn')}
+                    {...methods.register('isStaySignedIn')}
                     color="primary"
                   />
                 }
                 label="Stay signed in"
               />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-                <Link href="/forgot-password">
+                <Link href={`${getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path}?from=login`}>
                   Forgot password?
                 </Link>
               </Typography>
@@ -126,7 +135,7 @@ const LoginForm: React.FC = () => {
             </CustomButton>
 
             <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-              <Link href="/register">
+              <Link href={getPublicRouteByKey(ROUTE_KEY.REGISTER).path}>
                 Don't have an account? Sign Up
               </Link>
             </Typography>
