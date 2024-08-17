@@ -36,13 +36,13 @@ function createApolloClient() {
     return forward(operation).map((response) => {
       if (typeof window !== 'undefined') {
         const context = operation.getContext();
-        const newAccessToken = context.response.headers.get('x-new-access-token');
-        const authStatus = context.response.headers.get('x-auth-status');
-        console.log('newAccessToken from backend', newAccessToken);
-        console.log('authStatus  from backend', authStatus );
-        newAccessToken && localStorage.setItem(AUTH_TOKEN, newAccessToken);
-        authStatus &&
-        localStorage.setItem(AUTH_STATUS, authStatus);
+        const headers = context.response?.headers;
+        const newAccessToken = headers.get('x-new-access-token');
+        const authStatus = headers.get('x-auth-status');
+        // console.log('newAccessToken from backend', newAccessToken);
+        // console.log('authStatus from backend', authStatus);
+        if (newAccessToken) localStorage.setItem(AUTH_TOKEN, newAccessToken);
+        if (authStatus) localStorage.setItem(AUTH_STATUS, authStatus);
       }
       return response;
     });
@@ -99,7 +99,10 @@ function createApolloClient() {
     }
   });
 
-  const logLink = new ApolloLink((operation, forward) => {
+  const logLink = new ApolloLink((
+    operation,
+    forward,
+  ) => {
     return forward(operation).map((response) => {
       console.log('Connection: GraphQL request completed successfully');
       return response;
@@ -107,8 +110,8 @@ function createApolloClient() {
   });
 
 
-  const link = ApolloLink.from([logLink, errorLink, splitLink]);
-  // authLink, responseLink,
+  // const link = ApolloLink.from([authLink, logLink, errorLink, responseLink, splitLink]);
+  const link = ApolloLink.from([authLink, errorLink, responseLink, logLink, splitLink]);
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',

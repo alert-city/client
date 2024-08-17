@@ -13,10 +13,9 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
-import { LOGIN_INFO } from '@/shared/constants/storage';
-import { usePathname} from 'next/navigation';
-
-const settings = ['Profile', 'Reset Password', 'Logout'];
+import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import { getPageByKey, PAGE_KEY} from '@/pages/pageConfig';
+import  { useRevokeTokens } from '@/hooks/useRevokeTokens';
 
 interface TopBarProps {
   open: boolean;
@@ -41,8 +40,8 @@ const StyledAppBar = styled(AppBar)<{ open: boolean }>(({ theme, open }) => ({
 
 const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const revokeTokens = useRevokeTokens();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -52,15 +51,16 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
     setAnchorElUser(null);
   };
 
-  const handleSettingClick = (setting: string) => {
+  const settings = getPageByKey(PAGE_KEY.SETTING)?.page || [];
+
+  const handleSettingClick = async(setting: string) => {
     handleCloseUserMenu();
     if (setting === "Logout") {
-      localStorage.removeItem(LOGIN_INFO);
-      router.push("/login");
+      revokeTokens().then(r =>  {});
     } else if (setting === "Profile") {
-      router.push('/profile');
+      router.push(getRouteByKey(ROUTE_KEY.PROFILE).path);
     } else if (setting === "Reset Password") {
-      router.push('/reset-password');
+      router.push(getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path);
     }
   };
 
@@ -86,7 +86,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               variant="h6"
               noWrap
               component="a"
-              href="/login"
+              href={getPublicRouteByKey(ROUTE_KEY.LOGIN).path}
               sx={{
                 mr: 2,
                 fontFamily: 'monospace',
@@ -121,7 +121,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {settings && settings.map((setting:string ) => (
                 <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>

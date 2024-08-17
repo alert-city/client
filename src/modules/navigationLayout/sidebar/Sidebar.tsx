@@ -1,7 +1,6 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
@@ -14,8 +13,17 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { useRouter } from 'next/navigation';
+import { getRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import { LOGIN_INFO } from '@/shared/constants/storage';
+import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
 
 const drawerWidth = 240;
+
+interface LoginInfo {
+  role?: string;
+  accountType?: string;
+}
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -70,6 +78,40 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
   const theme = useTheme();
+  const router = useRouter();
+  const [loginInfo, setLoginInfo] = useState<LoginInfo>({});
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setLoginInfo(JSON.parse(localStorage.getItem(LOGIN_INFO) || '{}'));
+    }
+  },[]);
+
+  const role = loginInfo?.role || '';
+  const accountType = loginInfo?.accountType || '';
+  const submissionPath = getRouteByKey(ROUTE_KEY.SUBMISSION).name;
+  const reviewPath = getRouteByKey(ROUTE_KEY.REVIEW).name;
+
+  let page:string[] = [] ;
+  if(accountType === 'organization') {
+    page = getPageByKey(PAGE_KEY.SIDE_BAR_ADMIN)?.page || [];
+  } else if (accountType === 'personal') {
+    page = getPageByKey(PAGE_KEY.SIDE_BAR_PERSONAL)?.page || [];
+  }
+
+  const handleClick = (item:string)=> {
+    if(accountType === 'organization') {
+      if (item === "Submission") {
+        router.push(`/admin/${submissionPath}`);
+      } else if (item === "Review") {
+        router.push(`/admin/${reviewPath}`);
+      }
+    } else if (accountType === 'personal') {
+      if (item === "Submission") {
+        router.push(`/staff/${submissionPath}`);
+      }
+    }
+  }
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -80,8 +122,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
       </DrawerHeader>
       <Divider />
       <List>
-        {['Review', 'Submission'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+        {page.map((item, index) => (
+          <ListItem key={item} disablePadding sx={{ display: 'block' }} onClick={() => handleClick(item)}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -98,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
               >
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary={item} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         ))}
