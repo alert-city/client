@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const LOGIN = gql`
     mutation Login($input: LoginRequestDto!) {
         login(input: $input) {
+            username
             accessToken
             accountType
             role
@@ -16,9 +17,10 @@ export const LOGIN = gql`
 `;
 
 
-export const REVOKETOKENS = gql(`
+export const REVOKE_TOKENS = gql(`
   mutation RevokeTokens {
   revokeTokens
   }
 `);
+
 

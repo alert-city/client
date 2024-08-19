@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -9,13 +9,12 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
 import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
-import { getPageByKey, PAGE_KEY} from '@/pages/pageConfig';
-import  { useRevokeTokens } from '@/hooks/useRevokeTokens';
+import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
+import { useRevokeTokens } from '@/hooks/useRevokeTokens';
 
 interface TopBarProps {
   open: boolean;
@@ -53,34 +52,36 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
 
   const settings = getPageByKey(PAGE_KEY.SETTING)?.page || [];
 
-  const handleSettingClick = async(setting: string) => {
+  const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
-    if (setting === "Logout") {
-      revokeTokens().then(r =>  {});
-    } else if (setting === "Profile") {
+    if (setting === 'Logout') {
+      await revokeTokens()
+    } else if (setting === 'Profile') {
       router.push(getRouteByKey(ROUTE_KEY.PROFILE).path);
-    } else if (setting === "Reset Password") {
+    } else if (setting === 'Reset Password') {
       router.push(getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path);
     }
   };
 
   return (
     <StyledAppBar position="fixed" open={open}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ justifyContent: "space-between", display: "flex" }}>
-          <Box className="flex items-center">
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
+      <Box sx={{ width: '100%' }}>
+        <Toolbar disableGutters sx={{ justifyContent: 'space-between', display: 'flex', padding: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '30px' }}>
+              <Tooltip title="Open Sidebar">
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  sx={{
+                    marginRight: 1,
+                    visibility: open ? 'hidden' : 'visible',
+                  }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Tooltip>
             <Avatar src="../favicon.ico" alt="icon" sx={{ mr: 2 }} />
             <Typography
               variant="h6"
@@ -91,7 +92,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
                 mr: 2,
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                letterSpacing: '.3rem',
+                // letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
               }}
@@ -99,7 +100,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               Alert City
             </Typography>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '30px' }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -108,7 +109,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
-              anchorEl={anchorElUser}
+              anchorEl={anchorElUser || undefined}
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
@@ -121,7 +122,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings && settings.map((setting:string ) => (
+              {settings && settings.map((setting: string) => (
                 <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
@@ -129,7 +130,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             </Menu>
           </Box>
         </Toolbar>
-      </Container>
+      </Box>
     </StyledAppBar>
   );
 };
