@@ -87,10 +87,16 @@ function createApolloClient() {
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
-      graphQLErrors.forEach(({ message, locations, path }) => {
-        console.error(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-        );
+      graphQLErrors.forEach(({ message, path,extensions }) => {
+        const {statusCode, code, data, } = extensions || {};
+        const errorDetails = {
+          message,
+          path,
+          code,
+          statusCode,
+          data,
+        };
+        console.error(`Error: ${JSON.stringify(errorDetails, null, 2)}`);
       });
     }
 

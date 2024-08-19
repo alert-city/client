@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Container, CssBaseline, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Container, CssBaseline, Checkbox, FormControlLabel, InputAdornment } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import CustomButton from '@/modules/common/Button';
 import CustomTextField from '@/modules/common/TextField';
@@ -10,8 +10,12 @@ import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
-import { IS_STAY_SIGNED_IN, LOGIN_INFO,AUTH_TOKEN } from '@/shared/constants/storage';
+import { IS_STAY_SIGNED_IN, LOGIN_INFO, AUTH_TOKEN, USERNAME } from '@/shared/constants/storage';
 import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Avatar from '@mui/material/Avatar';
 
 type LoginFormInputs = {
   username: string;
@@ -23,6 +27,7 @@ const LoginForm: React.FC = () => {
   const [login] = useMutation(LOGIN);
   const router = useRouter();
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const methods = useForm({
     defaultValues: {
@@ -51,6 +56,7 @@ const LoginForm: React.FC = () => {
       const accountType = response.data.login.accountType;
       const organization = response.data.login.organization;
 
+
       const loginData = {
         accessToken: response.data.login.accessToken,
         role: role,
@@ -62,6 +68,7 @@ const LoginForm: React.FC = () => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(LOGIN_INFO, JSON.stringify(loginData));
         localStorage.setItem(AUTH_TOKEN, response.data.login.accessToken);
+        localStorage.setItem(USERNAME, response.data.login.username);
       }
 
       if (accountType === 'organization') {
@@ -74,9 +81,16 @@ const LoginForm: React.FC = () => {
         }
       }
     } catch (err: any) {
-      console.error(err);
       setLoginError(err.message || 'Login failed');
     }
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
   return (
@@ -84,8 +98,20 @@ const LoginForm: React.FC = () => {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box className="flex flex-col items-center mt-[2.5rem]">
-          <Typography component="h1" variant="h5">
-            Welcome to Alert City
+          <Avatar src="../favicon.ico" alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
+          <Typography component="h1" variant="h5" >
+            Welcome to{' '}
+            <Box
+              component="span"
+              sx={{
+                color: '#007BFF',
+                fontWeight: 'bold',
+                // fontFamily: 'monospace',
+                letterSpacing: '.1rem',
+              }}
+            >
+              Alert City!
+            </Box>
           </Typography>
           <Box onSubmit={handleSubmit(onSubmit)} component="form" noValidate sx={{ mt: 1 }}>
             <CustomTextField
@@ -99,11 +125,26 @@ const LoginForm: React.FC = () => {
             <CustomTextField
               id="password"
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password ? errors.password.message : ''}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      size="small"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <Box sx={{ justifyContent: 'space-between' }} className="flex items-center">
@@ -118,7 +159,7 @@ const LoginForm: React.FC = () => {
                 label="Stay signed in"
               />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-                <Link href={`${getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path}?from=login`}>
+                <Link href={getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path}>
                   Forgot password?
                 </Link>
               </Typography>

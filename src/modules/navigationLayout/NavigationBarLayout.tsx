@@ -1,19 +1,20 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TopBar from './topbar/Topbar';
 import Sidebar from './sidebar/Sidebar';
-import { useTheme } from '@mui/material/styles';
-// import Main from './main/Main';
 import styled from '@mui/material/styles/styled';
 
-const drawerWidth = 240;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open'&& prop !== 'isCentered' })<{
   open?: boolean;
-}>(({ theme, open }) => ({
+  isCentered?: boolean;
+}>(({ theme, open, isCentered }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: isCentered ? 'center' : 'flex-start',  // 垂直居中或不居中
+  alignItems: isCentered ? 'center' : 'flex-start',      // 水平居中或不居中
+  height: isCentered ? '100vh' : 'auto',                // 只有居中时才全屏高度
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -37,10 +38,11 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-const NavigationBarLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+const NavigationBarLayout: React.FC<React.PropsWithChildren<{ isCentered?: boolean }>> = ({
+                                                                                            children,
+                                                                                            isCentered = false,
+                                                                                          }) => {
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -53,7 +55,7 @@ const NavigationBarLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }
     <Box sx={{ display: 'flex' }}>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
-      <Main open={open}>
+      <Main open={open} isCentered={isCentered}>
         <DrawerHeader />
         {children}
       </Main>
@@ -61,4 +63,4 @@ const NavigationBarLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }
   );
 };
 
-export default NavigationBarLayout;;
+export default NavigationBarLayout;
