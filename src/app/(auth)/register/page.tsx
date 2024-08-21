@@ -1,10 +1,9 @@
 import React from 'react';
-import RegisterForm  from '@/modules/auth/register/RegistrationPage';
 
 const RegisterPage: React.FC = () => {
   return (
     <div>
-      <RegisterForm />
+      <h1>Register Page</h1>
     </div>
   );
 };
