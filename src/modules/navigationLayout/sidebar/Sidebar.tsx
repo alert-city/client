@@ -99,20 +99,20 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
   const reviewPath = getRouteByKey(ROUTE_KEY.REVIEW).name;
 
   let page:string[] = [];
-  if (accountType === 'organization') {
+  if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
     page = getPageByKey(PAGE_KEY.SIDE_BAR_ADMIN)?.page || [];
-  } else if (accountType === 'personal') {
+  } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
     page = getPageByKey(PAGE_KEY.SIDE_BAR_PERSONAL)?.page || [];
   }
 
   const handleClick = (item: string) => {
-    if (accountType === 'organization') {
+    if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
       if (item === 'Submission') {
         router.push(`/admin/${submissionPath}`);
       } else if (item === 'Review') {
         router.push(`/admin/${reviewPath}`);
       }
-    } else if (accountType === 'personal') {
+    } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
       if (item === 'Submission') {
         router.push(`/staff/${submissionPath}`);
       }

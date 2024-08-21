@@ -211,10 +211,24 @@ const ResetPassword: React.FC = () => {
                 helperText={getCodeErrors.username?.message}
               />
             </Grid>
+            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
+              <Button
+                key={key}
+                fullWidth
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ height: '100%' }}
+                disabled={!!countdown}
+              >
+                {`Get Code ${countdown ? `(${countdown})` : ''}`}
+              </Button>
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 key={key}
                 fullWidth
+                placeholder="Enter the verification code"
                 label="Verification Code"
                 {...registerResetPassword('verificationCode', {
                   onChange: (e) => {
@@ -233,19 +247,6 @@ const ResetPassword: React.FC = () => {
                 error={!!resetPasswordErrors.verificationCode}
                 helperText={resetPasswordErrors.verificationCode?.message}
               />
-            </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
-              <Button
-                key={key}
-                fullWidth
-                variant="contained"
-                color="primary"
-                type="submit"
-                sx={{ height: '100%' }}
-                disabled={!!countdown}
-              >
-                {`Get Code ${countdown ? `(${countdown})` : ''}`}
-              </Button>
             </Grid>
           </Grid>
           <Box>
