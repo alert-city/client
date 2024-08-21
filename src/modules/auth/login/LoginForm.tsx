@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Avatar from '@mui/material/Avatar';
+import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
 
 type LoginFormInputs = {
   username: string;
@@ -56,7 +57,6 @@ const LoginForm: React.FC = () => {
       const accountType = response.data.login.accountType;
       const organization = response.data.login.organization;
 
-
       const loginData = {
         accessToken: response.data.login.accessToken,
         role: role,
@@ -71,9 +71,9 @@ const LoginForm: React.FC = () => {
         localStorage.setItem(USERNAME, response.data.login.username);
       }
 
-      if (accountType === 'organization') {
+      if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
         router.push(getRouteByKey(ROUTE_KEY.ADMIN).path);
-      } else if (accountType === 'personal') {
+      } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
         if (role.includes('staff')) {
           router.push(getRouteByKey(ROUTE_KEY.STAFF).path);
         } else if (!role.includes('staff')) {
