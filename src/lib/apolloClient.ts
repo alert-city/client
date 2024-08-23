@@ -5,7 +5,10 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client/link/core';
 import { setContext } from '@apollo/client/link/context';
-import { AUTH_TOKEN, AUTH_STATUS } from '@/shared/constants/storage';
+import { ACCESS_TOKEN } from '@/shared/constants/storage';
+import Cookies from 'js-cookie';
+import { RouteConfig } from '@/routes/route';
+import { IndexConfig } from '@/routes';
 
 let apolloClient: ApolloClient<any>;
 
@@ -19,7 +22,8 @@ function createApolloClient() {
     _,
     { headers },
   ) => {
-    const accessToken = typeof window !== 'undefined' ? localStorage.getItem(AUTH_TOKEN) : null;
+    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
+
     return {
       headers: {
         ...headers,
@@ -37,12 +41,16 @@ function createApolloClient() {
       if (typeof window !== 'undefined') {
         const context = operation.getContext();
         const headers = context.response?.headers;
-        const newAccessToken = headers.get('x-new-access-token');
-        const authStatus = headers.get('x-auth-status');
-        // console.log('newAccessToken from backend', newAccessToken);
-        // console.log('authStatus from backend', authStatus);
-        if (newAccessToken) localStorage.setItem(AUTH_TOKEN, newAccessToken);
-        if (authStatus) localStorage.setItem(AUTH_STATUS, authStatus);
+        const newAccessToken = headers?.get('x-new-access-token');
+        const authStatus = headers?.get('x-auth-status');
+        if (newAccessToken) Cookies.set(ACCESS_TOKEN, newAccessToken);
+        if (authStatus === 'invalid') {
+          IndexConfig.RemoveItems.Item.forEach((item) => {
+            localStorage.removeItem(item);
+          });
+          Cookies.remove(ACCESS_TOKEN);
+          window.location.href = RouteConfig.Login.Path;
+        }
       }
       return response;
     });
@@ -87,8 +95,8 @@ function createApolloClient() {
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
-      graphQLErrors.forEach(({ message, path,extensions }) => {
-        const {statusCode, code, data, } = extensions || {};
+      graphQLErrors.forEach(({ message, path, extensions }) => {
+        const { statusCode, code, data } = extensions || {};
         const errorDetails = {
           message,
           path,

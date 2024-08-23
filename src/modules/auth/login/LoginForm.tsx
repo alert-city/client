@@ -10,13 +10,14 @@ import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
-import { IS_STAY_SIGNED_IN, LOGIN_INFO, AUTH_TOKEN, USERNAME } from '@/shared/constants/storage';
-import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import { IS_STAY_SIGNED_IN, ACCESS_TOKEN, USERNAME, ACCOUNT_TYPE } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Avatar from '@mui/material/Avatar';
-import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
+import { IndexConfig } from '@/routes';
+import { RouteConfig } from '@/routes/route';
+import Cookies from 'js-cookie';
 
 type LoginFormInputs = {
   username: string;
@@ -55,31 +56,29 @@ const LoginForm: React.FC = () => {
       const response = await login({ variables: { input: data } });
       const role: string = response.data.login.role;
       const accountType = response.data.login.accountType;
-      const organization = response.data.login.organization;
 
-      const loginData = {
-        accessToken: response.data.login.accessToken,
-        role: role,
-        name: response.data.login.name,
-        organization: organization,
-        accountType: accountType,
+      const saveData = () => {
+        if (typeof window !== 'undefined') {
+          Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
+          Cookies.set(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(USERNAME, response.data.login.username);
+        }
       };
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(LOGIN_INFO, JSON.stringify(loginData));
-        localStorage.setItem(AUTH_TOKEN, response.data.login.accessToken);
-        localStorage.setItem(USERNAME, response.data.login.username);
-      }
-
-      if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
-        router.push(getRouteByKey(ROUTE_KEY.ADMIN).path);
-      } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
+      if (accountType === IndexConfig.Organization.AccountType) {
+        saveData();
+        router.push(RouteConfig.Admin.Path);
+      } else if (accountType === IndexConfig.Personal.AccountType) {
         if (role.includes('staff')) {
-          router.push(getRouteByKey(ROUTE_KEY.STAFF).path);
+          saveData();
+          router.push(RouteConfig.Staff.Path);
         } else if (!role.includes('staff')) {
           setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
+          return;
         }
       }
+
     } catch (err: any) {
       setLoginError(err.message || 'Login failed');
     }
@@ -98,8 +97,8 @@ const LoginForm: React.FC = () => {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box className="flex flex-col items-center mt-[2.5rem]">
-          <Avatar src="../favicon.ico" alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
-          <Typography component="h1" variant="h5" >
+          <Avatar src="/images/alertcity.png" alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
+          <Typography component="h1" variant="h5">
             Welcome to{' '}
             <Box
               component="span"
@@ -159,14 +158,14 @@ const LoginForm: React.FC = () => {
                 label="Stay signed in"
               />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-                <Link href={getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path}>
+                <Link href={RouteConfig.ResetPassword.Path}>
                   Forgot password?
                 </Link>
               </Typography>
             </Box>
 
             {loginError && (
-              <Typography color="error" variant="body2" className="w-full mt-2 flex justify-center">
+              <Typography sx={{ mt: 1 }} color="error" variant="body2">
                 {loginError}
               </Typography>
             )}
@@ -176,7 +175,7 @@ const LoginForm: React.FC = () => {
             </CustomButton>
 
             <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-              <Link href={getPublicRouteByKey(ROUTE_KEY.REGISTER).path}>
+              <Link href={RouteConfig.Register.Path}>
                 Don't have an account? Sign Up
               </Link>
             </Typography>

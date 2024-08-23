@@ -1,8 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AUTH_TOKEN, LOGIN_INFO } from '@/shared/constants/storage';
-import { getRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import { ACCESS_TOKEN, ACCOUNT_TYPE } from '@/shared/constants/storage';
+import { IndexConfig } from '@/routes';
+import { RouteConfig} from '@/routes/route';
+import Cookies from 'js-cookie';
 
 const RootPage:React.FC = () => {
   const router = useRouter();
@@ -10,12 +12,10 @@ const RootPage:React.FC = () => {
   const [accountType, setAccountType] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem(AUTH_TOKEN) : null;
-    const storedLoginInfo = typeof window !== 'undefined' ? localStorage.getItem(LOGIN_INFO) : null;
-
-    if (token && storedLoginInfo) {
-      const parsedLoginInfo = JSON.parse(storedLoginInfo);
-      setAccountType(parsedLoginInfo?.accountType || null);
+    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
+    const accountType = typeof window !== 'undefined' ? localStorage.getItem(ACCOUNT_TYPE) : null;
+    if (accessToken && accountType) {
+      setAccountType(accountType);
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
@@ -24,24 +24,17 @@ const RootPage:React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated === false) {
-      router.push('/login');
+      router.push(RouteConfig.Login.Path);
+    } else if (isAuthenticated === true) {
+      if (accountType === IndexConfig.Organization.AccountType) {
+        router.push('/admin' + RouteConfig.Submission.Path);
+      } else if (accountType === IndexConfig.Personal.AccountType) {
+        router.push('/staff' + RouteConfig.Submission.Path);
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, accountType, router]);
 
-  // if (isAuthenticated === null) {
-  //   // 在身份验证过程中显示一个加载指示器
-  //   return <div>Loading...</div>;
-  // }
-
-  if (accountType === 'organization') {
-    router.push('/admin'+ getRouteByKey(ROUTE_KEY.SUBMISSION).path);
-  }
-
-  if (accountType === 'personal') {
-    router.push('/staff' + getRouteByKey(ROUTE_KEY.SUBMISSION).path);
-  }
-
-  // 无法识别账户类型时不渲染内容
+  // don't render anything if the user is not authenticated
   return null;
 
 }

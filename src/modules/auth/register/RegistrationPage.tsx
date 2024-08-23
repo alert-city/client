@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -11,17 +11,9 @@ import {
   MenuItem,
   Card,
   CardContent,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  RadioGroup,
-  Radio,
   FormHelperText,
 } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
-import Link from 'next/link';
-import { getPublicRouteByKey, getRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
-import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
 import { useMutation } from '@apollo/client';
 import { z } from 'zod';
 import { createUserSchema } from '@/validation/schemas/user/user.schema';
@@ -30,17 +22,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CREATE_USER } from '@/graphql/user';
 import { TEMP_USERNAME } from '@/shared/constants/storage';
 import { useRouter } from 'next/navigation';
+import { RouteConfig } from '@/routes/route';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
-type InferredRegistrationValues = z.infer<typeof createUserSchema>;
-type RegistrationValues = InferredRegistrationValues & {
-  securityQuestion1: string;
-  securityAnswer1: string;
-  securityQuestion2: string;
-  securityAnswer2: string;
-  securityQuestion3: string;
-  securityAnswer3: string;
-};
+type RegistrationValues = z.infer<typeof createUserSchema>;
 
 const RegistrationPage: React.FC = () => {
   const router = useRouter();
@@ -51,6 +38,7 @@ const RegistrationPage: React.FC = () => {
   const [registrationInfo, setRegistrationInfo] = useState<string | null>(null);
   const [registrationError, setRegistrationError] = useState<string | null>(null);
   const [canRegister, setCanRegister] = useState<boolean>(true);
+  const [captchaStatus, setCaptchaStatus] = useState<'unverified' | 'verified' | 'expired'>('unverified');
 
   const {
     register,
@@ -58,7 +46,7 @@ const RegistrationPage: React.FC = () => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<InferredRegistrationValues>({
+  } = useForm<RegistrationValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       name: {
@@ -71,38 +59,19 @@ const RegistrationPage: React.FC = () => {
       displayName: '',
       accountType: 'Personal',
       mobilePhone: '',
-      securityQuestion1: '',
-      securityAnswer1: '',
-      securityQuestion2: '',
-      securityAnswer2: '',
-      securityQuestion3: '',
-      securityAnswer3: '',
       captchaVerified: false,
     },
   });
 
+  useEffect(() => {
+    register('captchaVerified');
+  }, [register]);
 
-  const securityQuestions = getPageByKey(PAGE_KEY.SECURITY_QUESTIONS).question;
 
-  const onSubmit = async (data: InferredRegistrationValues) => {
-    // console.log('data', data);
+  const onSubmit = async (data: RegistrationValues) => {
     setCanRegister(false);
     setRegistrationError(null);
-
-    const securityQuestions = [
-      {
-        question: data.securityQuestion1,
-        answer: data.securityAnswer1,
-      },
-      {
-        question: data.securityQuestion2,
-        answer: data.securityAnswer2,
-      },
-      {
-        question: data.securityQuestion3,
-        answer: data.securityAnswer3,
-      },
-    ];
+    console.log('data: ', data);
 
     let role = '';
     if (data.accountType === 'Personal') {
@@ -113,23 +82,10 @@ const RegistrationPage: React.FC = () => {
 
     const formData = {
       ...data,
-      securityQuestions,
       role: [role],
     };
 
-    const {
-      securityQuestion1,
-      securityAnswer1,
-      securityQuestion2,
-      securityAnswer2,
-      securityQuestion3,
-      securityAnswer3,
-      captchaVerified,
-      ...filteredData
-    } = formData;
-
-
-    // console.log('filteredData', filteredData);
+    const { captchaVerified, ...filteredData } = formData;
 
     try {
       const response = await createUser({
@@ -137,14 +93,13 @@ const RegistrationPage: React.FC = () => {
           input: filteredData,
         },
       });
-      // console.log('response', response);
       if (response?.data?.createUser) {
-        setRegistrationInfo('Registration successful. You will receive an email to verify your account. Redirecting to next page...');
+        setRegistrationInfo('Register successful. You will receive an email to verify your account. Redirecting to next page...');
         setCanRegister(true);
         localStorage.setItem(TEMP_USERNAME, data.username);
         setRegistrationStatus(true);
         setTimeout(async () => {
-          router.push(getRouteByKey(ROUTE_KEY.ENABLE2FA).path);
+          router.push(RouteConfig.Enable2FA.Path);
         }, 4000);
       }
     } catch (err) {
@@ -154,9 +109,13 @@ const RegistrationPage: React.FC = () => {
   };
 
   const handleCaptchaChange = (value: string | null) => {
-    const isValid = !!value;
-    setCaptchaVerified(isValid);
-    setValue('captchaVerified', isValid, { shouldValidate: true });
+    if (value) {
+      setCaptchaStatus('verified');
+      setValue('captchaVerified', true, { shouldValidate: true });
+    } else {
+      setCaptchaStatus('expired');
+      setValue('captchaVerified', false, { shouldValidate: true });
+    }
   };
 
   return (
@@ -181,6 +140,16 @@ const RegistrationPage: React.FC = () => {
           backgroundColor: '#fff',
         }}
       >
+        <Box sx={{ position: 'relative', width: '100%', mb: 6 }}>
+          <Tooltip title="Return" placement="right">
+            <IconButton
+              onClick={() => router.back()}
+              sx={{ position: 'absolute'}}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
         <Typography variant="h4" gutterBottom>
           Registration
         </Typography>
@@ -312,48 +281,6 @@ const RegistrationPage: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Security Questions */}
-          <Card sx={{ width: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Security Questions
-              </Typography>
-              {[1, 2, 3].map((questionNumber) => (
-                <Box key={questionNumber} display="flex" gap={2} mb={2}>
-                  <FormControl
-                    fullWidth
-                    error={!!errors[`securityQuestion${questionNumber}` as keyof RegistrationValues]}>
-                    <InputLabel>Security Question {questionNumber}</InputLabel>
-                    <Select
-                      label={`Security Question ${questionNumber}`}
-                      defaultValue=""
-                      {...register(`securityQuestion${questionNumber}` as keyof RegistrationValues)}
-                    >
-                      {securityQuestions?.map((question) => (
-                        <MenuItem key={question.value} value={question.value}>
-                          {question.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors[`securityQuestion${questionNumber}` as keyof RegistrationValues] && (
-                      <FormHelperText>
-                        {errors[`securityQuestion${questionNumber}` as keyof RegistrationValues]?.message}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-
-                  <TextField
-                    label={`Answer ${questionNumber}`}
-                    fullWidth
-                    {...register(`securityAnswer${questionNumber}` as keyof RegistrationValues)}
-                    error={!!errors[`securityAnswer${questionNumber}` as keyof RegistrationValues]}
-                    helperText={errors[`securityAnswer${questionNumber}` as keyof RegistrationValues]?.message}
-                  />
-                </Box>
-              ))}
-            </CardContent>
-          </Card>
-
           {/* CAPTCHA */}
           <Card sx={{ width: '100%' }}>
             <CardContent>
@@ -390,29 +317,43 @@ const RegistrationPage: React.FC = () => {
           </Box>
 
           {!registrationStatus &&
-            <Button type="submit" variant="contained" color="primary" fullWidth disabled={!canRegister}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={!canRegister}
+            >
               Register
             </Button>
           }
-
+          {!registrationStatus &&
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              onClick={() => router.back()}
+            >
+              Return to Login
+            </Button>
+          }
           {registrationStatus &&
             <Button
               fullWidth
               variant="contained"
               color="secondary"
-              // sx={{ mt: 2, mb: 4 }}
               type="button"
-              onClick={() => router.push(getRouteByKey(ROUTE_KEY.ENABLE2FA).path)}
+              onClick={() => router.push(RouteConfig.Enable2FA.Path)}
             >
               Next Page
             </Button>
           }
 
-
           <Typography variant="body2" mt={2} color="primary">
-            <Link href={getPublicRouteByKey(ROUTE_KEY.LOGIN).path}>
+            <RouteConfig.Login.Link>
               Already have an account? Log in
-            </Link>
+            </RouteConfig.Login.Link>
           </Typography>
         </Box>
       </Box>

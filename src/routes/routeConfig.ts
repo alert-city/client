@@ -15,7 +15,6 @@ export const ROUTE_KEY = {
   ADMIN: 'admin',
   NORMAL: 'normal',
   PROFILE: 'profile',
-  ENABLE2FA: 'enable2FA',
 };
 
 export const PUBLIC_ROUTE_CONFIG: Record<string, IRoute> = {
@@ -73,11 +72,6 @@ export const ROUTE_CONFIG: Record<string, IRoute> = {
     name: 'profile',
     title: 'Profile - Alert City',
   },
-  [ROUTE_KEY.ENABLE2FA]: {
-    path: '/enable-2FA',
-    name: 'enable-2FA',
-    title: 'Enable 2FA - Alert City',
-  }
 
 };
 

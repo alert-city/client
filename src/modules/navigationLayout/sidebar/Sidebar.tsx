@@ -12,25 +12,22 @@ import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useRouter } from 'next/navigation';
-import { getRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
-import { LOGIN_INFO } from '@/shared/constants/storage';
-import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
+import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import Tooltip from '@mui/material/Tooltip';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PublishIcon from '@mui/icons-material/Publish';
 import MailIcon from '@mui/icons-material/Mail';
+import PeopleIcon from '@mui/icons-material/People';
+import { IndexConfig } from '@/routes';
+import { RouteConfig } from '@/routes/route';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   Review: <AssignmentTurnedInIcon />,
   Submission: <PublishIcon />,
+  'User Management': <PeopleIcon />,
 };
 
 const drawerWidth = 240;
-
-interface LoginInfo {
-  role?: string;
-  accountType?: string;
-}
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -86,35 +83,34 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
   const theme = useTheme();
   const router = useRouter();
-  const [loginInfo, setLoginInfo] = useState<LoginInfo>({});
+  const [accountType, setAccountType] = useState<String | null>("");
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setLoginInfo(JSON.parse(localStorage.getItem(LOGIN_INFO) || '{}'));
+      const accountType = typeof window !== 'undefined' ? localStorage.getItem(ACCOUNT_TYPE) : null;
+      setAccountType(accountType);
     }
   }, []);
 
-  const accountType = loginInfo?.accountType || '';
-  const submissionPath = getRouteByKey(ROUTE_KEY.SUBMISSION).name;
-  const reviewPath = getRouteByKey(ROUTE_KEY.REVIEW).name;
-
-  let page:string[] = [];
-  if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
-    page = getPageByKey(PAGE_KEY.SIDE_BAR_ADMIN)?.page || [];
-  } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
-    page = getPageByKey(PAGE_KEY.SIDE_BAR_PERSONAL)?.page || [];
+  let page: string[] = [];
+  if (accountType === IndexConfig.Organization.AccountType) {
+    page = IndexConfig.SideBarAdmin.Page || [];
+  } else if (accountType === IndexConfig.Personal.AccountType) {
+    page = IndexConfig.SideBarPersonal.Page || [];
   }
 
   const handleClick = (item: string) => {
-    if (accountType === getPageByKey(PAGE_KEY.ORGANIZATION).accountType) {
+    if (accountType === IndexConfig.Organization.AccountType) {
       if (item === 'Submission') {
-        router.push(`/admin/${submissionPath}`);
+        router.push('/admin' + RouteConfig.Submission.Path);
       } else if (item === 'Review') {
-        router.push(`/admin/${reviewPath}`);
+        router.push('/admin' + RouteConfig.Review.Path);
+      } else if (item === 'User Management') {
+        router.push('/admin' + RouteConfig.UserManagement.Path);
       }
-    } else if (accountType === getPageByKey(PAGE_KEY.PERSONAL).accountType) {
+    } else if (accountType === IndexConfig.Personal.AccountType) {
       if (item === 'Submission') {
-        router.push(`/staff/${submissionPath}`);
+        router.push('/staff' + RouteConfig.Submission.Path);
       }
     }
   };

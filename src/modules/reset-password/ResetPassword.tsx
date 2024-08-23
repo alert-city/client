@@ -16,8 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client';
 import { GET_VERIFICATION_CODE, RESET_PASSWORD } from '@/graphql/user';
 import { useRouter } from 'next/navigation';
-import { getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
-import { AUTH_TOKEN, USERNAME } from '@/shared/constants/storage';
+import { ACCESS_TOKEN, USERNAME } from '@/shared/constants/storage';
 import { useRevokeTokens } from '@/hooks/useRevokeTokens';
 import LockIcon from '@mui/icons-material/Lock';
 import IconButton from '@mui/material/IconButton';
@@ -25,6 +24,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Tooltip from '@mui/material/Tooltip';
+import { RouteConfig } from '@/routes/route';
+import Cookies from 'js-cookie';
 
 // get verification code schema
 type GetCodeFormValues = z.infer<typeof getCodeSchema>;
@@ -46,13 +47,13 @@ const ResetPassword: React.FC = () => {
   const [isCodeEntered, setIsCodeEntered] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
     const user = localStorage.getItem(USERNAME);
-    setAuthToken(token);
+    setAccessToken(accessToken || null);
     setUsername(user);
   }, []);
 
@@ -142,7 +143,7 @@ const ResetPassword: React.FC = () => {
         setResetStatus(true);
         setKey(prevKey => prevKey + 1); // reset form
         setTimeout(async () => {
-          if (authToken) {
+          if (accessToken) {
             await revokeTokens();
           }
         }, 3000);
@@ -166,7 +167,7 @@ const ResetPassword: React.FC = () => {
 
   return (
     <Container sx={{ borderRadius: '16px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }} maxWidth="xs">
-      {!authToken &&
+      {!accessToken &&
         <Box sx={{ position: 'relative', width: '100%', mb: 5 }}>
           <Tooltip title="Return" placement="right">
             <IconButton
@@ -228,7 +229,7 @@ const ResetPassword: React.FC = () => {
               <TextField
                 key={key}
                 fullWidth
-                placeholder="Enter the verification code"
+                placeholder="Enter the verification code you received"
                 label="Verification Code"
                 {...registerResetPassword('verificationCode', {
                   onChange: (e) => {
@@ -320,7 +321,7 @@ const ResetPassword: React.FC = () => {
             </Grid>
             <Box className="flex justify-center">
               {resetReminder && (
-                <Typography sx={{ mt: 1.5, mb: authToken ? 4 : 0, display: 'flex', justifyContent: 'center' }}
+                <Typography sx={{ mt: 1.5, mb: accessToken ? 4 : 0, display: 'flex', justifyContent: 'center' }}
                             color="primary" variant="body2">
                   {resetReminder}
                 </Typography>
@@ -341,14 +342,14 @@ const ResetPassword: React.FC = () => {
               >
                 Reset Password
               </Button>}
-            {(resetStatus && !authToken) &&
+            {(resetStatus && !accessToken) &&
               <Button
                 fullWidth
                 variant="contained"
                 color="secondary"
                 sx={{ mt: 2, mb: 4 }}
                 type="button"
-                onClick={() => router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path)}
+                onClick={() => router.push(RouteConfig.Login.Path)}
               >
                 Return to Login
               </Button>}

@@ -15,8 +15,8 @@ import { useMutation } from '@apollo/client';
 import { GENERATE_2FA, VERIFY_2FA_CODE } from '@/graphql/auth';
 import { UPDATE_USER_BY_USERNAME } from '@/graphql/user';
 import { TEMP_USERNAME } from '@/shared/constants/storage';
-import { getPublicRouteByKey, getRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
 import { useRouter } from 'next/navigation';
+import { RouteConfig} from '@/routes/route';
 
 const TwoFAPage: React.FC = () => {
   const router = useRouter();
@@ -96,11 +96,11 @@ const TwoFAPage: React.FC = () => {
           },
         });
         // console.log('response', response);
-        setVerificationInfo('2FA enabled successfully. You will be redirected to login page in 5 seconds.');
+        setVerificationInfo('2FA enabled successfully. You will be redirected to login page in 4 seconds.');
         setIsEnableSuccess(true);
         localStorage.removeItem(TEMP_USERNAME);
         setTimeout(async () => {
-          router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path);
+          router.push(RouteConfig.Login.Path);
         }, 4000);
       }
     } catch (err) {
@@ -127,7 +127,7 @@ const TwoFAPage: React.FC = () => {
     setTempUsername('');
     setVerificationCode('');
     localStorage.removeItem(TEMP_USERNAME);
-    router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path);
+    router.push(RouteConfig.Login.Path);
   };
 
   return (
@@ -164,7 +164,7 @@ const TwoFAPage: React.FC = () => {
 
               {issuer && (
                 <Box>
-                  <Typography variant="body2" color="textSecondary" gutterBottom>
+                  <Typography variant="body2" color="textSecondary" gutterBottom sx={{display:"flex", justifyContent:"center"}}>
                     Scan the QR code using
                     your {issuer === 'microsoft' ? 'Microsoft Authenticator' : 'Google Authenticator'} app
                     to add your account.
@@ -223,7 +223,7 @@ const TwoFAPage: React.FC = () => {
                     color="secondary"
                     sx={{ mt: 2, mb: 4 }}
                     type="button"
-                    onClick={() => router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path)}
+                    onClick={() => router.push(RouteConfig.Login.Path)}
                   >
                     Return to Login
                   </Button>
