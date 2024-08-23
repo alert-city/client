@@ -12,9 +12,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
-import { getRouteByKey, getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
-import { getPageByKey, PAGE_KEY } from '@/pages/pageConfig';
 import { useRevokeTokens } from '@/hooks/useRevokeTokens';
+import { IndexConfig } from '@/routes';
+import { RouteConfig } from '@/routes/route';
+
 
 interface TopBarProps {
   open: boolean;
@@ -50,16 +51,16 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
     setAnchorElUser(null);
   };
 
-  const settings = getPageByKey(PAGE_KEY.SETTING)?.page || [];
+  const settings = IndexConfig.Setting.Page || [];
 
   const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
     if (setting === 'Logout') {
       await revokeTokens()
     } else if (setting === 'Profile') {
-      router.push(getRouteByKey(ROUTE_KEY.PROFILE).path);
+      router.push(RouteConfig.Profile.Path);
     } else if (setting === 'Reset Password') {
-      router.push(getPublicRouteByKey(ROUTE_KEY.RESET_PASSWORD).path);
+      router.push(RouteConfig.ResetPassword.Path);
     }
   };
 
@@ -87,7 +88,10 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               variant="h6"
               noWrap
               component="a"
-              href={getPublicRouteByKey(ROUTE_KEY.LOGIN).path}
+              href={RouteConfig.Login.Path}
+              onClick={ async (e) => {
+                await revokeTokens();
+              }}
               sx={{
                 mr: 2,
                 fontFamily: 'monospace',

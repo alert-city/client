@@ -1,9 +1,13 @@
 import React from 'react';
+import RegisterForm  from '@/modules/auth/register/RegistrationPage';
+import { RouteConfig } from '@/routes/route';
+
+export const metadata = RouteConfig.Register.Metadata
 
 const RegisterPage: React.FC = () => {
   return (
     <div>
-      <h1>Register Page</h1>
+      <RegisterForm />
     </div>
   );
 };

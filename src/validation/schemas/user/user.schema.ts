@@ -6,47 +6,83 @@ export const passwordSchema = z.string()
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(/\d/, 'Password must contain at least one number');
 
+
 export const createUserSchema = z.object({
-  username: z.string().min(1, "Email cannot be empty").max(255).email("Invalid email address"),
+  username: z.string().min(1, 'Username cannot be empty').max(255).email('Invalid email address'),
   password: passwordSchema,
   confirmPassword: passwordSchema,
-  displayName: z.string().min(1, "Display name cannot be empty").max(255),
-  accountType: z.enum(["personal", "organization"]),
-  role: z.array(z.string().min(1, "Role cannot be empty").max(255)),
-  organization: z.array(z.string().min(1, "Organization cannot be empty").max(255)).optional(),
-  staffs: z.array(z.string().min(1, "Staff cannot be empty").max(255)).optional().optional(),
+  displayName: z.string().min(1, 'Display name cannot be empty').max(255),
+  accountType: z.enum(['Personal', 'Organization']),
+  // role: z.array(z.string().min(1, "Role cannot be empty").max(255)).optional(),
   name: z.object({
-    firstName: z.string().min(1, "First name cannot be empty").max(255).optional(),
-    lastName: z.string().min(1, "Last name cannot be empty").max(255).optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
   }).optional(),
-  orgName: z.string().min(1, "Organization name cannot be empty").max(255).optional(),
+  orgName: z.string().optional(),
   mobilePhone: z.string()
-    .min(1, "Mobile phone cannot be empty")
+    .min(1, 'Mobile phone cannot be empty')
     .max(255)
-    .regex(/^\+61\d{9}$/, "Mobile phone number must start with +61 and contain 9 digits after the country code"),
-}).refine(data => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
+    .regex(/^\+61\d{9}$/, 'Mobile phone number must start with +61 and contain 9 digits after the country code'),
+  captchaVerified: z.boolean(),
+})
+  .refine(data => data.captchaVerified, {
+    message: 'CAPTCHA verification is required',
+    path: ['captchaVerified'],
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  }).superRefine((
+    data,
+    ctx,
+  ) => {
+    // 如果 accountType 是 Personal，检查 firstName 和 lastName
+    if (data.accountType === 'Personal') {
+      if (!data.name?.firstName) {
+        ctx.addIssue({
+          path: ['name', 'firstName'],
+          message: 'First name is required for Personal account type',
+          code: 'custom',
+        });
+      }
+      if (!data.name?.lastName) {
+        ctx.addIssue({
+          path: ['name', 'lastName'],
+          message: 'Last name is required for Personal account type',
+          code: 'custom',
+        });
+      }
+    }
 
+    // 如果 accountType 是 Organization，检查 orgName
+    if (data.accountType === 'Organization') {
+      if (!data.orgName) {
+        ctx.addIssue({
+          path: ['orgName'],
+          message: 'Organization name is required for Organization account type',
+          code: 'custom',
+        });
+      }
+    }
+  });
 
 export const updateUserSchema = z.object({
-  username: z.string().min(1, "Email cannot be empty").max(255).email("Invalid email address").optional(),
-  displayName: z.string().min(1, "Display name cannot be empty").max(255).optional(),
-  accountType: z.enum(["personal", "organization"]).optional(),
-  role: z.array(z.string().min(1, "Role cannot be empty").max(255)).min(1, "Role cannot be empty").optional(),
-  organization: z.array(z.string().min(1, "Organization cannot be empty").max(255)).optional(),
-  staffs: z.array(z.string().min(1, "Staff cannot be empty").max(255)).optional().optional(),
+  username: z.string().min(1, 'Email cannot be empty').max(255).email('Invalid email address').optional(),
+  displayName: z.string().min(1, 'Display name cannot be empty').max(255).optional(),
+  accountType: z.enum(['personal', 'organization']).optional(),
+  role: z.array(z.string().min(1, 'Role cannot be empty').max(255)).min(1, 'Role cannot be empty').optional(),
+  organization: z.array(z.string().min(1, 'Organization cannot be empty').max(255)).optional(),
+  staffs: z.array(z.string().min(1, 'Staff cannot be empty').max(255)).optional().optional(),
   name: z.object({
-    firstName: z.string().min(1, "First name cannot be empty").max(255).optional(),
-    lastName: z.string().min(1, "Last name cannot be empty").max(255).optional(),
+    firstName: z.string().min(1, 'First name cannot be empty').max(255).optional(),
+    lastName: z.string().min(1, 'Last name cannot be empty').max(255).optional(),
   }).optional(),
-  orgName: z.string().min(1, "Organization name cannot be empty").max(255).optional(),
+  orgName: z.string().min(1, 'Organization name cannot be empty').max(255).optional(),
   mobilePhone: z.string()
-    .min(1, "Mobile phone cannot be empty")
+    .min(1, 'Mobile phone cannot be empty')
     .max(255)
-    .regex(/^\+61\d{9}$/, "Mobile phone number must start with +61 and contain 9 digits after the country code")
+    .regex(/^\+61\d{9}$/, 'Mobile phone number must start with +61 and contain 9 digits after the country code')
     .optional(),
-  verificationCode: z.string().min(1, "Verification code cannot be empty").max(255).optional(),
+  verificationCode: z.string().min(1, 'Verification code cannot be empty').max(255).optional(),
 });
 
