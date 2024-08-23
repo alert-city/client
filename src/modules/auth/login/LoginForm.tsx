@@ -165,7 +165,7 @@ const LoginForm: React.FC = () => {
             </Box>
 
             {loginError && (
-              <Typography sx={{ mt: 1 }} color="error" variant="body2">
+              <Typography sx={{ mt: 1 }} color="error" variant="body2" className="flex justify-center">
                 {loginError}
               </Typography>
             )}
