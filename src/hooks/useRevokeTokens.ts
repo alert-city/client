@@ -1,19 +1,27 @@
 import { REVOKE_TOKENS } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
-import { AUTH_STATUS, AUTH_TOKEN, LOGIN_INFO,USERNAME } from '@/shared/constants/storage';
-import { getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import { ACCESS_TOKEN, ACCOUNT_TYPE } from '@/shared/constants/storage';
 import { useRouter } from 'next/navigation';
+import { RouteConfig } from '@/routes/route';
+import { IndexConfig } from '@/routes';
+import Cookies from 'js-cookie';
 
-export const useRevokeTokens =  () => {
+export const useRevokeTokens = () => {
   const router = useRouter();
+
+  const clearDataAndRedirect = () => {
+    IndexConfig.RemoveItems.Item.forEach((item) => {
+      localStorage.removeItem(item);
+    });
+    Cookies.remove(ACCESS_TOKEN);
+    Cookies.remove(ACCOUNT_TYPE);
+    router.push(RouteConfig.Login.Path);
+  };
+
   const [revokeTokens] = useMutation(REVOKE_TOKENS, {
-    onCompleted: () => {
-      localStorage.removeItem(AUTH_STATUS);
-      localStorage.removeItem(LOGIN_INFO);
-      localStorage.removeItem(AUTH_TOKEN);
-      localStorage.removeItem(USERNAME);
-      router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path);
-    },
+    onCompleted: clearDataAndRedirect,
+    onError: clearDataAndRedirect,
   });
+
   return revokeTokens;
-}
+};

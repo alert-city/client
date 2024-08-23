@@ -1,4 +1,7 @@
 import React from 'react';
+import { RouteConfig } from '@/routes/route';
+
+export const metadata = RouteConfig.Profile.Metadata
 
 const ProfilePage: React.FC = () => {
   return (
