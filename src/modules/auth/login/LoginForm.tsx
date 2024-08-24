@@ -10,7 +10,14 @@ import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
-import { IS_STAY_SIGNED_IN, ACCESS_TOKEN, USERNAME, ACCOUNT_TYPE } from '@/shared/constants/storage';
+import {
+  IS_STAY_SIGNED_IN,
+  ACCESS_TOKEN,
+  USERNAME,
+  ACCOUNT_TYPE,
+  IS_FIRST_LOGIN,
+  DISPLAY_NAME,
+} from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -56,23 +63,27 @@ const LoginForm: React.FC = () => {
       const response = await login({ variables: { input: data } });
       const role: string = response.data.login.role;
       const accountType = response.data.login.accountType;
+      const displayName = response.data.login.displayName;
+      console.log('response', response);
 
       const saveData = () => {
         if (typeof window !== 'undefined') {
           Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
           Cookies.set(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(DISPLAY_NAME, displayName);
           localStorage.setItem(ACCOUNT_TYPE, accountType);
           localStorage.setItem(USERNAME, response.data.login.username);
+          localStorage.setItem(IS_FIRST_LOGIN, 'true');
         }
       };
 
       if (accountType === IndexConfig.Organization.AccountType) {
         saveData();
-        router.push(RouteConfig.Admin.Path);
+        router.push(RouteConfig.AdminSubmission.Path);
       } else if (accountType === IndexConfig.Personal.AccountType) {
         if (role.includes('staff')) {
           saveData();
-          router.push(RouteConfig.Staff.Path);
+          router.push(RouteConfig.StaffSubmission.Path);
         } else if (!role.includes('staff')) {
           setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
           return;
