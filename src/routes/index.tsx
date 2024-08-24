@@ -1,4 +1,4 @@
-import { USERNAME, ACCOUNT_TYPE, TEMP_USERNAME } from '@/shared/constants/storage';
+import { USERNAME, ACCOUNT_TYPE, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME } from '@/shared/constants/storage';
 
 const Organization = {
   AccountType: 'Organization',
@@ -21,7 +21,7 @@ const Setting = {
 };
 
 const RemoveItems = {
-  Item: [USERNAME, ACCOUNT_TYPE, TEMP_USERNAME],
+  Item: [USERNAME, ACCOUNT_TYPE, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME],
 };
 
 
