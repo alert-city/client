@@ -2,19 +2,20 @@
 import { Button, Container, Typography, Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { AUTH_STATUS, AUTH_TOKEN } from '../shared/constants/storage';
+import { ACCESS_TOKEN } from '@/shared/constants/storage';
 import { useEffect, useState } from 'react';
+import { getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
+import Cookies from 'js-cookie';
 
 export default function NotFoundPage() {
     const router = useRouter();
 
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const token = typeof window !== 'undefined' ? localStorage.getItem(AUTH_TOKEN) : null;
-        const authStatus = typeof window !== 'undefined' ? localStorage.getItem(AUTH_STATUS) : 'invalid';
-        if (token && (authStatus !== 'invalid')) {
-            setLoggedIn(true);
+        const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
+        if (accessToken) {
+            setIsAuthenticated(true);
         }
     }, []);
 
@@ -65,14 +66,16 @@ export default function NotFoundPage() {
                     justifyItems: 'center'
                 }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => router.push('/login')}
-                >
-                    HomePage
-                </Button>
-                {loggedIn ? (
+                {!isAuthenticated && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => router.push(getPublicRouteByKey(ROUTE_KEY.LOGIN).path)}
+                    >
+                        Return to Login
+                    </Button>
+                )}
+                {isAuthenticated && (
                     <Button
                         variant="outlined"
                         color="primary"
@@ -80,7 +83,7 @@ export default function NotFoundPage() {
                     >
                         Back
                     </Button>
-                ) : (null)}
+                )}
             </Box>
         </Container>
     );
