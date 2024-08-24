@@ -151,6 +151,30 @@ const UserManagement = {
   ),
 }
 
+const AdminSubmission = {
+  Metadata: {
+    title: "Submission | Alert City",
+  },
+  Path: "/admin/submission" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={AdminSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
+const StaffSubmission = {
+  Metadata: {
+    title: "Submission | Alert City",
+  },
+  Path: "/staff/submission" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={StaffSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
 export const RouteConfig = {
   Root,
   Login,
@@ -164,4 +188,6 @@ export const RouteConfig = {
   Profile,
   Activate,
   UserManagement,
+  AdminSubmission,
+  StaffSubmission,
 };

@@ -8,6 +8,7 @@ export const LOGIN = gql`
             accountType
             role
             organization
+            displayName
             name {
                 firstName
                 lastName

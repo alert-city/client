@@ -1,9 +1,13 @@
 import React from 'react';
+import SubmissionPage from '@/modules/submission/Submission';
+import { RouteConfig } from '@/routes/route';
+
+export const metadata = RouteConfig.Submission.Metadata
 
 const page: React.FC = () => {
   return (
     <div>
-      <h1>Staff Page</h1>
+      <SubmissionPage />
     </div>
   );
 };
