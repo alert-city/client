@@ -1,12 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Container, CssBaseline, Checkbox, FormControlLabel, InputAdornment } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import CustomButton from '@/modules/common/Button';
 import CustomTextField from '@/modules/common/TextField';
 import { LOGIN } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
-import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
@@ -17,6 +16,8 @@ import {
   ACCOUNT_TYPE,
   IS_FIRST_LOGIN,
   DISPLAY_NAME,
+  ID,
+  AVATAR_URL,
 } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -25,6 +26,8 @@ import Avatar from '@mui/material/Avatar';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
+import { useTranslations } from 'next-intl';
 
 type LoginFormInputs = {
   username: string;
@@ -33,10 +36,12 @@ type LoginFormInputs = {
 };
 
 const LoginForm: React.FC = () => {
+  const t = useTranslations('LoginPage');
   const [login] = useMutation(LOGIN);
   const router = useRouter();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const methods = useForm({
     defaultValues: {
@@ -48,7 +53,6 @@ const LoginForm: React.FC = () => {
   });
 
   const { handleSubmit, watch, formState: { errors }, register } = methods;
-
   const isStaySignedIn = watch('isStaySignedIn');
 
   useEffect(() => {
@@ -58,40 +62,47 @@ const LoginForm: React.FC = () => {
   }, [isStaySignedIn]);
 
   const onSubmit = async (data: LoginFormInputs) => {
+    setLoading(true);
     setLoginError(null);
     try {
       const response = await login({ variables: { input: data } });
       const role: string = response.data.login.role;
       const accountType = response.data.login.accountType;
       const displayName = response.data.login.displayName;
-      console.log('response', response);
 
       const saveData = () => {
         if (typeof window !== 'undefined') {
           Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
           Cookies.set(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(ID, response.data.login.id);
           localStorage.setItem(DISPLAY_NAME, displayName);
-          localStorage.setItem(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(AVATAR_URL, response.data.login.avatarUrl);
           localStorage.setItem(USERNAME, response.data.login.username);
           localStorage.setItem(IS_FIRST_LOGIN, 'true');
         }
       };
 
-      if (accountType === IndexConfig.Organization.AccountType) {
-        saveData();
-        router.push(RouteConfig.AdminSubmission.Path);
-      } else if (accountType === IndexConfig.Personal.AccountType) {
-        if (role.includes('staff')) {
+      if (response.data.login) {
+        if (accountType === IndexConfig.Organization.AccountType) {
           saveData();
-          router.push(RouteConfig.StaffSubmission.Path);
-        } else if (!role.includes('staff')) {
-          setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
-          return;
+          router.push(RouteConfig.Admin.Path + RouteConfig.Dashboard.Path);
+        } else if (accountType === IndexConfig.Personal.AccountType) {
+          if (role.includes('staff')) {
+            saveData();
+            router.push(RouteConfig.Staff.Path + RouteConfig.Dashboard.Path);
+          } else if (!role.includes('staff')) {
+            setLoginError(t('accountTypeError'));
+            setLoading(false);
+            return;
+          }
         }
       }
 
     } catch (err: any) {
-      setLoginError(err.message || 'Login failed');
+      setLoginError(err.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,7 +121,7 @@ const LoginForm: React.FC = () => {
         <Box className="flex flex-col items-center mt-[2.5rem]">
           <Avatar src="/images/alertcity.png" alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
           <Typography component="h1" variant="h5">
-            Welcome to{' '}
+            {t('greeting')}{' '}
             <Box
               component="span"
               sx={{
@@ -126,15 +137,15 @@ const LoginForm: React.FC = () => {
           <Box onSubmit={handleSubmit(onSubmit)} component="form" noValidate sx={{ mt: 1 }}>
             <CustomTextField
               id="username"
-              label="Username"
+              label={t('username')}
               autoComplete="username"
               {...register('username')}
-              error={!!errors.username} // MUI 组件的 error 属性用于显示错误样式
-              helperText={errors.username ? errors.username.message : ''} // 显示错误消息
+              error={!!errors.username}
+              helperText={errors.username ? errors.username.message : ''}
             />
             <CustomTextField
               id="password"
-              label="Password"
+              label={t('password')}
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               {...register('password')}
@@ -156,7 +167,6 @@ const LoginForm: React.FC = () => {
                 ),
               }}
             />
-
             <Box sx={{ justifyContent: 'space-between' }} className="flex items-center">
               <FormControlLabel
                 control={
@@ -166,12 +176,12 @@ const LoginForm: React.FC = () => {
                     color="primary"
                   />
                 }
-                label="Stay signed in"
+                label={t('staySignedIn')}
               />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-                <Link href={RouteConfig.ResetPassword.Path}>
-                  Forgot password?
-                </Link>
+                <RouteConfig.ResetPassword.Link>
+                  {t('forgotPassword')}
+                </RouteConfig.ResetPassword.Link>
               </Typography>
             </Box>
 
@@ -182,17 +192,18 @@ const LoginForm: React.FC = () => {
             )}
 
             <CustomButton type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Sign In
+              {t('signIn')}
             </CustomButton>
 
             <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-              <Link href={RouteConfig.Register.Path}>
-                Don't have an account? Sign Up
-              </Link>
+              <RouteConfig.Register.Link>
+                {t('noAccount')}
+              </RouteConfig.Register.Link>
             </Typography>
           </Box>
         </Box>
       </Container>
+      <LoadingOverlay loading={loading} />
     </FormProvider>
   );
 };

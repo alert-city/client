@@ -1,0 +1,241 @@
+{
+  "Preferences": {
+    "title": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "en": "English",
+    "zh-cn": "Chinese"
+  },
+  "TopBar": {
+    "profile": "Profile",
+    "logout": "Logout",
+    "resetPassword": "Reset Password",
+    "preferences": "Preferences",
+    "openSettingHover": "Open Settings",
+    "openSidebarHover": "Open Sidebar"
+  },
+  "Sidebar": {
+    "Review": "Review",
+    "Dashboard": "Dashboard",
+    "Emergency": "Emergency Event",
+    "Routine": "Routine Event",
+    "Staff": "Staff"
+  },
+  "NotFoundPage": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you're looking for doesn't exist.",
+    "goBack": "Back",
+    "returnToLogin": "Return to Login"
+  },
+  "LoginPage": {
+    "greeting": "Welcome to",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign In",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account? Sign up",
+    "staySignedIn": "Stay signed in",
+    "accountTypeError": "A normal account is not allowed to login on web platform. Please login on mobile app."
+  },
+  "RegistrationPage": {
+    "title": "Registration",
+    "accountInformation": "Account Information",
+    "accountType": "Account Type",
+    "personal": "Personal",
+    "organization": "Organization",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "displayName": "Display Name",
+    "basicInformation": "Basic Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "mobilePhone": "Mobile Phone",
+    "verification": "Verification",
+    "register": "Register",
+    "returnToLogin": "Return to Login",
+    "alreadyHaveAccount": "Already have an account? Log in",
+    "return": "Return",
+    "orgName": "Organization Name",
+    "nextPage": "Next",
+    "usernamePlaceholder": "Please enter your valid email address",
+    "RegistrationInfo": "Register successful. You will receive an email to verify your account. You will be redirected to the next page in",
+    "seconds": "seconds",
+    "defaultRegistrationError": "Reset Password failed. Please try again later."
+  },
+  "TwoFAPage": {
+    "title": "Two-Factor Authentication",
+    "protectDescription": "Protect your account with Two-Factor Authentication",
+    "enableDescription": "Enable Two-Factor Authentication",
+    "chooseApp": "Choose Authenticator App",
+    "microsoftApp": "Microsoft Authenticator",
+    "googleApp": "Google Authenticator",
+    "qrCodeAlt": "Authenticator QR Code",
+    "enterCode": "Enter the code from App",
+    "enable": "Enable 2FA",
+    "returnToLogin": "Return to Login",
+    "skip": "Skip for now",
+    "scanDescription1": "Scan the QR code using your",
+    "scanDescription2": "app to add your account",
+    "verificationInfo":"2FA enabled successfully. You will be redirected to login page in",
+    "seconds": "seconds",
+    "verificationInfoShort":"2FA enabled successfully.",
+    "default2FAError": "Failed to verify 2FA code. Please try again later."
+  },
+  "ValidationEmailPage": {
+    "1": {
+      "title": "Account Activation",
+      "successMessage": "Your account has been activated successfully!",
+      "successSubMessage": "Welcome to Alert City!",
+      "resendButtonText": "Resend Activation Email",
+      "errorTitle": "Failed to activate account",
+      "resendSuccessMessage": "Activation email has been resent successfully!",
+      "resendSuccessSubMessage": "Please check your email inbox",
+      "resendErrorMessage": "Failed to resend activation email"
+    },
+    "2": {
+      "title": "Update Username",
+      "successMessage": "Your username has been updated successfully!",
+      "successSubMessage": "Your new username is now active.",
+      "resendButtonText": "Resend Username Update Email",
+      "errorTitle": "Failed to update username",
+      "resendSuccessMessage": "Username update email has been resent successfully!",
+      "resendSuccessSubMessage": "Please check your email inbox",
+      "resendErrorMessage": "Failed to resend username update email"
+    },
+    "iconAlt": "Alert City Logo",
+    "successTitle": "Success",
+    "errorTitle": "Error",
+    "tryAgain": "Please try again later",
+    "resending": "Resending...",
+    "returnToLogin": "Return to Login"
+  },
+  "ProfileUpdatePage": {
+    "title": "Profile",
+    "navigation": {
+      "title": "Navigation",
+      "avatar": "Avatar",
+      "username": "Username",
+      "displayName": "Display Name",
+      "orgName": "Organization Name",
+      "name": "Name",
+      "contact": "Contact",
+      "2FA": "2FA",
+      "deleteAccount": "Delete Account"
+    },
+    "avatar": {
+      "uploadImage": "Upload Image",
+      "crop": "Crop",
+      "avatar": "Avatar"
+    },
+    "contact": {
+      "mobilePhone": "Mobile Phone"
+    },
+    "twoFA": {
+      "2FATitle": "Two-Factor Authentication",
+      "2FAStatus": "2FA is currently",
+      "enabled": "enabled",
+      "disabled": "disabled"
+    },
+    "username": {
+      "usernamePlaceholder": "Please enter an valid email address",
+      "updateUsernameInfo": "Please check your email to verify your new username. You will be redirected to the login page in",
+      "seconds": "seconds"
+    },
+    "deleteAccount": {
+      "description": "To delete your account, please type the following into the box below:",
+      "content": "delete account:",
+      "deleteInfo": "Account deletion successful. Redirecting to login page in",
+      "seconds": "seconds",
+      "contentError": "The confirmation text does not match."
+    },
+    "name": {
+      "firstName": "First Name",
+      "lastName": "Last Name"
+    },
+    "edit": "Edit",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "ResetPasswordPage": {
+    "title": "Reset Password",
+    "username": "Username",
+    "codePlaceholder": "Enter the code from your email",
+    "verificationCode": "Verification Code",
+    "getCode": "Get Code",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "resetPassword": "Reset Password",
+    "returnToLogin": "Return to Login",
+    "return": "Return",
+    "getCodeReminder": "Verification code has been sent to your email, it will expire in 10 minutes.",
+    "resetReminder": "Reset Password successfully, you will be redirected to login page in",
+    "seconds": "seconds"
+  },
+  "WelcomeSnackbar": {
+    "content": "Welcome back",
+    "comma": ", ",
+    "exclamation": "!"
+  },
+  "DashboardPage": {
+    "dashboard": "Dashboard",
+    "inReview": "In Review",
+    "posts": "Posts"
+  },
+  "DashboardSideBar": {
+    "postAnEvent": "Post an event",
+    "emergency": "Emergency",
+    "routine": "Routine"
+  },
+  "EmergencySubmissionPage": {
+    "return": "Return",
+    "confirm": "Confirm",
+    "areYouSureYouWantToPost": "Are you sure you want to post",
+    "question": "?",
+    "submissionSuccessful": "Submission Successful",
+    "theEventHasBeenSubmitted": "The event has been submitted!",
+    "cancel": "Cancel"
+  },
+  "EasyToPostSection": {
+    "return": "Return",
+    "fires": "Fires",
+    "earthquakes": "Earthquakes",
+    "internetDisconnect": "Internet Disconnect",
+    "waterSupplyDisruptions": "Water Supply Disruptions",
+    "powerOutages": "Power Outages",
+    "civilUnrest": "Civil Unrest",
+    "cyclones": "Cyclones",
+    "floods": "Floods",
+    "terrorism": "Terrorism",
+    "tsunamis": "Tsunamis",
+    "pandemics": "Pandemics",
+    "heatwaves": "Heatwaves",
+    "industrialAccidents": "Industrial Accidents",
+    "marineRescue": "Marine Rescue",
+    "livestockDiseaseOutbreaks": "Livestock Disease Outbreaks",
+    "drought": "Drought",
+    "more": "More"
+  },
+  "RoutineSubmissionPage": {
+    "return": "Return",
+    "submissionInfo": "Submit successful, you will be redirected back to dashboard in",
+    "seconds": "seconds"
+  },
+  "RoutineSection": {
+    "return": "Return",
+    "routineSubmission": "Routine Submission",
+    "eventDescription": "Event Description",
+    "subject": "Subject",
+    "details": "Please describe details",
+    "eventTime": "Event Time",
+    "startTime": "Start Time",
+    "startDate": "Start Date",
+    "estimatedRecoveryTime": "Recovery Time",
+    "estimatedRecoveryDate": "Recovery Date",
+    "eventLocation": "Event Location",
+    "location": "Location",
+    "submit": "Submit"
+  }
+}

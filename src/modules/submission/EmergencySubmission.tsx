@@ -1,0 +1,158 @@
+"use client";
+import React, { useEffect, useState } from 'react';
+import { ACCOUNT_TYPE } from '@/shared/constants/storage';
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from 'next-intl';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { RouteConfig } from "@/routes/route";
+import { IndexConfig } from "@/routes";
+import { z } from "zod";
+import { createEventSchema } from '@/validation/schemas/event/event.schema';
+import { useQuery, useMutation } from '@apollo/client';
+import { FIND_USER_BY_USERNAME } from '@/graphql/user';
+import { CREATE_EVENT } from '@/graphql/event';
+import { USERNAME } from '@/shared/constants/storage';
+import ConfirmationDialog from "@/modules/dialog/ConfirmationDialog";
+import SuccessDialog from '@/modules/dialog/SuccessDialog';
+import EasyToPostSection from '@/modules/submission/EasyToPostSection';
+import Cookies from 'js-cookie';
+
+type EventValues = z.infer<typeof createEventSchema>;
+
+const EmergencySubmissionPage: React.FC = () => {
+    const t = useTranslations("EmergencySubmissionPage");
+    const t_matter = useTranslations("EasyToPostSection");
+    const router = useRouter();
+    const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+    const [openSuccessDialog, setOpenSuccessDialog] = useState<boolean>(false);
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const [selectedMatter, setSelectedMatter] = useState<string | null>(null);
+    const [matterTKey, setMatterTKey] = useState<string | null>(null);
+    const [checked, setChecked] = useState<boolean>(false);
+    const [accountType, setAccountType] = useState<string | null>(null);
+    const username = localStorage.getItem(USERNAME);
+    const { loading, error, data } = useQuery(FIND_USER_BY_USERNAME, { variables: { username } });
+    const [createEvent] = useMutation(CREATE_EVENT);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    useEffect(() => {
+        const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
+        setAccountType(accountType!);
+    }, []);
+
+    const handleOpenConfirmDialog = (subject: string, matter: string, matter_t_key: string) => {
+        setSelectedSubject(subject);
+        setSelectedMatter(matter);
+        setMatterTKey(matter_t_key);
+        setOpenConfirmDialog(true);
+    };
+
+    const handleCloseConfirmDialog = () => setOpenConfirmDialog(false);
+
+    const handleConfirm = async () => {
+        setOpenConfirmDialog(false);
+        Cookies.set("eventType", "Emergency");
+        await onSubmit(
+            {
+                date: new Date().toDateString(),
+                time: new Date().toTimeString(),
+                subject: selectedSubject!,
+                matter: selectedMatter!
+            }
+        );
+    };
+
+    const handleChange = () => setChecked((prev) => !prev);
+
+    const handleOpenSuccessDialog = () => setOpenSuccessDialog(true);
+
+    const handleCloseSuccessDialog = () => setOpenSuccessDialog(false);
+
+    const getDialogContent = () => {
+        if (matterTKey) {
+            let content = t("areYouSureYouWantToPost");
+            content += " ";
+            content += t_matter(matterTKey!);
+            content += " ";
+            content += t("question");
+            return content;
+        }
+        return "";
+    }
+
+    const handleMouseDownConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+    const onSubmit = async (eventData: EventValues) => {
+        const formattedData = {
+            ...eventData,
+            eventType: Cookies.get("eventType"),
+            submitter: data?.findUserByUsername?.id,
+            orgName: data?.findUserByUsername?.orgName
+        };
+        try {
+            const { data } = await createEvent({ variables: { input: formattedData } });
+            if (data?.createEvent) {
+                handleOpenSuccessDialog();
+                if (!openSuccessDialog) {
+                    setTimeout(async () => {
+                        if (accountType === IndexConfig.Organization.AccountType) {
+                            router.push(RouteConfig.Admin.Path)
+                        } else {
+                            router.push(RouteConfig.Staff.Path)
+                        }
+                    }, 3000);
+                }
+            }
+        } catch (err: any) {
+            setSubmitError((err as Error).message);
+        }
+    };
+
+    return (
+        <Box
+            component="main"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="80vh"
+            width="100%"
+            minWidth={isMobile ? "auto" : "800px"}
+            padding={isMobile ? 2 : 4}
+            gap={2}
+            mb={2}
+            // sx={{
+            //     borderRadius: '16px',
+            //     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+            // }}
+        >
+            <EasyToPostSection
+                handleOpenDialog={handleOpenConfirmDialog}
+                checked={checked}
+                handleChange={handleChange}
+                isMobile={isMobile}
+            />
+            <ConfirmationDialog
+                open={openConfirmDialog}
+                onClose={handleCloseConfirmDialog}
+                onConfirm={handleConfirm}
+                onMouseDown={handleMouseDownConfirm}
+                title={t('confirm')}
+                content={getDialogContent()}
+            />
+            <SuccessDialog
+                open={openSuccessDialog}
+                onClose={handleCloseSuccessDialog}
+                title={t('submissionSuccessful')}
+                content={t('theEventHasBeenSubmitted')}
+            />
+        </Box>
+    );
+};
+
+export default EmergencySubmissionPage;

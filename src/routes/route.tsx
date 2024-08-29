@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import { Link } from '@/i18n/routing';
 
 type RouteLinkProps = {
   children: React.ReactNode;
@@ -50,6 +50,18 @@ const ResetPassword = {
   Path: "/reset-password" as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={ResetPassword.Path} className={className}>
+      {children}
+    </Link>
+  ),
+};
+
+const Dashboard = {
+  Metadata: {
+    title: "Dashboard | Alert City",
+  },
+  Path: "/dashboard" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={Dashboard.Path} className={className}>
       {children}
     </Link>
   ),
@@ -139,13 +151,13 @@ const Activate = {
   ),
 }
 
-const UserManagement = {
+const StaffManagement = {
   Metadata: {
     title: "User Management | Alert City",
   },
   Path: "/user-management" as const,
   Link: ({ children, className }: RouteLinkProps) => (
-    <Link href={UserManagement.Path} className={className}>
+    <Link href={StaffManagement.Path} className={className}>
       {children}
     </Link>
   ),
@@ -175,11 +187,48 @@ const StaffSubmission = {
   ),
 }
 
+const EmergencySubmission = {
+  Metadata: {
+    title: "Emergency Submission | Alert City",
+  },
+  Path: "/emergency" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={StaffSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
+const RoutineSubmission = {
+  Metadata: {
+    title: "Routine Submission | Alert City",
+  },
+  Path: "/routine" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={StaffSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
+const Preferences = {
+  Metadata: {
+    title: "Preferences | Alert City",
+  },
+  Path: "/preferences" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={Preferences.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
 export const RouteConfig = {
   Root,
   Login,
   Register,
   ResetPassword,
+  Dashboard,
   Submission,
   Admin,
   Staff,
@@ -187,7 +236,10 @@ export const RouteConfig = {
   Review,
   Profile,
   Activate,
-  UserManagement,
+  StaffManagement,
   AdminSubmission,
   StaffSubmission,
+  EmergencySubmission,
+  RoutineSubmission,
+  Preferences
 };
