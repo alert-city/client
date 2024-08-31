@@ -11,7 +11,7 @@ import {
   MenuItem,
   Card,
   CardContent,
-  FormHelperText,
+  FormHelperText, InputAdornment,
 } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useMutation } from '@apollo/client';
@@ -20,39 +20,41 @@ import { createUserSchema } from '@/validation/schemas/user/user.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CREATE_USER } from '@/graphql/user';
-import { TEMP_USERNAME } from '@/shared/constants/storage';
+import { USERNAME } from '@/shared/constants/storage';
 import { useRouter } from 'next/navigation';
 import { RouteConfig } from '@/routes/route';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
 
 type RegistrationValues = z.infer<typeof createUserSchema>;
 
 const RegistrationPage: React.FC = () => {
   const router = useRouter();
   const [createUser] = useMutation(CREATE_USER);
-  const [captchaVerified, setCaptchaVerified] = useState<boolean>(false);
   const [accountType, setAccountType] = useState<string>('Personal');
   const [registrationStatus, setRegistrationStatus] = useState<Boolean>(false);
   const [registrationInfo, setRegistrationInfo] = useState<string | null>(null);
   const [registrationError, setRegistrationError] = useState<string | null>(null);
-  const [canRegister, setCanRegister] = useState<boolean>(true);
   const [captchaStatus, setCaptchaStatus] = useState<'unverified' | 'verified' | 'expired'>('unverified');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     formState: { errors },
+    reset,
   } = useForm<RegistrationValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
-      name: {
-        firstName: '',
-        lastName: '',
-      },
+      firstName: '',
+      lastName: '',
       orgName: '',
       username: '',
       password: '',
@@ -69,9 +71,8 @@ const RegistrationPage: React.FC = () => {
 
 
   const onSubmit = async (data: RegistrationValues) => {
-    setCanRegister(false);
+    setLoading(true);
     setRegistrationError(null);
-    console.log('data: ', data);
 
     let role = '';
     if (data.accountType === 'Personal') {
@@ -85,26 +86,49 @@ const RegistrationPage: React.FC = () => {
       role: [role],
     };
 
+    if (formData.accountType === 'Personal') {
+      delete formData.orgName;
+    }
+
+    if (formData.accountType === 'Organization') {
+      delete formData.firstName;
+      delete formData.lastName;
+    }
+
     const { captchaVerified, ...filteredData } = formData;
 
     try {
       const response = await createUser({
         variables: {
-          input: filteredData,
+          input: {
+            ...filteredData,
+            emailInfoType: 1,
+          }
         },
       });
       if (response?.data?.createUser) {
-        setRegistrationInfo('Register successful. You will receive an email to verify your account. Redirecting to next page...');
-        setCanRegister(true);
-        localStorage.setItem(TEMP_USERNAME, data.username);
+        reset();
+        localStorage.setItem(USERNAME, data.username);
         setRegistrationStatus(true);
-        setTimeout(async () => {
-          router.push(RouteConfig.Enable2FA.Path);
-        }, 4000);
+        let countdown = 4;
+        setRegistrationInfo(`Register successful. You will receive an email to verify your account. You will be redirected to the next page in ${countdown} seconds.`);
+        const intervalId = setInterval(() => {
+          countdown -= 1;
+          setRegistrationInfo(
+            `Register successful. You will receive an email to verify your account. You will be redirected to the next page in ${countdown} seconds.`,
+          );
+
+          if (countdown === 0) {
+            clearInterval(intervalId);
+            router.push(RouteConfig.Enable2FA.Path);
+          }
+        }, 1000);
+        setLoading(false);
       }
     } catch (err) {
-      setCanRegister(true);
       setRegistrationError((err as Error).message || 'Reset Password failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,6 +140,18 @@ const RegistrationPage: React.FC = () => {
       setCaptchaStatus('expired');
       setValue('captchaVerified', false, { shouldValidate: true });
     }
+  };
+
+  function handleClickShowPassword() {
+    setShowPassword(!showPassword);
+  }
+
+  function handleClickShowConfirmPassword() {
+    setShowConfirmPassword(!showConfirmPassword);
+  }
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
   return (
@@ -144,7 +180,7 @@ const RegistrationPage: React.FC = () => {
           <Tooltip title="Return" placement="right">
             <IconButton
               onClick={() => router.back()}
-              sx={{ position: 'absolute'}}
+              sx={{ position: 'absolute' }}
             >
               <ArrowBackIcon />
             </IconButton>
@@ -216,19 +252,49 @@ const RegistrationPage: React.FC = () => {
               <Box display="flex" gap={2} mb={2}>
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   fullWidth
                   {...register('password')}
                   error={!!errors.password}
                   helperText={errors.password?.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle new password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                          size="small"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   label="Confirm Password"
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   fullWidth
                   {...register('confirmPassword')}
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle confirm new password visibility"
+                          onClick={handleClickShowConfirmPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                          size="small"
+                        >
+                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Box>
             </CardContent>
@@ -246,16 +312,16 @@ const RegistrationPage: React.FC = () => {
                   <TextField
                     label="First Name"
                     fullWidth
-                    {...register('name.firstName')}
-                    error={!!errors.name?.firstName}
-                    helperText={errors.name?.firstName?.message}
+                    {...register('firstName')}
+                    error={!!errors?.firstName}
+                    helperText={errors.firstName?.message}
                   />
                   <TextField
                     label="Last Name"
                     fullWidth
-                    {...register('name.lastName')}
-                    error={!!errors.name?.lastName}
-                    helperText={errors.name?.lastName?.message}
+                    {...register('lastName')}
+                    error={!!errors?.lastName}
+                    helperText={errors.lastName?.message}
                   />
                 </Box>
               }
@@ -264,7 +330,6 @@ const RegistrationPage: React.FC = () => {
                   <TextField
                     label="Organization Name"
                     fullWidth
-                    // sx={{ width: '50%' }}
                     {...register('orgName')}
                     error={!!errors.orgName}
                     helperText={errors.orgName?.message}
@@ -322,7 +387,6 @@ const RegistrationPage: React.FC = () => {
               variant="contained"
               color="primary"
               fullWidth
-              disabled={!canRegister}
             >
               Register
             </Button>
@@ -357,6 +421,7 @@ const RegistrationPage: React.FC = () => {
           </Typography>
         </Box>
       </Box>
+      <LoadingOverlay loading={loading}/>
     </Box>
   );
 };

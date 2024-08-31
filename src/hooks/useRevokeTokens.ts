@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
+import { useUserInfoStore } from '@/store/profileState';
 
 export const useRevokeTokens = () => {
   const router = useRouter();
+  const { reset } =  useUserInfoStore();
 
   const clearDataAndRedirect = () => {
     IndexConfig.RemoveItems.Item.forEach((item) => {
@@ -15,6 +17,7 @@ export const useRevokeTokens = () => {
     });
     Cookies.remove(ACCESS_TOKEN);
     Cookies.remove(ACCOUNT_TYPE);
+    reset();
     router.push(RouteConfig.Login.Path);
   };
 

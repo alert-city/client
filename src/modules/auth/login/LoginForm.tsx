@@ -6,7 +6,6 @@ import CustomButton from '@/modules/common/Button';
 import CustomTextField from '@/modules/common/TextField';
 import { LOGIN } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
-import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/validation/schemas/login/login.schema';
@@ -17,6 +16,8 @@ import {
   ACCOUNT_TYPE,
   IS_FIRST_LOGIN,
   DISPLAY_NAME,
+  ID,
+  AVATAR_URL
 } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -25,6 +26,8 @@ import Avatar from '@mui/material/Avatar';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
+import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import { useTopbarStore } from '@/store/topBar';
 
 type LoginFormInputs = {
   username: string;
@@ -37,6 +40,7 @@ const LoginForm: React.FC = () => {
   const router = useRouter();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const methods = useForm({
     defaultValues: {
@@ -48,7 +52,6 @@ const LoginForm: React.FC = () => {
   });
 
   const { handleSubmit, watch, formState: { errors }, register } = methods;
-
   const isStaySignedIn = watch('isStaySignedIn');
 
   useEffect(() => {
@@ -58,40 +61,45 @@ const LoginForm: React.FC = () => {
   }, [isStaySignedIn]);
 
   const onSubmit = async (data: LoginFormInputs) => {
+    setLoading(true);
     setLoginError(null);
     try {
       const response = await login({ variables: { input: data } });
       const role: string = response.data.login.role;
       const accountType = response.data.login.accountType;
       const displayName = response.data.login.displayName;
-      console.log('response', response);
 
       const saveData = () => {
         if (typeof window !== 'undefined') {
           Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
           Cookies.set(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(ID, response.data.login.id);
           localStorage.setItem(DISPLAY_NAME, displayName);
-          localStorage.setItem(ACCOUNT_TYPE, accountType);
+          localStorage.setItem(AVATAR_URL, response.data.login.avatarUrl);
           localStorage.setItem(USERNAME, response.data.login.username);
           localStorage.setItem(IS_FIRST_LOGIN, 'true');
         }
       };
 
-      if (accountType === IndexConfig.Organization.AccountType) {
-        saveData();
-        router.push(RouteConfig.AdminSubmission.Path);
-      } else if (accountType === IndexConfig.Personal.AccountType) {
-        if (role.includes('staff')) {
+      if (response.data.login) {
+        if (accountType === IndexConfig.Organization.AccountType) {
           saveData();
-          router.push(RouteConfig.StaffSubmission.Path);
-        } else if (!role.includes('staff')) {
-          setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
-          return;
+          router.push(RouteConfig.AdminSubmission.Path);
+        } else if (accountType === IndexConfig.Personal.AccountType) {
+          if (role.includes('staff')) {
+            saveData();
+            router.push(RouteConfig.StaffSubmission.Path);
+          } else if (!role.includes('staff')) {
+            setLoginError('A normal account is not allowed to login on web platform. Please login on mobile app.');
+            return;
+          }
         }
+        setLoading(false);
       }
 
     } catch (err: any) {
       setLoginError(err.message || 'Login failed');
+      setLoading(false);
     }
   };
 
@@ -169,9 +177,9 @@ const LoginForm: React.FC = () => {
                 label="Stay signed in"
               />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-                <Link href={RouteConfig.ResetPassword.Path}>
+                <RouteConfig.ResetPassword.Link>
                   Forgot password?
-                </Link>
+                </RouteConfig.ResetPassword.Link>
               </Typography>
             </Box>
 
@@ -186,13 +194,14 @@ const LoginForm: React.FC = () => {
             </CustomButton>
 
             <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
-              <Link href={RouteConfig.Register.Path}>
+              <RouteConfig.Register.Link>
                 Don't have an account? Sign Up
-              </Link>
+              </RouteConfig.Register.Link>
             </Typography>
           </Box>
         </Box>
       </Container>
+      <LoadingOverlay loading={loading} />
     </FormProvider>
   );
 };

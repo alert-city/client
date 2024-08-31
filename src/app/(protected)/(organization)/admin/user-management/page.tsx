@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteConfig } from '@/routes/route';
 
-export const metadata = RouteConfig.UserManagement.Metadata
+export const metadata = RouteConfig.StaffManagement.Metadata
 
 const UserManagementPage: React.FC = () => {
   return (

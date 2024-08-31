@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,11 +10,14 @@ import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
 import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
 import { useRevokeTokens } from '@/hooks/useRevokeTokens';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
+import { DISPLAY_NAME, AVATAR_URL } from '@/shared/constants/storage';
+import { useTopbarStore } from '@/store/topBar';
 
 
 interface TopBarProps {
@@ -42,6 +45,40 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const revokeTokens = useRevokeTokens();
+  const { avatarUrl: avatarUrlFromStore, displayName: displayNameFromStore } = useTopbarStore();
+  const [isAvatarLoading, setIsAvatarLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [displayName, setDisplayName] = useState('');
+
+  useEffect(() => {
+    setAvatarUrl(localStorage.getItem(AVATAR_URL) || '');
+    setDisplayName(localStorage.getItem(DISPLAY_NAME) || '');
+  }, []);
+
+  useEffect(() => {
+    if (avatarUrlFromStore) {
+      setAvatarUrl(avatarUrlFromStore);
+    }
+    if (displayNameFromStore) {
+      setDisplayName(displayNameFromStore);
+    }
+  }, [avatarUrlFromStore, displayNameFromStore]);
+
+  useEffect(() => {
+    if (avatarUrl) {
+      const img = new Image();
+      img.src = avatarUrl;
+      img.onload = () => {
+        setIsAvatarLoading(false);
+      };
+      img.onerror = () => {
+        setIsAvatarLoading(false);
+      };
+    } else {
+      setIsAvatarLoading(false);
+    }
+  }, [avatarUrl]);
+
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -56,7 +93,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
     if (setting === 'Logout') {
-      await revokeTokens()
+      await revokeTokens();
     } else if (setting === 'Profile') {
       router.push(RouteConfig.Profile.Path);
     } else if (setting === 'Reset Password') {
@@ -69,27 +106,27 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
       <Box sx={{ width: '100%' }}>
         <Toolbar disableGutters sx={{ justifyContent: 'space-between', display: 'flex', padding: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '30px' }}>
-              <Tooltip title="Open Sidebar">
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{
-                    marginRight: 1,
-                    visibility: open ? 'hidden' : 'visible',
-                  }}
-                >
-                  <MenuIcon />
-                </IconButton>
-              </Tooltip>
+            <Tooltip title="Open Sidebar">
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: 1,
+                  visibility: open ? 'hidden' : 'visible',
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Tooltip>
             <Avatar src="../favicon.ico" alt="icon" sx={{ mr: 2 }} />
             <Typography
               variant="h6"
               noWrap
               component="a"
               href={RouteConfig.Login.Path}
-              onClick={ async (e) => {
+              onClick={async (e) => {
                 await revokeTokens();
               }}
               sx={{
@@ -107,7 +144,15 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '30px' }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {isAvatarLoading ? (
+                  <Skeleton variant="circular" width={40} height={40} />
+                ) : (
+                  <Avatar alt="Avatar" src={avatarUrl || undefined} />
+                )
+                }
+                <Typography sx={{ ml: 2, fontWeight: 'bold', color: '#FFFFFF' }}>
+                  {displayName}
+                </Typography>
               </IconButton>
             </Tooltip>
             <Menu

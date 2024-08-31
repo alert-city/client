@@ -13,19 +13,15 @@ export const createUserSchema = z.object({
   confirmPassword: passwordSchema,
   displayName: z.string().min(1, 'Display name cannot be empty').max(255),
   accountType: z.enum(['Personal', 'Organization']),
-  // role: z.array(z.string().min(1, "Role cannot be empty").max(255)).optional(),
-  name: z.object({
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-  }).optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   orgName: z.string().optional(),
   mobilePhone: z.string()
     .min(1, 'Mobile phone cannot be empty')
     .max(255)
     .regex(/^\+61\d{9}$/, 'Mobile phone number must start with +61 and contain 9 digits after the country code'),
   captchaVerified: z.boolean(),
-})
-  .refine(data => data.captchaVerified, {
+}).refine(data => data.captchaVerified, {
     message: 'CAPTCHA verification is required',
     path: ['captchaVerified'],
   })
@@ -38,17 +34,30 @@ export const createUserSchema = z.object({
   ) => {
     // 如果 accountType 是 Personal，检查 firstName 和 lastName
     if (data.accountType === 'Personal') {
-      if (!data.name?.firstName) {
+      if (!data.firstName) {
         ctx.addIssue({
-          path: ['name', 'firstName'],
+          path: ['firstName'],
           message: 'First name is required for Personal account type',
           code: 'custom',
         });
-      }
-      if (!data.name?.lastName) {
+      } else if (data.firstName.length < 2 || data.firstName.length > 255) {
         ctx.addIssue({
-          path: ['name', 'lastName'],
+          path: ['firstName'],
+          message: 'First name must be between 2 and 255 characters',
+          code: 'custom',
+        });
+      }
+
+      if (!data.lastName) {
+        ctx.addIssue({
+          path: ['lastName'],
           message: 'Last name is required for Personal account type',
+          code: 'custom',
+        });
+      } else if (data.lastName.length < 2 || data.lastName.length > 255) {
+        ctx.addIssue({
+          path: ['lastName'],
+          message: 'Last name must be between 2 and 255 characters',
           code: 'custom',
         });
       }
@@ -62,6 +71,12 @@ export const createUserSchema = z.object({
           message: 'Organization name is required for Organization account type',
           code: 'custom',
         });
+      } else if (data.orgName.length < 2 || data.orgName.length > 255) {
+        ctx.addIssue({
+          path: ['orgName'],
+          message: 'Organization name must be between 2 and 255 characters',
+          code: 'custom',
+        });
       }
     }
   });
@@ -73,10 +88,8 @@ export const updateUserSchema = z.object({
   role: z.array(z.string().min(1, 'Role cannot be empty').max(255)).min(1, 'Role cannot be empty').optional(),
   organization: z.array(z.string().min(1, 'Organization cannot be empty').max(255)).optional(),
   staffs: z.array(z.string().min(1, 'Staff cannot be empty').max(255)).optional().optional(),
-  name: z.object({
-    firstName: z.string().min(1, 'First name cannot be empty').max(255).optional(),
-    lastName: z.string().min(1, 'Last name cannot be empty').max(255).optional(),
-  }).optional(),
+  firstName: z.string().min(1, 'First name cannot be empty').max(255).optional(),
+  lastName: z.string().min(1, 'Last name cannot be empty').max(255).optional(),
   orgName: z.string().min(1, 'Organization name cannot be empty').max(255).optional(),
   mobilePhone: z.string()
     .min(1, 'Mobile phone cannot be empty')

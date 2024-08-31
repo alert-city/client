@@ -42,8 +42,9 @@ export const config = {
      * - admin
      * - staff
      * - profile
+     * - update
      */
-    '/((?!_next/static|_next/image|favicon.ico|login|register|enable-2FA|activate|reset-password|images|profile).*)',
+    '/((?!_next/static|_next/image|favicon.ico|login|register|enable-2FA|activate|reset-password|images|profile|update).*)',
     '/admin/:path*',
     '/staff/:path*',
   ],

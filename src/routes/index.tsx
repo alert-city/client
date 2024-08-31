@@ -1,4 +1,4 @@
-import { USERNAME, ACCOUNT_TYPE, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME } from '@/shared/constants/storage';
+import { USERNAME, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL } from '@/shared/constants/storage';
 
 const Organization = {
   AccountType: 'Organization',
@@ -9,7 +9,7 @@ const Personal = {
 };
 
 const SideBarAdmin = {
-  Page: ['Review', 'Submission', 'User Management'],
+  Page: ['Review', 'Submission', 'Staff'],
 };
 
 const SideBarPersonal = {
@@ -21,9 +21,8 @@ const Setting = {
 };
 
 const RemoveItems = {
-  Item: [USERNAME, ACCOUNT_TYPE, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME],
+  Item: [USERNAME, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL],
 };
-
 
 export const IndexConfig = {
   Organization,

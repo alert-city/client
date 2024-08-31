@@ -26,6 +26,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Tooltip from '@mui/material/Tooltip';
 import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
+import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
 
 // get verification code schema
 type GetCodeFormValues = z.infer<typeof getCodeSchema>;
@@ -42,13 +43,13 @@ const ResetPassword: React.FC = () => {
   const [resetReminder, setResetReminder] = useState<string | null>(null);
   const [resetError, setResetError] = useState<string | null>(null);
   const [resetStatus, setResetStatus] = useState<boolean | null>(false);
-  const [key, setKey] = useState(0);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isCodeEntered, setIsCodeEntered] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
@@ -63,6 +64,7 @@ const ResetPassword: React.FC = () => {
     handleSubmit: handleSubmitGetCode,
     getValues: getCodeValue,
     setValue: setCodeValue,
+    reset: resetGetCode,
     formState: { errors: getCodeErrors },
   } = useForm<GetCodeFormValues>({
     resolver: zodResolver(getCodeSchema),
@@ -82,12 +84,14 @@ const ResetPassword: React.FC = () => {
     register: registerResetPassword,
     handleSubmit: handleSubmitResetPassword,
     setValue: setResetPasswordValue,
+    reset: resetResetPassword,
     formState: { errors: resetPasswordErrors },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
   const onGetCodeSubmit: SubmitHandler<GetCodeFormValues> = async (data) => {
+    setLoading(true);
     setResetPasswordValue('verificationCode', '');
     setIsCodeEntered(false);
     let timeLeft = 60; // 1 minute
@@ -104,19 +108,23 @@ const ResetPassword: React.FC = () => {
 
     try {
       const response = await getCode(
-        { variables: { input: { username: data.username } } },
+        { variables: { input: { username: data.username, emailInfoType: 1 } } },
       );
       if (response.data.sendVerificationEmail) {
         setGetCodeReminder('Verification code has been sent to your email, it will expire in 10 minutes.');
         setGetCodeError(null);
+        setLoading(false);
       }
     } catch (err) {
       setGetCodeError((err as Error).message || 'Get Code failed');
       setGetCodeReminder(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   const onResetPasswordSubmit: SubmitHandler<ResetPasswordFormValues> = async (data) => {
+    setLoading(true);
     const username = getCodeValue('username');
     try {
       const response = await resetPassword(
@@ -138,18 +146,29 @@ const ResetPassword: React.FC = () => {
         setResetPasswordValue('confirmPassword', '');
         setGetCodeReminder(null);
         setGetCodeError(null);
-        setResetReminder('Reset Password successfully');
+
         setResetError(null);
         setResetStatus(true);
-        setKey(prevKey => prevKey + 1); // reset form
-        setTimeout(async () => {
-          if (accessToken) {
-            await revokeTokens();
+
+        let countdown = 4;
+        setResetReminder(`Reset Password successfully, you will be redirected to login page in ${countdown} seconds`);
+
+        const intervalId = setInterval(() => {
+          countdown -= 1;
+          setResetReminder(
+            `Reset Password successfully, you will be redirected to login page in ${countdown} seconds`,
+          );
+
+          if (countdown === 0) {
+            clearInterval(intervalId);
+            revokeTokens();
           }
-        }, 3000);
+        }, 1000);
       }
     } catch (err) {
       setResetError((err as Error).message || 'Reset Password failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,7 +206,6 @@ const ResetPassword: React.FC = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                key={key}
                 fullWidth
                 label="Username"
                 {...registerGetCode('username', {
@@ -214,7 +232,6 @@ const ResetPassword: React.FC = () => {
             </Grid>
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
               <Button
-                key={key}
                 fullWidth
                 variant="contained"
                 color="primary"
@@ -227,7 +244,6 @@ const ResetPassword: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                key={key}
                 fullWidth
                 placeholder="Enter the verification code you received"
                 label="Verification Code"
@@ -268,11 +284,18 @@ const ResetPassword: React.FC = () => {
             <Grid container spacing={2} sx={{ mb: 1 }}>
               <Grid item xs={12}>
                 <TextField
-                  key={key}
                   fullWidth
                   label="New Password"
                   type={showPassword ? 'text' : 'password'}
-                  {...registerResetPassword('password')}
+                  {...registerResetPassword('password',
+                    {
+                      onChange: (e) => {
+                        if (e.target.value) {
+                          setResetError(null);
+                          setResetReminder(null);
+                        }
+                      },
+                    })}
                   error={!!resetPasswordErrors.password}
                   helperText={resetPasswordErrors.password?.message}
                   InputProps={{
@@ -294,11 +317,18 @@ const ResetPassword: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  key={key}
                   fullWidth
                   label="Confirm New Password"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  {...registerResetPassword('confirmPassword')}
+                  {...registerResetPassword('confirmPassword',
+                    {
+                      onChange: (e) => {
+                        if (e.target.value) {
+                          setResetError(null);
+                          setResetReminder(null);
+                        }
+                      },
+                    })}
                   error={!!resetPasswordErrors.confirmPassword}
                   helperText={resetPasswordErrors.confirmPassword?.message}
                   InputProps={{
@@ -356,6 +386,7 @@ const ResetPassword: React.FC = () => {
           </Box>
         </Collapse>
       </Box>
+      <LoadingOverlay loading={loading} />
     </Container>
   );
 };
