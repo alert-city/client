@@ -139,13 +139,13 @@ const Activate = {
   ),
 }
 
-const UserManagement = {
+const StaffManagement = {
   Metadata: {
     title: "User Management | Alert City",
   },
   Path: "/user-management" as const,
   Link: ({ children, className }: RouteLinkProps) => (
-    <Link href={UserManagement.Path} className={className}>
+    <Link href={StaffManagement.Path} className={className}>
       {children}
     </Link>
   ),
@@ -187,7 +187,7 @@ export const RouteConfig = {
   Review,
   Profile,
   Activate,
-  UserManagement,
+  StaffManagement,
   AdminSubmission,
   StaffSubmission,
 };

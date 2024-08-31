@@ -18,21 +18,6 @@ function createApolloClient() {
     credentials: 'include',
   });
 
-  const authLink = setContext((
-    _,
-    { headers },
-  ) => {
-    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
-
-    return {
-      headers: {
-        ...headers,
-        Authorization: accessToken ? `Bearer ${accessToken}` : '',
-      },
-    };
-  });
-
-
   const responseLink = new ApolloLink((
     operation,
     forward,
@@ -123,9 +108,7 @@ function createApolloClient() {
     });
   });
 
-
-  // const link = ApolloLink.from([authLink, logLink, errorLink, responseLink, splitLink]);
-  const link = ApolloLink.from([authLink, errorLink, responseLink, logLink, splitLink]);
+  const link = ApolloLink.from([errorLink, responseLink, logLink, splitLink]);
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',

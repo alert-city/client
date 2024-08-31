@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ACCESS_TOKEN } from '@/shared/constants/storage';
 import { useEffect, useState } from 'react';
-import { getPublicRouteByKey, ROUTE_KEY } from '@/routes/routeConfig';
 import Cookies from 'js-cookie';
 import { RouteConfig } from '@/routes/route';
 

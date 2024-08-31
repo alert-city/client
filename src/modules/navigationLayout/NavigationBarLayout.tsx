@@ -9,12 +9,15 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open'&& pro
   open?: boolean;
   isCentered?: boolean;
 }>(({ theme, open, isCentered }) => ({
+  width: '100%',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: isCentered ? 'center' : 'flex-start',  // 垂直居中或不居中
-  alignItems: isCentered ? 'center' : 'flex-start',      // 水平居中或不居中
-  height: isCentered ? '100vh' : 'auto',                // 只有居中时才全屏高度
+  justifyContent: isCentered ? 'center' : 'flex-start',
+  // justifyContent:  'center',
+  alignItems: 'center',
+  // height: isCentered ? '100vh' : '100%',
+  height: '100vh',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

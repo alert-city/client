@@ -20,11 +20,12 @@ import MailIcon from '@mui/icons-material/Mail';
 import PeopleIcon from '@mui/icons-material/People';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
+import Cookies from 'js-cookie';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   Review: <AssignmentTurnedInIcon />,
   Submission: <PublishIcon />,
-  'User Management': <PeopleIcon />,
+  Staff: <PeopleIcon />,
 };
 
 const drawerWidth = 240;
@@ -87,8 +88,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const accountType = typeof window !== 'undefined' ? localStorage.getItem(ACCOUNT_TYPE) : null;
-      setAccountType(accountType);
+      const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
+      setAccountType(accountType || "");
     }
   }, []);
 
@@ -105,8 +106,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
         router.push('/admin' + RouteConfig.Submission.Path);
       } else if (item === 'Review') {
         router.push('/admin' + RouteConfig.Review.Path);
-      } else if (item === 'User Management') {
-        router.push('/admin' + RouteConfig.UserManagement.Path);
+      } else if (item === 'Staff') {
+        router.push('/admin' + RouteConfig.StaffManagement.Path);
       }
     } else if (accountType === IndexConfig.Personal.AccountType) {
       if (item === 'Submission') {

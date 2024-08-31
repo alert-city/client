@@ -13,7 +13,7 @@ const RootPage:React.FC = () => {
 
   useEffect(() => {
     const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
-    const accountType = typeof window !== 'undefined' ? localStorage.getItem(ACCOUNT_TYPE) : null;
+    const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
     if (accessToken && accountType) {
       setAccountType(accountType);
       setIsAuthenticated(true);
