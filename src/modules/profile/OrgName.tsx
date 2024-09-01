@@ -1,18 +1,20 @@
 import React from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { useUserInfoStore,handleCancel, handleValueChanged, useUserActions } from '@/store/profileState';
+import { useTranslations } from 'next-intl';
 
 const OrgName: React.FC = () => {
   const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
+  const t = useTranslations('ProfileUpdatePage');
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>Organization Name</Typography>
+      <Typography variant="h6" gutterBottom>{t('navigation.orgName')}</Typography>
       {isEdit.orgName ?
         <TextField
           fullWidth
-          label="Organization Name"
+          label={t('navigation.orgName')}
           margin="normal"
           value={userInfo.orgName || ''}
           onChange={(e) => {
@@ -28,13 +30,13 @@ const OrgName: React.FC = () => {
       )}
       {isEdit.orgName ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => handleSave('orgName')}>Submit</Button>
+          <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => handleSave('orgName')}>{t('submit')}</Button>
           <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
-                  onClick={() => handleCancel('orgName')}>Cancel</Button>
+                  onClick={() => handleCancel('orgName')}>{t('cancel')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}
-                onClick={() => setIsEdit({ ...isEdit, orgName: true })}>Edit</Button>
+                onClick={() => setIsEdit({ ...isEdit, orgName: true })}>{t('edit')}</Button>
       }
     </>
   );

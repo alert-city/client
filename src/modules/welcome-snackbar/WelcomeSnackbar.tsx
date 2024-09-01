@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { IS_FIRST_LOGIN,DISPLAY_NAME } from '@/shared/constants/storage';
+import { useTranslations } from 'next-intl';
 
 const WelcomeSnackbar = () => {
   const [open, setOpen] = useState(true);
   const [displayName, setDisplayName] = useState('');
+  const t = useTranslations('WelcomeSnackbar');
 
   useEffect(() => {
     const displayName = typeof localStorage.getItem(DISPLAY_NAME) === 'string' ? localStorage.getItem(DISPLAY_NAME) : '';
@@ -57,7 +59,7 @@ const WelcomeSnackbar = () => {
           justifyContent: 'center',
         }}
       >
-        {`🎉 Welcome back, ${displayName}!`}
+        {`🎉 ${t('content')}${t('comma')}${displayName}${t('exclamation')}`}
       </Alert>
     </Snackbar>
   );

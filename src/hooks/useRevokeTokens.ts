@@ -1,7 +1,7 @@
 import { REVOKE_TOKENS } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
 import { ACCESS_TOKEN, ACCOUNT_TYPE } from '@/shared/constants/storage';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';

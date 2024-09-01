@@ -4,11 +4,13 @@ import TwoFAPage from '@/modules/auth/register/TwoFA';
 import { useUserInfoStore, handleCancel } from '@/store/profileState';
 import { useMutation } from '@apollo/client';
 import { UPDATE_USER } from '@/graphql/user';
+import { useTranslations } from 'next-intl';
 
 const TwoFA: React.FC = () => {
   const { userInfo, setUserInfo, isEdit, setIsEdit,storedId } = useUserInfoStore();
   const [updateUser] = useMutation(UPDATE_USER);
   const [showTwoFA, setShowTwoFA] = React.useState(false);
+  const t = useTranslations('ProfileUpdatePage');
 
   const handleToggle = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked;
@@ -32,10 +34,10 @@ const TwoFA: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>Two-Factor Authentication</Typography>
+      <Typography variant="h6" gutterBottom>{t('twoFA.2FATitle')}</Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="body1" sx={{ mr: 2 }}>
-          2FA is currently {userInfo.is2FAEnabled ? 'enabled' : 'disabled'}
+          {t('twoFA.2FAStatus')} {userInfo.is2FAEnabled ? t('twoFA.enabled') : t('twoFA.disabled')}
         </Typography>
         <Switch
           checked={userInfo.is2FAEnabled}

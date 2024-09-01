@@ -7,11 +7,13 @@ import {
 } from '@mui/material';
 import { DELETE_USER } from '@/graphql/user';
 import { useMutation } from '@apollo/client';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useRevokeTokens } from '@/hooks/useRevokeTokens';
 import { useUserInfoStore } from '@/store/profileState';
+import { useTranslations } from 'next-intl';
 
 const DeleteAccount: React.FC = () => {
+  const t = useTranslations('ProfileUpdatePage');
   const revokeTokens = useRevokeTokens();
   const [deleteUser] = useMutation(DELETE_USER);
   const [confirmationText, setConfirmationText] = useState('');
@@ -23,16 +25,16 @@ const DeleteAccount: React.FC = () => {
   const { storedUsername,storedId } = useUserInfoStore();
 
   const handleDelete = async () => {
-    if (confirmationText === `delete account: ${storedUsername}`) {
+    if (confirmationText ===  `${t('deleteAccount.content')} ${storedUsername}`) {
       setLoading(true);
       try {
         const { data } = await deleteUser({ variables: { id: storedId } });
         if (data?.deleteUser) {
           let countdown = 4;
-          setDeleteInfo(`Account deletion successful. Redirecting to login page in ${countdown} seconds`);
+          setDeleteInfo(`${t('deleteAccount.deleteInfo')} ${countdown} ${t('deleteAccount.seconds')}`);
           const intervalId = setInterval(() => {
             countdown -= 1;
-            setDeleteInfo(`Account deletion successful. Redirecting to login page in ${countdown} seconds`);
+            setDeleteInfo(`${t('deleteAccount.deleteInfo')} ${countdown} ${t('deleteAccount.seconds')}`);
             if (countdown === 0) {
               clearInterval(intervalId);
               revokeTokens();
@@ -47,7 +49,7 @@ const DeleteAccount: React.FC = () => {
         setError(null);
       }
     } else {
-      setError('The confirmation text does not match.');
+      setError(t('deleteAccount.contentError'));
     }
   };
 
@@ -60,13 +62,13 @@ const DeleteAccount: React.FC = () => {
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" color="error" gutterBottom>
-        Delete Account
+        {t('navigation.deleteAccount')}
       </Typography>
       <Typography variant="body2" color="textSecondary" gutterBottom>
-        To delete your account, please type the following into the box below:
+        {t('deleteAccount.description')}
       </Typography>
       <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic', mb: 2 }}>
-        delete account: {storedUsername}
+        {`${t('deleteAccount.content')} ${storedUsername}`}
       </Typography>
       <TextField
         fullWidth
@@ -106,7 +108,7 @@ const DeleteAccount: React.FC = () => {
             sx={{ mt: 2 }}
             onClick={handleDelete}
           >
-            Submit
+            {t('submit')}
           </Button>
           <Button
             variant="contained"
@@ -114,7 +116,7 @@ const DeleteAccount: React.FC = () => {
             sx={{ mt: 2 }}
             onClick={handleCancel}
           >
-            Cancel
+            {t('cancel')}
           </Button>
         </Box>
       }

@@ -11,13 +11,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
 import { useRevokeTokens } from '@/hooks/useRevokeTokens';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
 import { DISPLAY_NAME, AVATAR_URL } from '@/shared/constants/storage';
 import { useTopbarStore } from '@/store/topBar';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 
 interface TopBarProps {
@@ -42,6 +43,7 @@ const StyledAppBar = styled(AppBar)<{ open: boolean }>(({ theme, open }) => ({
 }));
 
 const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
+  const t = useTranslations('TopBar');
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const revokeTokens = useRevokeTokens();
@@ -92,12 +94,14 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
 
   const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
-    if (setting === 'Logout') {
+    if (setting === t('logout')) {
       await revokeTokens();
-    } else if (setting === 'Profile') {
+    } else if (setting === t('profile')) {
       router.push(RouteConfig.Profile.Path);
-    } else if (setting === 'Reset Password') {
+    } else if (setting === t('resetPassword')) {
       router.push(RouteConfig.ResetPassword.Path);
+    } else if (setting === t('preferences')) {
+      router.push(RouteConfig.Preferences.Path);
     }
   };
 
@@ -106,7 +110,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
       <Box sx={{ width: '100%' }}>
         <Toolbar disableGutters sx={{ justifyContent: 'space-between', display: 'flex', padding: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '30px' }}>
-            <Tooltip title="Open Sidebar">
+            <Tooltip title={t('openSidebarHover')}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -120,15 +124,15 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
                 <MenuIcon />
               </IconButton>
             </Tooltip>
-            <Avatar src="../favicon.ico" alt="icon" sx={{ mr: 2 }} />
+            <Avatar src="/images/alertcity-dark.png" alt="icon" sx={{ mr: 2 }} />
             <Typography
               variant="h6"
               noWrap
               component="a"
-              href={RouteConfig.Login.Path}
-              onClick={async (e) => {
-                await revokeTokens();
-              }}
+              // href={RouteConfig.Login.Path}
+              // onClick={async (e) => {
+              //   await revokeTokens();
+              // }}
               sx={{
                 mr: 2,
                 fontFamily: 'monospace',
@@ -142,7 +146,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '30px' }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={t('openSettingHover')}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {isAvatarLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
@@ -172,8 +176,8 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
               onClose={handleCloseUserMenu}
             >
               {settings && settings.map((setting: string) => (
-                <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting} onClick={() => handleSettingClick(t(setting))}>
+                  <Typography textAlign="center">{t(setting)}</Typography>
                 </MenuItem>
               ))}
             </Menu>

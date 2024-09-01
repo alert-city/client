@@ -10,10 +10,12 @@ import { updateUsernameSchema } from '@/validation/schemas/update-profile/update
 import { z } from 'zod';
 import { useMutation } from '@apollo/client';
 import { SEND_UPDATE_USERNAME_EMAIL } from '@/graphql/user';
+import { useTranslations } from 'next-intl';
 
 type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
 
 const Username: React.FC = () => {
+  const t = useTranslations('ProfileUpdatePage');
   const {
           userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername,
         } = useUserInfoStore();
@@ -52,11 +54,11 @@ const Username: React.FC = () => {
         setIsSendSuccess(true);
         let countdown = 4;
         setUpdateUsernameInfo(
-          `Please check your email to verify your new username. You will be redirected to the login page in ${countdown} seconds.`);
+          `${t('username.updateUsernameInfo')} ${countdown} ${t('username.seconds')}`);
         const intervalId = setInterval(() => {
           countdown -= 1;
           setUpdateUsernameInfo(
-            `Please check your email to verify your new username. You will be redirected to the login page in ${countdown} seconds.`);
+            `${t('username.updateUsernameInfo')} ${countdown} ${t('username.seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
             revokeTokens();
@@ -73,11 +75,11 @@ const Username: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit(handleUsernameUpdate)}>
-      <Typography variant="h6" gutterBottom>Username</Typography>
+      <Typography variant="h6" gutterBottom>{t('navigation.username')}</Typography>
       {isEdit.username ? <>
         <TextField
           fullWidth
-          label="username"
+          label={t('navigation.username')}
           placeholder="Enter an valid email address"
           margin="normal"
           error={!!errors.username}
@@ -92,7 +94,6 @@ const Username: React.FC = () => {
             },
           })}
         />
-
         <Box
           className="flex justify-center">
           {updateUsernameInfo &&
@@ -119,18 +120,18 @@ const Username: React.FC = () => {
       {!isSendSuccess && (isEdit.username ?
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button variant="contained" sx={{ marginTop: 2 }} type="submit">
-              Submit
+              {t('submit')}
             </Button>
             <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
                     onClick={() => {
                       handleCancel('username');
                       setUserInfo({ ...userInfo, username: initialUserInfo.username });
                       setValue('username', initialUserInfo.username);
-                    }}>Cancel</Button>
+                    }}>{t('cancel')}</Button>
           </Box>
           :
           <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => setIsEdit({ ...isEdit, username: true })}>
-            Edit
+            {t('edit')}
           </Button>
       )}
     </form>

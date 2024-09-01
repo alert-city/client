@@ -7,3 +7,4 @@ export const IS_FIRST_LOGIN = 'is_first_login';
 export const DISPLAY_NAME = 'display_name';
 export const ID: string = 'id';
 export const AVATAR_URL = 'avatar_url';
+export const LANGUAGE = 'language';

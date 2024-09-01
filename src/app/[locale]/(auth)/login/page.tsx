@@ -1,7 +1,7 @@
 import React from 'react';
-import  LoginForm  from '@/modules/auth/login/LoginForm';
+import  LoginForm  from '../../../../modules/auth/login/LoginForm';
 import { Box } from "@mui/material";
-import LoginLayout from "@/app/(auth)/login/layout";
+import LoginLayout from "@/app/[locale]/(auth)/login/layout";
 import { RouteConfig } from '@/routes/route';
 
 export const metadata = RouteConfig.Login.Metadata;

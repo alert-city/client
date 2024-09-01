@@ -13,6 +13,7 @@ import {
 import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
+import { useTranslations } from 'next-intl';
 
 interface SideBarProps {
   selectedSection: string;
@@ -20,6 +21,7 @@ interface SideBarProps {
 }
 
 const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }) => {
+  const t = useTranslations('ProfileUpdatePage');
   const [accountType, setAccountType] = useState<string>('');
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
     <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
       <CardContent sx={{ padding: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-          Navigation
+          {t('navigation.title')}
         </Typography>
         <List component="nav" sx={{ padding: 0 }}>
           <ListItemButton
@@ -47,11 +49,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="Avatar" />
+            <ListItemText primary={t('navigation.avatar')} />
           </ListItemButton>
-
           <Divider />
-
           <ListItemButton
             selected={selectedSection === 'Username'}
             onClick={() => handleSectionClick('Username')}
@@ -65,11 +65,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="Username" />
+            <ListItemText primary={t('navigation.username')} />
           </ListItemButton>
-
           <Divider />
-
           <ListItemButton
             selected={selectedSection === 'DisplayName'}
             onClick={() => handleSectionClick('DisplayName')}
@@ -83,11 +81,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="Display Name" />
+            <ListItemText primary={t('navigation.displayName')} />
           </ListItemButton>
-
           <Divider />
-
           {accountType === IndexConfig.Personal.AccountType && (
             <ListItemButton
               selected={selectedSection === 'Name'}
@@ -102,10 +98,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
                 },
               }}
             >
-              <ListItemText primary="Name" />
+              <ListItemText primary={t('navigation.name')} />
             </ListItemButton>
           )}
-
           {accountType === IndexConfig.Organization.AccountType && (
             <ListItemButton
               selected={selectedSection === 'OrgName'}
@@ -120,12 +115,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
                 },
               }}
             >
-              <ListItemText primary="Organization Name" />
+              <ListItemText primary={t('navigation.orgName')} />
             </ListItemButton>
           )}
-
           <Divider />
-
           <ListItemButton
             selected={selectedSection === 'Contact'}
             onClick={() => handleSectionClick('Contact')}
@@ -139,11 +132,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="Contact" />
+            <ListItemText primary={t('navigation.contact')} />
           </ListItemButton>
-
           <Divider />
-
           <ListItemButton
             selected={selectedSection === 'Security'}
             onClick={() => handleSectionClick('Security')}
@@ -157,11 +148,9 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="2FA" />
+            <ListItemText primary={t('navigation.2FA')} />
           </ListItemButton>
-
           <Divider />
-
           <ListItemButton
             selected={selectedSection === 'DeleteAccount'}
             onClick={() => handleSectionClick('DeleteAccount')}
@@ -176,7 +165,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary="Delete Account" />
+            <ListItemText primary={t('navigation.deleteAccount')} />
           </ListItemButton>
         </List>
       </CardContent>

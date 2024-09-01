@@ -16,31 +16,34 @@ import {
 import { VALIDATE_EMAIL_LINK, RESEND_ACTIVATION_LINK_EMAIL } from '@/graphql/user';
 import { useMutation } from '@apollo/client';
 import { RouteConfig } from '@/routes/route';
+import { useTranslations } from 'next-intl';
 
 const emailInfoType = {
   1: {
-    title: 'Account Activation',
-    successMessage: 'Your account has been activated successfully!',
-    successSubMessage: 'Welcome to Alert City!',
-    resendButtonText: 'Resend Activation Email',
-    errorTitle: 'Failed to activate account',
-    resendSuccessMessage: 'Activation email has been resent successfully!',
-    resendSuccessSubMessage: 'Please check your email inbox.',
-    resendErrorMessage: 'Failed to resend activation email',
+    title: '1.title',
+    successMessage: '1.successMessage',
+    successSubMessage: '1.successSubMessage',
+    resendButtonText: '1.resendButtonText',
+    errorTitle: '1.errorTitle',
+    resendSuccessMessage: '1.resendSuccessMessage',
+    resendSuccessSubMessage: '1.resendSuccessSubMessage',
+    resendErrorMessage: '1.resendErrorMessage',
   },
   2: {
-    title: 'Update Username',
-    successMessage: 'Your username has been updated successfully!',
-    successSubMessage: 'Your new username is now active.',
-    resendButtonText: 'Resend Username Update Email',
-    errorTitle: 'Failed to update username',
-    resendSuccessMessage: 'Username update email has been resent successfully!',
-    resendSuccessSubMessage: 'Please check your email inbox.',
-    resendErrorMessage: 'Failed to resend username update email',
+    title: '2.title',
+    successMessage: '2.successMessage',
+    successSubMessage: '2.successSubMessage',
+    resendButtonText: '2.resendButtonText',
+    errorTitle: '2.errorTitle',
+    resendSuccessMessage: '2.resendSuccessMessage',
+    resendSuccessSubMessage: '2.resendSuccessSubMessage',
+    resendErrorMessage: '2.resendErrorMessage',
   },
 };
 
+
 const ValidateEmailPage: React.FC = () => {
+  const t = useTranslations('ValidationEmailPage');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
@@ -116,7 +119,7 @@ const ValidateEmailPage: React.FC = () => {
           component="img"
           height="5"
           image="/favicon.ico"
-          alt="Alert City Logo"
+          alt={t('iconAlt')}
           sx={{
             height: 100,
             width: 100,
@@ -126,7 +129,7 @@ const ValidateEmailPage: React.FC = () => {
         />
         <Box textAlign="center">
           <Typography variant="h4" gutterBottom sx={{ mb: 2 }}>
-            {emailInfo.title}
+            {t(emailInfo.title)}
           </Typography>
           {(status === 'loading' || resendStatus === 'loading') && (
             <Box display="flex" justifyContent="center" alignItems="center">
@@ -135,42 +138,42 @@ const ValidateEmailPage: React.FC = () => {
           )}
           {status === 'success' && (
             <Alert severity="success">
-              <AlertTitle>Success</AlertTitle>
-              {emailInfo.successMessage}
+              <AlertTitle>{t('successTitle')}</AlertTitle>
+              {t(emailInfo.successMessage)}
               <Typography
                 component="div"
                 sx={{ color: 'blue', mt: 1 }}
               >
-                <strong>{emailInfo.successSubMessage}</strong>
+                <strong>{t(emailInfo.successSubMessage)}</strong>
               </Typography>
             </Alert>
           )}
           {status === 'error' && (
             <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
-              {`${emailInfo.errorTitle}: ${activationError}!`}
+              <AlertTitle>{t('errorTitle')}</AlertTitle>
+              {`${t(emailInfo.errorTitle)}: ${activationError}!`}
             </Alert>
           )}
 
           {resendStatus === 'success' && (
             <Alert severity="success">
-              <AlertTitle>Success</AlertTitle>
-              {emailInfo.resendSuccessMessage}
+              <AlertTitle>{t('successTitle')}</AlertTitle>
+              {t(emailInfo.resendSuccessMessage)}
               <Typography
                 component="div"
                 sx={{ color: 'blue', mt: 1 }}
               >
-                <strong>{emailInfo.resendSuccessSubMessage}</strong>
+                <strong>{t(emailInfo.resendSuccessSubMessage)}</strong>
               </Typography>
             </Alert>
           )}
 
           {resendStatus === 'error' && (
             <Alert severity="error" sx={{ mt: 2 }}>
-              <AlertTitle>Error</AlertTitle>
-              {`${emailInfo.resendErrorMessage}: ${resendError}!`}
+              <AlertTitle>{t('errorTitle')}</AlertTitle>
+              {`${t(emailInfo.resendErrorMessage)}: ${resendError}!`}
               <Typography component="div" sx={{ mt: 1 }}>
-                Please try again later.
+                {t('tryAgain')}
               </Typography>
             </Alert>
           )}
@@ -184,7 +187,7 @@ const ValidateEmailPage: React.FC = () => {
                 onClick={handleResendLinkEmail}
                 disabled={resendStatus === 'loading'}
               >
-                {resendStatus === 'loading' ? 'Resending...' : emailInfo.resendButtonText}
+                {resendStatus === 'loading' ? t('resending') : t(emailInfo.resendButtonText)}
               </Button>
             }
             {canRedirect &&
@@ -194,7 +197,7 @@ const ValidateEmailPage: React.FC = () => {
                 sx={{ mt: 4 }}
                 onClick={() => router.push(RouteConfig.Login.Path)}
               >
-                Return to Login
+                {t('returnToLogin')}
               </Button>
             }
           </Box>
