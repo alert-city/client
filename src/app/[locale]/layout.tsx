@@ -1,0 +1,37 @@
+import React from 'react';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import ProviderWrapper from '@/lib/ProviderWrapper';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { ReactNode } from 'react';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Alert City',
+  description: 'A CMS for managing campus events and activities including registration and ticketing.',
+};
+
+type RootLayoutProps = {
+  children: ReactNode;
+  params: { locale: string };
+};
+
+const RootLayout = async ({ children, params: { locale } }: RootLayoutProps) => {
+  const messages = await getMessages();
+  return (
+    <html lang={locale}>
+    <body className={inter.className}>
+    <ProviderWrapper>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        {children}
+      </NextIntlClientProvider>
+    </ProviderWrapper>
+    </body>
+    </html>
+  );
+};
+
+export default RootLayout;

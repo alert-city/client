@@ -8,7 +8,7 @@ import {
   CardContent,
 } from '@mui/material';
 import SideBar from '@/modules/profile/Sidebar';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import DeleteAccount from '@/modules/profile/DeleteAccount';
 import AvatarEditor from '@/modules/profile/AvatarEditor';
 import Contact from '@/modules/profile/Contact';
@@ -20,8 +20,10 @@ import Name from '@/modules/profile/Name';
 import { useUserInfoStore } from '@/store/profileState';
 import { useFindOneUserById } from '@/modules/profile/useHandleRequest';
 import { USERNAME, ID } from '@/shared/constants/storage';
+import { useTranslations } from 'next-intl';
 
 const ProfileForm: React.FC = () => {
+        const t = useTranslations('ProfileUpdatePage');
         const {
                 userInfo,
                 setUserInfo,
@@ -76,18 +78,17 @@ const ProfileForm: React.FC = () => {
 
         return (
           <Box sx={{ padding: 3, width: '100%', maxWidth: 1000, margin: '0 auto' }}>
-            <Typography variant="h4" gutterBottom>Profile</Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={3}>
+            <Typography variant="h4" gutterBottom>{t('title')}</Typography>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+              <Box sx={{ width: { xs: '100%', md: '25%' }, flexGrow: 1 }}>
                 <SideBar selectedSection={selectedSection} handleSectionClick={handleSectionClick} />
-              </Grid>
-              <Grid item xs={12} md={9}>
+              </Box>
+              <Box sx={{ width: { xs: '100%', md: '75%' }, flexGrow: 2 }}
+              >
                 <Card>
                   <CardContent>
                     {(selectedSection === 'Avatar' && userInfo) && (
-                      <>
-                        <AvatarEditor />
-                      </>
+                      <AvatarEditor />
                     )}
                     {(selectedSection === 'Name' && userInfo) && (
                       <Name />
@@ -112,8 +113,8 @@ const ProfileForm: React.FC = () => {
                     )}
                   </CardContent>
                 </Card>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
             <LoadingOverlay loading={loading} />
           </Box>
         );

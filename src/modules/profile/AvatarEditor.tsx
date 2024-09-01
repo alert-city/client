@@ -11,13 +11,15 @@ import {
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import Compressor from 'compressorjs';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTopbarStore } from '@/store/topBar';
 import { uploadAvatar } from '@/api/uploadAvatar';
 import { useUserInfoStore } from '@/store/profileState';
 import { AVATAR_URL } from '@/shared/constants/storage';
+import { useTranslations } from 'next-intl';
 
 const AvatarEditor: React.FC = () => {
+  const t = useTranslations('ProfileUpdatePage');
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
@@ -141,10 +143,10 @@ const AvatarEditor: React.FC = () => {
         <Avatar
           sx={{ width: 150, height: 150, marginBottom: 4 }}
           src={croppedImage || userInfo.avatarUrl || ''}
-          alt="Avatar"
+          alt={t('avatar.avatar')}
         />
       )}
-      <Button variant="contained" onClick={handleOpen}>Edit Avatar</Button>
+      <Button variant="contained" onClick={handleOpen}>{t('edit')}</Button>
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <LoadingOverlay loading={loading} />
@@ -159,7 +161,7 @@ const AvatarEditor: React.FC = () => {
             />
           ) : (
             <Button variant="contained" component="label">
-              Upload Image
+              {t('avatar.uploadImage')}
               <input type="file" accept="image/*" onChange={handleImageChange} hidden />
             </Button>
           )}
@@ -172,9 +174,9 @@ const AvatarEditor: React.FC = () => {
           }
         </Box>
         <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
-          <Button onClick={handleClose}>Cancel</Button>
-          {selectedImage && <Button onClick={handleCrop} disabled={!canReCrop}>Crop</Button>}
-          <Button onClick={handleSave} variant="contained" color="primary" disabled={!croppedImage}>Submit</Button>
+          <Button onClick={handleClose}>{t('cancel')}</Button>
+          {selectedImage && <Button onClick={handleCrop} disabled={!canReCrop}>{t('avatar.crop')}</Button>}
+          <Button onClick={handleSave} variant="contained" color="primary" disabled={!croppedImage}>{t('submit')}</Button>
         </DialogActions>
       </Dialog>
     </Box>

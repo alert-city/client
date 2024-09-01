@@ -15,9 +15,10 @@ import { useMutation } from '@apollo/client';
 import { GENERATE_2FA, VERIFY_2FA_CODE } from '@/graphql/auth';
 import { UPDATE_USER_BY_USERNAME } from '@/graphql/user';
 import { USERNAME } from '@/shared/constants/storage';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
+import { useTranslations } from 'next-intl';
 
 interface TwoFAPageProps {
   isRegister?: boolean;
@@ -25,7 +26,14 @@ interface TwoFAPageProps {
   setShow2FA?: (value: boolean) => void;
 }
 
+const appOptions = {
+  microsoft: 'microsoft',
+  google: 'google',
+};
+
+
 const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, setShow2FA }) => {
+  const t = useTranslations('TwoFAPage');
   const router = useRouter();
   const [generate2FA] = useMutation(GENERATE_2FA);
   const [verify2FACode] = useMutation(VERIFY_2FA_CODE);
@@ -76,7 +84,6 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
         setLoading(false);
       }
     } catch (err) {
-      console.error('Failed to generate QR code URL.');
       setLoading(false);
     }
   };
@@ -104,16 +111,18 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
         isRegister && localStorage.removeItem(USERNAME);
         let countdown = 4;
         if (isRegister) {
-          setVerificationInfo(`2FA enabled successfully. You will be redirected to login page in ${countdown} seconds.`);
+          setVerificationInfo(
+            `${t('verificationInfo')} ${countdown} ${t('seconds')}`);
         } else {
-          setVerificationInfo('2FA enabled successfully.');
+          setVerificationInfo(t('verificationInfoShort'));
         }
         const intervalId = setInterval(() => {
           countdown -= 1;
           if (isRegister) {
-            setVerificationInfo(`2FA enabled successfully. You will be redirected to login page in ${countdown} seconds.`);
+            setVerificationInfo(
+              `${t('verificationInfo')} ${countdown} ${t('seconds')}`);
           } else {
-            setVerificationInfo('2FA enabled successfully.');
+            setVerificationInfo(t('verificationInfoShort'));
           }
           if (countdown === 0) {
             clearInterval(intervalId);
@@ -129,7 +138,7 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
         }, 1000);
       }
     } catch (err) {
-      setVerificationError((err as Error).message || 'Failed to verify 2FA code.');
+      setVerificationError((err as Error).message || t('default2FAError'));
     } finally {
       setLoading(false);
     }
@@ -154,7 +163,7 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
     <Card sx={{ padding: '8px', width: cardWidth, borderRadius: '16px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
       <CardContent component="form" onSubmit={handleEnable2FA}>
         <Typography variant="h6" gutterBottom>
-          Protect your account with Two-Factor Authentication
+          {t('protectDescription')}
         </Typography>
         <FormGroup>
           {isRegister &&
@@ -167,20 +176,20 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
                   value={is2FAEnabled}
                 />
               }
-              label="Enable Two-Factor Authentication"
+              label={t('enableDescription')}
             />
           }
           {(is2FAEnabled || !isRegister) && (
             <>
               <FormControl fullWidth margin="normal" required>
-                <InputLabel>Choose Authenticator App</InputLabel>
+                <InputLabel>{t('chooseApp')}</InputLabel>
                 <Select
-                  label={`Choose Authenticator App`}
+                  label={t('chooseApp')}
                   value={issuer}
                   onChange={(e) => generateQrCodeUrl(e.target.value || '')}
                 >
-                  <MenuItem value="microsoft">Microsoft Authenticator</MenuItem>
-                  <MenuItem value="google">Google Authenticator</MenuItem>
+                  <MenuItem value={appOptions.microsoft}>{t('microsoftApp')}</MenuItem>
+                  <MenuItem value={appOptions.google}>{t('googleApp')}</MenuItem>
                 </Select>
               </FormControl>
 
@@ -188,17 +197,17 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
                 <Box>
                   <Typography variant="body2" color="textSecondary" gutterBottom
                               sx={{ display: 'flex', justifyContent: 'center' }}>
-                    Scan the QR code using
-                    your {issuer === 'microsoft' ? 'Microsoft Authenticator' : 'Google Authenticator'} app
-                    to add your account.
+                    {t('scanDescription1')} {issuer === 'microsoft' ? t('microsoftApp') : t('googleApp')} {t(
+                    'scanDescription2')}
                   </Typography>
                   <Box display="flex" justifyContent="center" mt={2}>
                     <img
                       src={qrCodeUrl || ''}
-                      alt="Authenticator QR code" />
+                      alt={t('qrCodeAlt')}
+                    />
                   </Box>
                   <TextField
-                    label="Enter Code from App"
+                    label={t('enterCode')}
                     name="verificationCode"
                     fullWidth
                     margin="normal"
@@ -236,7 +245,7 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
                     sx={{ mt: 2 }}
                     type="submit"
                   >
-                    Enable 2FA
+                    {t('enable')}
                   </Button>
                 }
                 {(isEnableSuccess && isRegister) &&
@@ -248,7 +257,7 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
                     type="button"
                     onClick={() => router.push(RouteConfig.Login.Path)}
                   >
-                    Return to Login
+                    {t('returnToLogin')}
                   </Button>
                 }
               </Box>
@@ -264,7 +273,7 @@ const TwoFAPage: React.FC<TwoFAPageProps> = ({ isRegister = true, defaultValue, 
               type="button"
               onClick={handleSkip2FA}
             >
-              Skip
+              {t('skip')}
             </Button>
           }
         </FormGroup>

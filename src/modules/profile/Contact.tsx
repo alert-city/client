@@ -5,10 +5,12 @@ import { updateMobilePhoneSchema } from '@/validation/schemas/update-profile/upd
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 
 type UpdateMobilePhoneFormValues = z.infer<typeof updateMobilePhoneSchema>;
 
 const Contact: React.FC = () => {
+  const t = useTranslations('ProfileUpdatePage');
   const { userInfo, setUserInfo, isEdit, setIsEdit } = useUserInfoStore();
   const { handleSave } = useUserActions();
 
@@ -30,11 +32,11 @@ const Contact: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit(handleMobilePhoneUpdate)}>
-      <Typography variant="h6" gutterBottom>Contact</Typography>
+      <Typography variant="h6" gutterBottom>{t('navigation.contact')}</Typography>
       {isEdit.mobilePhone ?
         <TextField
           fullWidth
-          label="Mobile Phone"
+          label={t('contact.mobilePhone')}
           margin="normal"
           error={!!errors.mobilePhone}
           helperText={errors.mobilePhone?.message}
@@ -50,13 +52,13 @@ const Contact: React.FC = () => {
         : <Typography>{userInfo.mobilePhone}</Typography>}
       {isEdit.mobilePhone ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }} type="submit">Submit</Button>
+          <Button variant="contained" sx={{ marginTop: 2 }} type="submit">{t('submit')}</Button>
           <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
-                  onClick={() => handleCancel('mobilePhone')}>Cancel</Button>
+                  onClick={() => handleCancel('mobilePhone')}>{t('cancel')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}
-                onClick={() => setIsEdit({ ...isEdit, mobilePhone: true })}>Edit</Button>
+                onClick={() => setIsEdit({ ...isEdit, mobilePhone: true })}>{t('edit')}</Button>
       }
     </form>
   );

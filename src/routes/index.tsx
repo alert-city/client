@@ -17,12 +17,18 @@ const SideBarPersonal = {
 };
 
 const Setting = {
-  Page: ['Profile', 'Reset Password', 'Logout'],
+  Page: ['profile', 'resetPassword', 'preferences', 'logout'],
 };
 
 const RemoveItems = {
   Item: [USERNAME, TEMP_USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL],
 };
+
+const languageOptions = [
+  { code: 'AU', key: 'en' },
+  { code: 'CN', key: 'zh-cn' },
+];
+
 
 export const IndexConfig = {
   Organization,
@@ -31,4 +37,5 @@ export const IndexConfig = {
   SideBarPersonal,
   Setting,
   RemoveItems,
+  languageOptions,
 };

@@ -26,14 +26,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Tooltip from '@mui/material/Tooltip';
 import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
+import { useTranslations } from 'next-intl';
 
-// get verification code schema
 type GetCodeFormValues = z.infer<typeof getCodeSchema>;
-// get reset password schema
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword: React.FC = () => {
+  const t = useTranslations('ResetPasswordPage');
   const revokeTokens = useRevokeTokens();
   const router = useRouter();
   const [getCode] = useMutation(GET_VERIFICATION_CODE);
@@ -79,7 +79,6 @@ const ResetPassword: React.FC = () => {
     }
   }, [username, setCodeValue]);
 
-  // useForm to reset password
   const {
     register: registerResetPassword,
     handleSubmit: handleSubmitResetPassword,
@@ -94,7 +93,7 @@ const ResetPassword: React.FC = () => {
     setLoading(true);
     setResetPasswordValue('verificationCode', '');
     setIsCodeEntered(false);
-    let timeLeft = 60; // 1 minute
+    let timeLeft = 60;
     setCountdown(timeLeft);
 
     const intervalId = setInterval(() => {
@@ -104,14 +103,14 @@ const ResetPassword: React.FC = () => {
         clearInterval(intervalId);
         setCountdown(null);
       }
-    }, 1000); // update every 1 second
+    }, 1000);
 
     try {
       const response = await getCode(
         { variables: { input: { username: data.username, emailInfoType: 1 } } },
       );
       if (response.data.sendVerificationEmail) {
-        setGetCodeReminder('Verification code has been sent to your email, it will expire in 10 minutes.');
+        setGetCodeReminder(t('getCodeReminder'));
         setGetCodeError(null);
         setLoading(false);
       }
@@ -151,14 +150,10 @@ const ResetPassword: React.FC = () => {
         setResetStatus(true);
 
         let countdown = 4;
-        setResetReminder(`Reset Password successfully, you will be redirected to login page in ${countdown} seconds`);
-
+        setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
         const intervalId = setInterval(() => {
           countdown -= 1;
-          setResetReminder(
-            `Reset Password successfully, you will be redirected to login page in ${countdown} seconds`,
-          );
-
+          setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
             revokeTokens();
@@ -188,7 +183,7 @@ const ResetPassword: React.FC = () => {
     <Container sx={{ borderRadius: '16px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }} maxWidth="xs">
       {!accessToken &&
         <Box sx={{ position: 'relative', width: '100%', mb: 5 }}>
-          <Tooltip title="Return" placement="right">
+          <Tooltip title={t('return')} placement="right">
             <IconButton
               onClick={() => router.back()}
               sx={{ position: 'absolute', top: 8 }}
@@ -200,14 +195,14 @@ const ResetPassword: React.FC = () => {
       }
       <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
-          Reset Password
+          {t('title')}
         </Typography>
         <Box component="form" onSubmit={handleSubmitGetCode(onGetCodeSubmit)} sx={{ mt: 3, mb: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Username"
+                label={t('username')}
                 {...registerGetCode('username', {
                   onChange: (e) => {
                     if (e.target.value) {
@@ -239,14 +234,14 @@ const ResetPassword: React.FC = () => {
                 sx={{ height: '100%' }}
                 disabled={!!countdown}
               >
-                {`Get Code ${countdown ? `(${countdown})` : ''}`}
+                {`${t('getCode')} ${countdown ? `(${countdown})` : ''}`}
               </Button>
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                placeholder="Enter the verification code you received"
-                label="Verification Code"
+                placeholder={t('codePlaceholder')}
+                label={t('verificationCode')}
                 {...registerResetPassword('verificationCode', {
                   onChange: (e) => {
                     if (e.target.value) {
@@ -269,7 +264,7 @@ const ResetPassword: React.FC = () => {
           <Box>
             {getCodeReminder && (
               <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="primary" variant="body2">
-                {`Verification code has been sent to your email, it will expire in 10 minutes.`}
+                {getCodeReminder}
               </Typography>
             )}
             {getCodeError && (
@@ -285,7 +280,7 @@ const ResetPassword: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="New Password"
+                  label={t('newPassword')}
                   type={showPassword ? 'text' : 'password'}
                   {...registerResetPassword('password',
                     {
@@ -318,7 +313,7 @@ const ResetPassword: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Confirm New Password"
+                  label={t('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   {...registerResetPassword('confirmPassword',
                     {
@@ -370,7 +365,7 @@ const ResetPassword: React.FC = () => {
                 sx={{ mt: 2, mb: 4 }}
                 type="submit"
               >
-                Reset Password
+                {t('resetPassword')}
               </Button>}
             {(resetStatus && !accessToken) &&
               <Button
@@ -381,7 +376,7 @@ const ResetPassword: React.FC = () => {
                 type="button"
                 onClick={() => router.push(RouteConfig.Login.Path)}
               >
-                Return to Login
+                {t('returnToLogin')}
               </Button>}
           </Box>
         </Collapse>

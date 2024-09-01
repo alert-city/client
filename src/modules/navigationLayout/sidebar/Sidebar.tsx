@@ -11,7 +11,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useRouter } from 'next/navigation';
 import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import Tooltip from '@mui/material/Tooltip';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -21,6 +20,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   Review: <AssignmentTurnedInIcon />,
@@ -82,6 +83,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
+  const t = useTranslations('Sidebar');
   const theme = useTheme();
   const router = useRouter();
   const [accountType, setAccountType] = useState<String | null>("");
@@ -102,15 +104,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
 
   const handleClick = (item: string) => {
     if (accountType === IndexConfig.Organization.AccountType) {
-      if (item === 'Submission') {
+      if (item === t('Submission')) {
         router.push('/admin' + RouteConfig.Submission.Path);
-      } else if (item === 'Review') {
+      } else if (item === t('Review')) {
         router.push('/admin' + RouteConfig.Review.Path);
-      } else if (item === 'Staff') {
+      } else if (item === t('Staff')) {
         router.push('/admin' + RouteConfig.StaffManagement.Path);
       }
     } else if (accountType === IndexConfig.Personal.AccountType) {
-      if (item === 'Submission') {
+      if (item === t('Submission')) {
         router.push('/staff' + RouteConfig.Submission.Path);
       }
     }
@@ -128,8 +130,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
         {page.map((
           item,
         ) => (
-          <Tooltip key={item} title={item} placement="right" arrow disableHoverListener={open}>
-            <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleClick(item)}>
+          <Tooltip key={item} title={t(item)} placement="right" arrow disableHoverListener={open}>
+            <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleClick(t(item))}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -146,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
                 >
                   {iconMap[item] || <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={item} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={t(item)} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           </Tooltip>

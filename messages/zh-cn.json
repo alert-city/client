@@ -1,0 +1,181 @@
+{
+  "Preferences": {
+    "title": "个性化设置",
+    "language": "语言",
+    "theme": "主题",
+    "dark": "深色模式",
+    "light": "浅色模式",
+    "en": "英文",
+    "zh-cn": "简体中文"
+  },
+  "TopBar": {
+    "profile": "个人资料",
+    "logout": "登出",
+    "resetPassword": "重置密码",
+    "preferences": "个性化设置",
+    "openSettingHover": "打开设置",
+    "openSidebarHover": "打开侧边栏"
+  },
+  "Sidebar": {
+    "Review": "事件审核",
+    "Submission": "事件提交",
+    "Staff": "员工管理"
+  },
+  "NotFoundPage": {
+    "title": "页面未找到",
+    "description": "抱歉，您要查找的页面不存在",
+    "goBack": "返回",
+    "returnToLogin": "返回登录"
+  },
+  "LoginPage": {
+    "greeting": "欢迎来到",
+    "username": "用户名",
+    "password": "密码",
+    "signIn": "登录",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "没有账号？注册",
+    "staySignedIn": "保持登录",
+    "accountTypeError": "普通账户不允许在网页平台登录，请在移动应用上登录"
+  },
+  "RegistrationPage": {
+    "title": "注册",
+    "accountInformation": "账户信息",
+    "accountType": "账户类型",
+    "personal": "个人",
+    "organization": "组织",
+    "username": "用户名",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "displayName": "显示名称",
+    "basicInformation": "基本信息",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "mobilePhone": "手机号",
+    "verification": "验证",
+    "register": "注册",
+    "returnToLogin": "返回登录",
+    "alreadyHaveAccount": "已有账号？登录",
+    "return": "返回",
+    "orgName": "组织名称",
+    "nextPage": "下一页",
+    "usernamePlaceholder": "请输入您的有效电子邮件地址",
+    "RegistrationInfo": "注册成功，你将收到一封确认邮件以激活你的账户",
+    "seconds": "秒后将重定向到登录页面",
+    "defaultRegistrationError": "注册失败，请稍后再试"
+  },
+  "TwoFAPage": {
+    "title": "双因素认证",
+    "protectDescription": "使用双因素认证保护您的帐户",
+    "enableDescription": "启用双因素认证",
+    "chooseApp": "选择认证器应用",
+    "microsoftApp": "Microsoft Authenticator",
+    "googleApp": "Google Authenticator",
+    "scanDescription": "扫描认证器应用中的二维码以启用双因素认证",
+    "qrCodeAlt": "二维码",
+    "enterCode": "输入应用中的代码",
+    "enable": "启用 2FA",
+    "returnToLogin": "返回登录",
+    "skip": "暂时跳过",
+    "scanDescription1": "使用",
+    "scanDescription2": "扫描二维码以添加您的帐户",
+    "verificationInfo": "2FA成功启用。将在",
+    "seconds": "秒后重定向到登录页面",
+    "verificationInfoShort": "2FA成功启用",
+    "default2FAError": "验证2FA代码失败，请稍后再试"
+  },
+  "ValidationEmailPage": {
+    "1": {
+      "title": "激活账户",
+      "successMessage": "您的帐户已成功激活！",
+      "successSubMessage": "欢迎来到 Alert City",
+      "resendButtonText": "重新发送激活邮件",
+      "errorTitle": "激活帐户失败",
+      "resendSuccessMessage": "激活邮件已成功重新发送！",
+      "resendSuccessSubMessage": "请检查您的电子邮件收件箱",
+      "resendErrorMessage": "重新发送激活邮件失败"
+    },
+    "2": {
+      "title": "更新用户名",
+      "successMessage": "您的新用户名已成功更新！",
+      "successSubMessage": "您的新用户名已成功更新",
+      "resendButtonText": "重新发送更新邮件",
+      "errorTitle": "更新用户名失败",
+      "resendSuccessMessage": "用户名更新邮件已成功重新发送！",
+      "resendSuccessSubMessage": "请检查您的电子邮件收件箱",
+      "resendErrorMessage": "重新发送用户名更新邮件失败"
+    },
+    "iconAlt": "Alert City Logo",
+    "successTitle": "成功",
+    "errorTitle": "错误",
+    "tryAgain": "请稍后再试",
+    "resending": "重新发送...",
+    "returnToLogin": "返回登录"
+  },
+  "ProfileUpdatePage": {
+    "navigation": {
+      "title": "导航",
+      "avatar": "头像",
+      "username": "用户名",
+      "displayName": "显示名称",
+      "orgName": "组织名称",
+      "name": "姓名",
+      "contact": "联系方式",
+      "2FA": "双因素认证",
+      "deleteAccount": "删除账户"
+    },
+    "avatar": {
+      "uploadImage": "上传图片",
+      "crop": "裁剪",
+      "avatar": "头像"
+    },
+    "contact": {
+      "mobilePhone": "手机号码"
+    },
+    "twoFA": {
+      "2FATitle": "双因素认证",
+      "2FAStatus": "双重认证当前:",
+      "enabled": "已启用",
+      "disabled": "未启用"
+    },
+    "username": {
+      "usernamePlaceholder": "请输入有效的电子邮箱地址",
+      "updateUsernameInfo": "更新用户名后，您将收到一封确认邮件。",
+      "seconds": "秒后将重定向到登录页面"
+    },
+    "deleteAccount": {
+      "description": "要删除您的账户，请在下面的框中输入以下内容：",
+      "content": "删除账户：",
+      "deleteInfo": "账户删除成功删除。将在",
+      "seconds": "秒后重定向到登录页面",
+      "contentError": "确认文本不匹配"
+    },
+    "name": {
+      "firstName": "名字",
+      "lastName": "姓氏"
+    },
+    "title": "个人资料",
+    "edit": "编辑",
+    "submit": "提交",
+    "cancel": "取消"
+  },
+  "ResetPasswordPage": {
+    "title": "重置密码",
+    "username": "用户名",
+    "codePlaceholder": "输入您的电子邮件中的验证码",
+    "verificationCode": "验证码",
+    "getCode": "获取验证码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "resetPassword": "重置密码",
+    "returnToLogin": "返回登录",
+    "return": "返回",
+    "getCodeReminder": "验证码已发送到您的电子邮件，10分钟后过期",
+    "resetReminder": "密码重置成功，将在",
+    "seconds": "秒后重定向到登录页面"
+  },
+  "WelcomeSnackbar": {
+    "content": "欢迎回来",
+    "comma": "，",
+    "exclamation": "！"
+  }
+}

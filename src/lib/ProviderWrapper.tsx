@@ -1,10 +1,8 @@
-"use client";
-
-import { ApolloProvider } from "@apollo/client";
-import { initializeApollo } from "./apolloClient";
-// import { Provider as ReduxProvider } from "react-redux";
-// import { store } from "@/redux/store";
+'use client';
+import { ApolloProvider } from '@apollo/client';
+import { initializeApollo } from './apolloClient';
 import React from 'react';
+
 
 const ProviderWrapper: React.FC<React.PropsWithChildren<{}>> = ({
   children,
@@ -12,9 +10,7 @@ const ProviderWrapper: React.FC<React.PropsWithChildren<{}>> = ({
   const client = initializeApollo();
 
   return (
-    // <ReduxProvider store={store}>
-      <ApolloProvider client={client}>{children}</ApolloProvider>
-    // </ReduxProvider>
+    <ApolloProvider client={client}>{children}</ApolloProvider>
   );
 };
 

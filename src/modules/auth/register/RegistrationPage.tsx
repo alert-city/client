@@ -21,18 +21,25 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CREATE_USER } from '@/graphql/user';
 import { USERNAME } from '@/shared/constants/storage';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
-import LoadingOverlay from '@/modules/LoadingOverlay/LoadingOverlay';
+import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
+import { useTranslations } from 'next-intl';
+
+const accountTypeOptions = {
+  personal: 'Personal',
+  organization: 'Organization',
+};
 
 type RegistrationValues = z.infer<typeof createUserSchema>;
 
 const RegistrationPage: React.FC = () => {
+  const t = useTranslations('RegistrationPage');
   const router = useRouter();
   const [createUser] = useMutation(CREATE_USER);
   const [accountType, setAccountType] = useState<string>('Personal');
@@ -111,13 +118,10 @@ const RegistrationPage: React.FC = () => {
         localStorage.setItem(USERNAME, data.username);
         setRegistrationStatus(true);
         let countdown = 4;
-        setRegistrationInfo(`Register successful. You will receive an email to verify your account. You will be redirected to the next page in ${countdown} seconds.`);
+        setRegistrationInfo(`${t('RegistrationInfo')} ${countdown} ${t('seconds')}`);
         const intervalId = setInterval(() => {
           countdown -= 1;
-          setRegistrationInfo(
-            `Register successful. You will receive an email to verify your account. You will be redirected to the next page in ${countdown} seconds.`,
-          );
-
+          setRegistrationInfo(`${t('RegistrationInfo')} ${countdown} ${t('seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
             router.push(RouteConfig.Enable2FA.Path);
@@ -126,7 +130,7 @@ const RegistrationPage: React.FC = () => {
         setLoading(false);
       }
     } catch (err) {
-      setRegistrationError((err as Error).message || 'Reset Password failed');
+      setRegistrationError((err as Error).message || t('defaultRegistrationError'));
     } finally {
       setLoading(false);
     }
@@ -177,7 +181,7 @@ const RegistrationPage: React.FC = () => {
         }}
       >
         <Box sx={{ position: 'relative', width: '100%', mb: 6 }}>
-          <Tooltip title="Return" placement="right">
+          <Tooltip title={t('return')} placement="right">
             <IconButton
               onClick={() => router.back()}
               sx={{ position: 'absolute' }}
@@ -187,7 +191,7 @@ const RegistrationPage: React.FC = () => {
           </Tooltip>
         </Box>
         <Typography variant="h4" gutterBottom>
-          Registration
+          {t('title')}
         </Typography>
         <Box
           component="form"
@@ -199,17 +203,16 @@ const RegistrationPage: React.FC = () => {
           width="100%"
         >
 
-          {/* Account Information */}
           <Card sx={{ width: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Account information
+                {t('accountInformation')}
               </Typography>
               <Box display="flex" flexDirection="column" gap={2} mb={2}>
                 <FormControl fullWidth>
-                  <InputLabel>Account Type</InputLabel>
+                  <InputLabel>{t('accountType')}</InputLabel>
                   <Select
-                    label="Account Type"
+                    label={t('accountType')}
                     defaultValue="Personal"
                     {...register('accountType', {
                       onChange: (e) => {
@@ -219,8 +222,8 @@ const RegistrationPage: React.FC = () => {
                       },
                     })}
                   >
-                    <MenuItem value="Personal">Personal</MenuItem>
-                    <MenuItem value="Organization">Organization</MenuItem>
+                    <MenuItem value={accountTypeOptions.personal}>{t("personal")}</MenuItem>
+                    <MenuItem value={accountTypeOptions.organization}>{t('organization')}</MenuItem>
                   </Select>
                   {errors.accountType && (
                     <FormHelperText>{errors.accountType.message}</FormHelperText>
@@ -229,7 +232,7 @@ const RegistrationPage: React.FC = () => {
               </Box>
               <Box display="flex" gap={2} mb={2}>
                 <TextField
-                  label="Username"
+                  label={t('username')}
                   {...register('username', {
                       onChange: (e) => {
                         setRegistrationInfo(null);
@@ -237,12 +240,12 @@ const RegistrationPage: React.FC = () => {
                     },
                   )}
                   fullWidth
-                  placeholder="Please Enter your valid email address"
+                  placeholder={t('usernamePlaceholder')}
                   error={!!errors.username}
                   helperText={errors.username?.message}
                 />
                 <TextField
-                  label="Display Name"
+                  label={t('displayName')}
                   fullWidth
                   {...register('displayName')}
                   error={!!errors.displayName}
@@ -251,7 +254,7 @@ const RegistrationPage: React.FC = () => {
               </Box>
               <Box display="flex" gap={2} mb={2}>
                 <TextField
-                  label="Password"
+                  label={t('password')}
                   type={showPassword ? 'text' : 'password'}
                   fullWidth
                   {...register('password')}
@@ -274,7 +277,7 @@ const RegistrationPage: React.FC = () => {
                   }}
                 />
                 <TextField
-                  label="Confirm Password"
+                  label={t('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   fullWidth
                   {...register('confirmPassword')}
@@ -305,19 +308,19 @@ const RegistrationPage: React.FC = () => {
           <Card sx={{ width: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Basic Information
+                {t('basicInformation')}
               </Typography>
               {(accountType === 'Personal') &&
                 <Box display="flex" gap={2} mb={2}>
                   <TextField
-                    label="First Name"
+                    label={t('firstName')}
                     fullWidth
                     {...register('firstName')}
                     error={!!errors?.firstName}
                     helperText={errors.firstName?.message}
                   />
                   <TextField
-                    label="Last Name"
+                    label={t('lastName')}
                     fullWidth
                     {...register('lastName')}
                     error={!!errors?.lastName}
@@ -328,7 +331,7 @@ const RegistrationPage: React.FC = () => {
               <Box display="flex" gap={2} mb={2}>
                 {(accountType === 'Organization') &&
                   <TextField
-                    label="Organization Name"
+                    label={t('orgName')}
                     fullWidth
                     {...register('orgName')}
                     error={!!errors.orgName}
@@ -336,7 +339,7 @@ const RegistrationPage: React.FC = () => {
                   />
                 }
                 <TextField
-                  label="Mobile Phone"
+                  label={t('mobilePhone')}
                   fullWidth
                   {...register('mobilePhone')}
                   error={!!errors.mobilePhone}
@@ -350,7 +353,7 @@ const RegistrationPage: React.FC = () => {
           <Card sx={{ width: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Verification
+                {t('verification')}
               </Typography>
               <FormControl error={!!errors.captchaVerified} fullWidth>
                 <Box display="flex" justifyContent="center">
@@ -388,7 +391,7 @@ const RegistrationPage: React.FC = () => {
               color="primary"
               fullWidth
             >
-              Register
+              {t('register')}
             </Button>
           }
           {!registrationStatus &&
@@ -399,7 +402,7 @@ const RegistrationPage: React.FC = () => {
               fullWidth
               onClick={() => router.back()}
             >
-              Return to Login
+              {t('returnToLogin')}
             </Button>
           }
           {registrationStatus &&
@@ -410,13 +413,13 @@ const RegistrationPage: React.FC = () => {
               type="button"
               onClick={() => router.push(RouteConfig.Enable2FA.Path)}
             >
-              Next Page
+              {t('nextPage')}
             </Button>
           }
 
           <Typography variant="body2" mt={2} color="primary">
             <RouteConfig.Login.Link>
-              Already have an account? Log in
+              {t('alreadyHaveAccount')}
             </RouteConfig.Login.Link>
           </Typography>
         </Box>

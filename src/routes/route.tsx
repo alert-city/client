@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import { Link } from '@/i18n/routing';
 
 type RouteLinkProps = {
   children: React.ReactNode;
@@ -175,6 +175,18 @@ const StaffSubmission = {
   ),
 }
 
+const Preferences = {
+  Metadata: {
+    title: "Preferences | Alert City",
+  },
+  Path: "/preferences" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={Preferences.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
 export const RouteConfig = {
   Root,
   Login,
@@ -190,4 +202,5 @@ export const RouteConfig = {
   StaffManagement,
   AdminSubmission,
   StaffSubmission,
+  Preferences,
 };
