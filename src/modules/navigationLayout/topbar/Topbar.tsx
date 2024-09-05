@@ -12,19 +12,30 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
-import { useRevokeTokens } from '@/hooks/useRevokeTokens';
+import { useLogout } from '@/hooks/useLogout';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
 import { DISPLAY_NAME, AVATAR_URL } from '@/shared/constants/storage';
-import { useTopbarStore } from '@/store/topBar';
+import { useTopbarStore } from '@/store/topBarState';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-
+import { AccountCircle } from '@mui/icons-material';
+import Tune from '@mui/icons-material/Tune';
+import Logout from '@mui/icons-material/Logout';
+import MailIcon from '@mui/icons-material/Mail';
+import { VpnKey } from '@mui/icons-material';
 
 interface TopBarProps {
   open: boolean;
   handleDrawerOpen: () => void;
 }
+
+const iconMap: { [key: string]: React.ReactNode } = {
+  profile: <AccountCircle />,
+  resetPassword: <VpnKey />,
+  preferences: <Tune />,
+  logout: <Logout />,
+};
 
 const StyledAppBar = styled(AppBar)<{ open: boolean }>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -46,7 +57,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const t = useTranslations('TopBar');
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const revokeTokens = useRevokeTokens();
+  const logout = useLogout();
   const { avatarUrl: avatarUrlFromStore, displayName: displayNameFromStore } = useTopbarStore();
   const [isAvatarLoading, setIsAvatarLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -95,7 +106,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
     if (setting === t('logout')) {
-      await revokeTokens();
+      await logout();
     } else if (setting === t('profile')) {
       router.push(RouteConfig.Profile.Path);
     } else if (setting === t('resetPassword')) {
@@ -126,20 +137,16 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             </Tooltip>
             <Avatar src="/images/alertcity-dark.png" alt="icon" sx={{ mr: 2 }} />
             <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              // href={RouteConfig.Login.Path}
-              // onClick={async (e) => {
-              //   await revokeTokens();
-              // }}
+              variant="h6" noWrap onClick={async (e) => {
+              await logout();
+            }}
               sx={{
                 mr: 2,
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                // letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
+                cursor: 'pointer',
               }}
             >
               Alert City
@@ -177,7 +184,10 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             >
               {settings && settings.map((setting: string) => (
                 <MenuItem key={setting} onClick={() => handleSettingClick(t(setting))}>
-                  <Typography textAlign="center">{t(setting)}</Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    {iconMap[setting] || <MailIcon />}
+                    <Typography textAlign="center">{t(setting)}</Typography>
+                  </Box>
                 </MenuItem>
               ))}
             </Menu>

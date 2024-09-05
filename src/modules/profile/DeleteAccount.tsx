@@ -8,13 +8,13 @@ import {
 import { DELETE_USER } from '@/graphql/user';
 import { useMutation } from '@apollo/client';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
-import { useRevokeTokens } from '@/hooks/useRevokeTokens';
+import { useLogout } from '@/hooks/useLogout';
 import { useUserInfoStore } from '@/store/profileState';
 import { useTranslations } from 'next-intl';
 
 const DeleteAccount: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const revokeTokens = useRevokeTokens();
+  const logout = useLogout();
   const [deleteUser] = useMutation(DELETE_USER);
   const [confirmationText, setConfirmationText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -22,10 +22,10 @@ const DeleteAccount: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [deleteInfo, setDeleteInfo] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const { storedUsername,storedId } = useUserInfoStore();
+  const { storedUsername, storedId } = useUserInfoStore();
 
   const handleDelete = async () => {
-    if (confirmationText ===  `${t('deleteAccount.content')} ${storedUsername}`) {
+    if (confirmationText === `${t('deleteAccount.content')} ${storedUsername}`) {
       setLoading(true);
       try {
         const { data } = await deleteUser({ variables: { id: storedId } });
@@ -37,7 +37,7 @@ const DeleteAccount: React.FC = () => {
             setDeleteInfo(`${t('deleteAccount.deleteInfo')} ${countdown} ${t('deleteAccount.seconds')}`);
             if (countdown === 0) {
               clearInterval(intervalId);
-              revokeTokens();
+              logout();
             }
           }, 1000);
         }
@@ -60,7 +60,7 @@ const DeleteAccount: React.FC = () => {
   };
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box>
       <Typography variant="h6" color="error" gutterBottom>
         {t('navigation.deleteAccount')}
       </Typography>
@@ -69,6 +69,9 @@ const DeleteAccount: React.FC = () => {
       </Typography>
       <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic', mb: 2 }}>
         {`${t('deleteAccount.content')} ${storedUsername}`}
+      </Typography>
+      <Typography variant="body2" color="error" sx={{ mb: 3 }}>
+        {t('deleteAccount.riskWarning')}
       </Typography>
       <TextField
         fullWidth

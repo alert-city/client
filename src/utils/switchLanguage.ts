@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Locales } from '@/i18n/routing';
 import { useRouter } from '@/i18n/routing';
-import { useLanguageSetting } from '@/store/switchLanguage';
+import { usePreferenceSetting } from '@/store/preferenceState';
 import { RouteConfig } from '@/routes/route';
-import { getNextLocale } from '@/utils/get-next-locale';
+import { getPreferenceInfo } from '@/utils/getPreferenceInfo';
 
 type HandlerProps = {
   path?: string;
@@ -12,10 +12,10 @@ type HandlerProps = {
 
 export function useLanguage() {
   const router = useRouter();
-  const { currentLocale, setLanguage } = useLanguageSetting();
+  const { currentLocale, setLanguage } = usePreferenceSetting();
 
   useEffect(() => {
-    getNextLocale().then((locale) => {
+    getPreferenceInfo().then(({ locale }) => {
       setLanguage(locale as Locales);
     });
   }, [currentLocale]);

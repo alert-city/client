@@ -10,7 +10,7 @@ const ProviderWrapper: React.FC<React.PropsWithChildren<{}>> = ({
   const client = initializeApollo();
 
   return (
-    <ApolloProvider client={client}>{children}</ApolloProvider>
+      <ApolloProvider client={client}>{children}</ApolloProvider>
   );
 };
 

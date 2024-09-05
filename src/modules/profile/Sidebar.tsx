@@ -14,11 +14,29 @@ import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
 import { useTranslations } from 'next-intl';
+import { AccountCircle, VpnKey } from '@mui/icons-material';
+import Tune from '@mui/icons-material/Tune';
+import Logout from '@mui/icons-material/Logout';
+import Person from '@mui/icons-material/Person';
+import Badge from '@mui/icons-material/Badge';
+import PersonPin from '@mui/icons-material/PersonPin';
+import BadgeIcon from '@mui/icons-material/Badge';
+import Business from '@mui/icons-material/Business';
+import ContactPhone from '@mui/icons-material/ContactPhone';
+import Security from '@mui/icons-material/Security';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 
 interface SideBarProps {
   selectedSection: string;
   handleSectionClick: (section: string) => void;
 }
+
+const iconMap: { [key: string]: React.ReactNode } = {
+  profile: <AccountCircle />,
+  resetPassword: <VpnKey />,
+  preferences: <Tune />,
+  logout: <Logout />,
+};
 
 const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }) => {
   const t = useTranslations('ProfileUpdatePage');
@@ -49,7 +67,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.avatar')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Person />
+              <ListItemText primary={t('navigation.avatar')} />
+            </Box>
           </ListItemButton>
           <Divider />
           <ListItemButton
@@ -65,7 +86,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.username')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Badge />
+              <ListItemText primary={t('navigation.username')} />
+            </Box>
           </ListItemButton>
           <Divider />
           <ListItemButton
@@ -81,7 +105,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.displayName')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <PersonPin />
+              <ListItemText primary={t('navigation.displayName')} />
+            </Box>
           </ListItemButton>
           <Divider />
           {accountType === IndexConfig.Personal.AccountType && (
@@ -98,7 +125,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
                 },
               }}
             >
-              <ListItemText primary={t('navigation.name')} />
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <BadgeIcon />
+                <ListItemText primary={t('navigation.name')} />
+              </Box>
             </ListItemButton>
           )}
           {accountType === IndexConfig.Organization.AccountType && (
@@ -115,7 +145,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
                 },
               }}
             >
-              <ListItemText primary={t('navigation.orgName')} />
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Business />
+                <ListItemText primary={t('navigation.orgName')} />
+              </Box>
             </ListItemButton>
           )}
           <Divider />
@@ -132,7 +165,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.contact')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <ContactPhone />
+              <ListItemText primary={t('navigation.contact')} />
+            </Box>
           </ListItemButton>
           <Divider />
           <ListItemButton
@@ -148,7 +184,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.2FA')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Security />
+              <ListItemText primary={t('navigation.2FA')} />
+            </Box>
           </ListItemButton>
           <Divider />
           <ListItemButton
@@ -165,7 +204,10 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
               },
             }}
           >
-            <ListItemText primary={t('navigation.deleteAccount')} />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <DeleteForever />
+              <ListItemText primary={t('navigation.deleteAccount')} />
+            </Box>
           </ListItemButton>
         </List>
       </CardContent>

@@ -20,7 +20,6 @@ import { createUserSchema } from '@/validation/schemas/user/user.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CREATE_USER } from '@/graphql/user';
-import { USERNAME } from '@/shared/constants/storage';
 import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
 import Tooltip from '@mui/material/Tooltip';
@@ -52,12 +51,12 @@ const RegistrationPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    reset,
-  } = useForm<RegistrationValues>({
+          register,
+          handleSubmit,
+          setValue,
+          formState: { errors },
+          reset,
+        } = useForm<RegistrationValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       firstName: '',
@@ -85,7 +84,7 @@ const RegistrationPage: React.FC = () => {
     if (data.accountType === 'Personal') {
       role = 'normal';
     } else {
-      role = 'Organization';
+      role = 'admin';
     }
 
     const formData = {
@@ -103,19 +102,17 @@ const RegistrationPage: React.FC = () => {
     }
 
     const { captchaVerified, ...filteredData } = formData;
-
     try {
       const response = await createUser({
         variables: {
           input: {
             ...filteredData,
             emailInfoType: 1,
-          }
+          },
         },
       });
       if (response?.data?.createUser) {
         reset();
-        localStorage.setItem(USERNAME, data.username);
         setRegistrationStatus(true);
         let countdown = 4;
         setRegistrationInfo(`${t('RegistrationInfo')} ${countdown} ${t('seconds')}`);
@@ -124,7 +121,7 @@ const RegistrationPage: React.FC = () => {
           setRegistrationInfo(`${t('RegistrationInfo')} ${countdown} ${t('seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
-            router.push(RouteConfig.Enable2FA.Path);
+            router.push(RouteConfig.Login.Path);
           }
         }, 1000);
         setLoading(false);
@@ -222,7 +219,7 @@ const RegistrationPage: React.FC = () => {
                       },
                     })}
                   >
-                    <MenuItem value={accountTypeOptions.personal}>{t("personal")}</MenuItem>
+                    <MenuItem value={accountTypeOptions.personal}>{t('personal')}</MenuItem>
                     <MenuItem value={accountTypeOptions.organization}>{t('organization')}</MenuItem>
                   </Select>
                   {errors.accountType && (
@@ -411,12 +408,11 @@ const RegistrationPage: React.FC = () => {
               variant="contained"
               color="secondary"
               type="button"
-              onClick={() => router.push(RouteConfig.Enable2FA.Path)}
+              onClick={() => router.push(RouteConfig.Login.Path)}
             >
               {t('nextPage')}
             </Button>
           }
-
           <Typography variant="body2" mt={2} color="primary">
             <RouteConfig.Login.Link>
               {t('alreadyHaveAccount')}
@@ -424,7 +420,7 @@ const RegistrationPage: React.FC = () => {
           </Typography>
         </Box>
       </Box>
-      <LoadingOverlay loading={loading}/>
+      <LoadingOverlay loading={loading} />
     </Box>
   );
 };

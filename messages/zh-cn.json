@@ -6,7 +6,8 @@
     "dark": "深色模式",
     "light": "浅色模式",
     "en": "英文",
-    "zh-cn": "简体中文"
+    "zh-cn": "简体中文",
+    "snackbarMessage": "设置已保存"
   },
   "TopBar": {
     "profile": "个人资料",
@@ -35,7 +36,16 @@
     "forgotPassword": "忘记密码？",
     "noAccount": "没有账号？注册",
     "staySignedIn": "保持登录",
-    "accountTypeError": "普通账户不允许在网页平台登录，请在移动应用上登录"
+    "accountTypeError": "普通账户不允许在网页平台登录，请在移动应用上登录",
+    "hoverStaySignedIn": "开启此项会话将保持活动状态7天",
+    "resendEmailTitle": "重新发送激活邮件",
+    "resendEmailDescription": "您的账户尚未激活，是否重新发送激活邮件？",
+    "resendSuccess": "重新发送邮件成功，请查看您的电子邮件，此对话框将在",
+    "seconds": "秒后关闭",
+    "resendError": "重新发送邮件失败，请稍后再试",
+    "cancel": "取消",
+    "resend": "重新发送",
+    "close": "关闭"
   },
   "RegistrationPage": {
     "title": "注册",
@@ -74,12 +84,13 @@
     "qrCodeAlt": "二维码",
     "enterCode": "输入应用中的代码",
     "enable": "启用 2FA",
+    "goToDashboard": "前往仪表板",
     "returnToLogin": "返回登录",
     "skip": "暂时跳过",
     "scanDescription1": "使用",
     "scanDescription2": "扫描二维码以添加您的帐户",
     "verificationInfo": "2FA成功启用。将在",
-    "seconds": "秒后重定向到登录页面",
+    "seconds": "秒后重定向到仪表板页面",
     "verificationInfoShort": "2FA成功启用",
     "default2FAError": "验证2FA代码失败，请稍后再试"
   },
@@ -147,7 +158,8 @@
       "content": "删除账户：",
       "deleteInfo": "账户删除成功删除。将在",
       "seconds": "秒后重定向到登录页面",
-      "contentError": "确认文本不匹配"
+      "contentError": "确认文本不匹配",
+      "riskWarning": "删除账户是不可逆的操作，您的所有数据将被永久删除！"
     },
     "name": {
       "firstName": "名字",

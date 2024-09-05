@@ -4,7 +4,7 @@ import { useUserInfoStore, handleCancel, useUserActions, handleValueChanged } fr
 import { useTranslations } from 'next-intl';
 
 const Name: React.FC = () => {
-  const { userInfo, isEdit, setIsEdit } = useUserInfoStore();
+  const { userInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
   const t = useTranslations('ProfileUpdatePage');
 
@@ -34,14 +34,22 @@ const Name: React.FC = () => {
         </> :
         <>
           <Box display="flex" alignItems="center" mb={1}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginRight: 1 }}>{`${t('name.firstName')}:`}</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginRight: 1 }}>{`${t(
+              'name.firstName')}:`}</Typography>
             <Typography variant="body1">{userInfo.name.firstName}</Typography>
           </Box>
           <Box display="flex" alignItems="center" mb={1}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginRight: 1 }}>{`${t('name.lastName')}:`}</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginRight: 1 }}>{`${t(
+              'name.lastName')}:`}</Typography>
             <Typography variant="body1">{userInfo.name.lastName}</Typography>
           </Box>
         </>}
+      {requestError && (
+        <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error"
+                    variant="body2">
+          {requestError}
+        </Typography>
+      )}
       {(isEdit.name.firstName || isEdit.name.lastName) ?
         <>
           <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => handleSave('name')}>{t('submit')}</Button>

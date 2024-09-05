@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Container, CssBaseline, Checkbox, FormControlLabel, InputAdornment } from '@mui/material';
-import { useRouter } from '@/i18n/routing';
 import CustomButton from '@/modules/common/Button';
 import CustomTextField from '@/modules/common/TextField';
 import { LOGIN } from '@/graphql/auth';
@@ -18,6 +17,8 @@ import {
   DISPLAY_NAME,
   ID,
   AVATAR_URL,
+  CAN_SHOW_SNACKBAR,
+  ROLE,
 } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -28,6 +29,11 @@ import { RouteConfig } from '@/routes/route';
 import Cookies from 'js-cookie';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTranslations } from 'next-intl';
+import MouseHoverPopover from '@/modules/auth/login/Popover';
+import { useTheme } from '@/utils/switchTheme';
+import { useLogin } from '@/utils/redirection';
+import { useUserInfoStore } from '@/store/profileState';
+import ResendActivationEmail from '@/modules/auth/login/ResendEmail';
 
 type LoginFormInputs = {
   username: string;
@@ -38,10 +44,16 @@ type LoginFormInputs = {
 const LoginForm: React.FC = () => {
   const t = useTranslations('LoginPage');
   const [login] = useMutation(LOGIN);
-  const router = useRouter();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const { currentTheme } = useTheme();
+  const { loginRedirect } = useLogin();
+  const { setStoredId } = useUserInfoStore();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [idForResend, setIdForResend] = useState<string | null>(null);
+  const avatarUrl = currentTheme === 'dark' ? IndexConfig.IconTheme.Dark : IndexConfig.IconTheme.Light;
 
   const methods = useForm({
     defaultValues: {
@@ -66,41 +78,32 @@ const LoginForm: React.FC = () => {
     setLoginError(null);
     try {
       const response = await login({ variables: { input: data } });
-      const role: string = response.data.login.role;
+      const role: string[] = response.data.login.role;
       const accountType = response.data.login.accountType;
       const displayName = response.data.login.displayName;
-
-      const saveData = () => {
-        if (typeof window !== 'undefined') {
-          Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
-          Cookies.set(ACCOUNT_TYPE, accountType);
-          localStorage.setItem(ID, response.data.login.id);
-          localStorage.setItem(DISPLAY_NAME, displayName);
-          localStorage.setItem(AVATAR_URL, response.data.login.avatarUrl);
-          localStorage.setItem(USERNAME, response.data.login.username);
-          localStorage.setItem(IS_FIRST_LOGIN, 'true');
-        }
-      };
-
+      const isFirstLogin = response.data.login.isFirstLogin;
       if (response.data.login) {
-        if (accountType === IndexConfig.Organization.AccountType) {
-          saveData();
-          router.push(RouteConfig.AdminSubmission.Path);
-        } else if (accountType === IndexConfig.Personal.AccountType) {
-          if (role.includes('staff')) {
-            saveData();
-            router.push(RouteConfig.StaffSubmission.Path);
-          } else if (!role.includes('staff')) {
-            setLoginError(t('accountTypeError'));
-            setLoading(false);
-            return;
-          }
-        }
+        Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
+        Cookies.set(ACCOUNT_TYPE, accountType);
+        localStorage.setItem(ID, response.data.login.id);
+        localStorage.setItem(DISPLAY_NAME, displayName);
+        localStorage.setItem(AVATAR_URL, response.data.login.avatarUrl);
+        localStorage.setItem(USERNAME, response.data.login.username);
+        Cookies.set(ROLE, role?.toString());
+        localStorage.setItem(CAN_SHOW_SNACKBAR, 'true');
+        localStorage.setItem(IS_FIRST_LOGIN, isFirstLogin?.toString());
+        setStoredId(response.data.login.id);
+        loginRedirect({ isFirstLogin, accountType, role });
       }
-
     } catch (err: any) {
-      setLoginError(err.message);
-      setLoading(false);
+      const statusCode = err.graphQLErrors[0].extensions.status;
+      const id = err.graphQLErrors[0].extensions.data;
+      if (statusCode === 1000) {
+        setDialogOpen(true);
+        setIdForResend(id);
+      } else {
+        setLoginError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -114,12 +117,24 @@ const LoginForm: React.FC = () => {
     event.preventDefault();
   };
 
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <FormProvider {...methods}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box className="flex flex-col items-center mt-[2.5rem]">
-          <Avatar src="/images/alertcity.png" alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
+          <Avatar src={avatarUrl} alt="icon" sx={{ mb: 2, width: 56, height: 56 }} />
           <Typography component="h1" variant="h5">
             {t('greeting')}{' '}
             <Box
@@ -169,6 +184,8 @@ const LoginForm: React.FC = () => {
             />
             <Box sx={{ justifyContent: 'space-between' }} className="flex items-center">
               <FormControlLabel
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
                 control={
                   <Checkbox
                     checked={methods.watch('isStaySignedIn')}
@@ -178,23 +195,21 @@ const LoginForm: React.FC = () => {
                 }
                 label={t('staySignedIn')}
               />
+              <MouseHoverPopover anchorEl={anchorEl} onClose={handlePopoverClose} />
               <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
                 <RouteConfig.ResetPassword.Link>
                   {t('forgotPassword')}
                 </RouteConfig.ResetPassword.Link>
               </Typography>
             </Box>
-
             {loginError && (
               <Typography sx={{ mt: 1 }} color="error" variant="body2" className="flex justify-center">
                 {loginError}
               </Typography>
             )}
-
             <CustomButton type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               {t('signIn')}
             </CustomButton>
-
             <Typography variant="body2" color="primary" className="w-full mt-2 flex justify-center">
               <RouteConfig.Register.Link>
                 {t('noAccount')}
@@ -204,6 +219,13 @@ const LoginForm: React.FC = () => {
         </Box>
       </Container>
       <LoadingOverlay loading={loading} />
+      {dialogOpen && (
+        <ResendActivationEmail
+          open={dialogOpen}
+          handleClose={handleCloseDialog}
+          id={idForResend as string}
+        />
+      )}
     </FormProvider>
   );
 };

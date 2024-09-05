@@ -1,9 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { handleCancel, useUserInfoStore } from '@/store/profileState';
-import { useRevokeTokens } from '@/hooks/useRevokeTokens';
-import { USERNAME } from '@/shared/constants/storage';
+import { useLogout } from '@/hooks/useLogout';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateUsernameSchema } from '@/validation/schemas/update-profile/update-profile.schema';
@@ -17,12 +16,12 @@ type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
 const Username: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
   const {
-          userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername,
+          userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername,storedId
         } = useUserInfoStore();
   const [updateUsernameError, setUpdateUsernameError] = useState<string | null>(null);
   const [updateUsernameInfo, setUpdateUsernameInfo] = useState<string | null>(null);
   const [isSendSuccess, setIsSendSuccess] = useState(false);
-  const revokeTokens = useRevokeTokens();
+  const logout = useLogout();
   const [sendUpdateUsernameEmail] = useMutation(SEND_UPDATE_USERNAME_EMAIL);
 
   const {
@@ -46,7 +45,7 @@ const Username: React.FC = () => {
       };
       const { data } = await sendUpdateUsernameEmail({
         variables: {
-          username: storedUsername,
+          id: storedId,
           input: input,
         },
       });
@@ -61,7 +60,7 @@ const Username: React.FC = () => {
             `${t('username.updateUsernameInfo')} ${countdown} ${t('username.seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
-            revokeTokens();
+            logout();
           }
         }, 1000);
       }

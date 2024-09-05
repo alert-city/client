@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Switch, Typography } from '@mui/material';
 import TwoFAPage from '@/modules/auth/register/TwoFA';
 import { useUserInfoStore, handleCancel } from '@/store/profileState';
@@ -7,37 +7,42 @@ import { UPDATE_USER } from '@/graphql/user';
 import { useTranslations } from 'next-intl';
 
 const TwoFA: React.FC = () => {
-  const { userInfo, setUserInfo, isEdit, setIsEdit,storedId } = useUserInfoStore();
+  const { userInfo, setUserInfo, storedId } = useUserInfoStore();
   const [updateUser] = useMutation(UPDATE_USER);
-  const [showTwoFA, setShowTwoFA] = React.useState(false);
+  const [showTwoFA, setShowTwoFA] = useState(false);
   const t = useTranslations('ProfileUpdatePage');
+  const [is2FAEnabled, setIs2FAEnabled] = useState(userInfo.is2FAEnabled);
 
   const handleToggle = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowTwoFA(true);
     const enabled = event.target.checked;
     if (!enabled) {
+      setIs2FAEnabled(false);
+    }
+    if (!enabled && is2FAEnabled) {
+      setShowTwoFA(false);
       const { data } = await updateUser({
         variables: {
           id: storedId,
           input: {
             is2FAEnabled: false,
+            twoFASecret: null,
           },
         },
       });
-      if (data?.updateUser) {
-        setShowTwoFA(false);
-      }
-    } else {
-      setShowTwoFA(true);
+      data && setIs2FAEnabled(false);
+    } else if (!enabled && !is2FAEnabled) {
+      setShowTwoFA(false);
     }
     setUserInfo({ ...userInfo, is2FAEnabled: enabled });
   };
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>{t('twoFA.2FATitle')}</Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <Typography variant="h6" gutterBottom sx={{ mt: 1.5 }}>{t('twoFA.2FATitle')}</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography variant="body1" sx={{ mr: 2 }}>
-          {t('twoFA.2FAStatus')} {userInfo.is2FAEnabled ? t('twoFA.enabled') : t('twoFA.disabled')}
+          {t('twoFA.2FAStatus')} {is2FAEnabled ? t('twoFA.enabled') : t('twoFA.disabled')}
         </Typography>
         <Switch
           checked={userInfo.is2FAEnabled}
@@ -46,11 +51,13 @@ const TwoFA: React.FC = () => {
         />
       </Box>
       {showTwoFA && (
-        <TwoFAPage isRegister={false} defaultValue={userInfo.is2FAEnabled} setShow2FA={setShowTwoFA} />
+        <Box sx={{ mt: 2 }}>
+          <TwoFAPage isFirstLogin={false} defaultValue={userInfo.is2FAEnabled} setShow2FA={setShowTwoFA}
+                     set2FAEnabled={setIs2FAEnabled} />
+        </Box>
       )}
     </>
   );
-
 };
 
 export default TwoFA;

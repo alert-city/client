@@ -17,7 +17,7 @@ import { useMutation } from '@apollo/client';
 import { GET_VERIFICATION_CODE, RESET_PASSWORD } from '@/graphql/user';
 import { useRouter } from 'next/navigation';
 import { ACCESS_TOKEN, USERNAME } from '@/shared/constants/storage';
-import { useRevokeTokens } from '@/hooks/useRevokeTokens';
+import { useLogout } from '@/hooks/useLogout';
 import LockIcon from '@mui/icons-material/Lock';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -34,7 +34,7 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword: React.FC = () => {
   const t = useTranslations('ResetPasswordPage');
-  const revokeTokens = useRevokeTokens();
+  const logout = useLogout();
   const router = useRouter();
   const [getCode] = useMutation(GET_VERIFICATION_CODE);
   const [resetPassword] = useMutation(RESET_PASSWORD);
@@ -107,7 +107,7 @@ const ResetPassword: React.FC = () => {
 
     try {
       const response = await getCode(
-        { variables: { input: { username: data.username, emailInfoType: 1 } } },
+        { variables: { username: data.username, emailInfoType: 1  } },
       );
       if (response.data.sendVerificationEmail) {
         setGetCodeReminder(t('getCodeReminder'));
@@ -156,7 +156,7 @@ const ResetPassword: React.FC = () => {
           setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
-            revokeTokens();
+            logout();
           }
         }, 1000);
       }

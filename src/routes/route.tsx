@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from '@/i18n/routing';
+import { Link,useRouter } from '@/i18n/routing';
 
 type RouteLinkProps = {
   children: React.ReactNode;
@@ -18,12 +18,12 @@ const Root = {
   ),
 };
 
-
 const Login = {
   Metadata: {
     title: "Sign In | Alert City",
   },
   Path: "/login" as const,
+  PathWithLocale: (locale: string) => `/${locale}${Login.Path}`,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Login.Path} className={className}>
       {children}

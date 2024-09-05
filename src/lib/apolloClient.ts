@@ -4,7 +4,6 @@ import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client/link/core';
-import { setContext } from '@apollo/client/link/context';
 import { ACCESS_TOKEN } from '@/shared/constants/storage';
 import Cookies from 'js-cookie';
 import { RouteConfig } from '@/routes/route';
@@ -30,11 +29,14 @@ function createApolloClient() {
         const authStatus = headers?.get('x-auth-status');
         if (newAccessToken) Cookies.set(ACCESS_TOKEN, newAccessToken);
         if (authStatus === 'invalid') {
-          IndexConfig.RemoveItems.Item.forEach((item) => {
+          const currentLocale = Cookies.get('NEXT_LOCALE') ?? 'en';
+          IndexConfig.RemoveLocalStorage.Item.forEach((item) => {
             localStorage.removeItem(item);
           });
-          Cookies.remove(ACCESS_TOKEN);
-          window.location.href = RouteConfig.Login.Path;
+          IndexConfig.RemoveCookie.Item.forEach((item) => {
+            Cookies.remove(item);
+          });
+          window.location.href = RouteConfig.Login.PathWithLocale(currentLocale);
         }
       }
       return response;
@@ -81,13 +83,13 @@ function createApolloClient() {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, path, extensions }) => {
-        const { statusCode, code, data } = extensions || {};
+        const { status, code, data } = extensions || {};
         const errorDetails = {
           message,
           path,
           code,
-          statusCode,
-          data,
+          status,
+          ...(typeof data === 'object' && data !== null && { data })
         };
         console.error(`Error: ${JSON.stringify(errorDetails, null, 2)}`);
       });

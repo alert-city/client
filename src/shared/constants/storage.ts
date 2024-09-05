@@ -1,10 +1,12 @@
 export const ACCESS_TOKEN = 'access_token';
 export const USERNAME = 'username';
 export const IS_STAY_SIGNED_IN = 'is_stay_signed_in';
-export const TEMP_USERNAME = 'temp_username';
 export const ACCOUNT_TYPE = 'account_type';
 export const IS_FIRST_LOGIN = 'is_first_login';
 export const DISPLAY_NAME = 'display_name';
 export const ID: string = 'id';
 export const AVATAR_URL = 'avatar_url';
-export const LANGUAGE = 'language';
+export const THEME = 'theme';
+export const ROLE = 'role';
+export const CAN_SHOW_SNACKBAR = 'can_show_snackbar';
+export const STORED_USER_INFO = 'stored_user_info';
