@@ -6,7 +6,8 @@
     "dark": "Dark",
     "light": "Light",
     "en": "English",
-    "zh-cn": "Chinese"
+    "zh-cn": "Chinese",
+    "snackbarMessage": "Settings saved"
   },
   "TopBar": {
     "profile": "Profile",
@@ -35,7 +36,16 @@
     "forgotPassword": "Forgot Password?",
     "noAccount": "Don't have an account? Sign up",
     "staySignedIn": "Stay signed in",
-    "accountTypeError": "A normal account is not allowed to login on web platform. Please login on mobile app."
+    "accountTypeError": "A normal account is not allowed to login on web platform. Please login on mobile app.",
+    "hoverStaySignedIn": "The session will remain active for 7 days if you check this box",
+    "resendEmailTitle": "Resend Activation Email",
+    "resendEmailDescription": "Your account is not activated. Would you like to resend the activation email?",
+    "resendSuccess": "Resend email success, please check your email. This dialog will close in",
+    "seconds": "seconds",
+    "resendError": "Resend email error, please try again later",
+    "cancel": "Cancel",
+    "resend": "Resend",
+    "close": "Close"
   },
   "RegistrationPage": {
     "title": "Registration",
@@ -57,9 +67,9 @@
     "alreadyHaveAccount": "Already have an account? Log in",
     "return": "Return",
     "orgName": "Organization Name",
-    "nextPage": "Next",
+    "nextPage": "Next Page",
     "usernamePlaceholder": "Please enter your valid email address",
-    "RegistrationInfo": "Register successful. You will receive an email to verify your account. You will be redirected to the next page in",
+    "RegistrationInfo": "Register successful. You will receive an email to verify your account. You will be redirected to Login page in",
     "seconds": "seconds",
     "defaultRegistrationError": "Reset Password failed. Please try again later."
   },
@@ -73,11 +83,11 @@
     "qrCodeAlt": "Authenticator QR Code",
     "enterCode": "Enter the code from App",
     "enable": "Enable 2FA",
-    "returnToLogin": "Return to Login",
+    "goToDashboard": "Go to Dashboard",
     "skip": "Skip for now",
     "scanDescription1": "Scan the QR code using your",
     "scanDescription2": "app to add your account",
-    "verificationInfo":"2FA enabled successfully. You will be redirected to login page in",
+    "verificationInfo":"2FA enabled successfully. You will be redirected to Dashboard page in",
     "seconds": "seconds",
     "verificationInfoShort":"2FA enabled successfully.",
     "default2FAError": "Failed to verify 2FA code. Please try again later."
@@ -147,7 +157,8 @@
       "content": "delete account:",
       "deleteInfo": "Account deletion successful. Redirecting to login page in",
       "seconds": "seconds",
-      "contentError": "The confirmation text does not match."
+      "contentError": "The confirmation text does not match.",
+      "riskWarning": "Warning: Deleting your account is permanent and will result in the loss of all your data. This action cannot be undone!"
     },
     "name": {
       "firstName": "First Name",

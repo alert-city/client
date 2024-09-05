@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -19,7 +19,6 @@ import OrgName from '@/modules/profile/OrgName';
 import Name from '@/modules/profile/Name';
 import { useUserInfoStore } from '@/store/profileState';
 import { useFindOneUserById } from '@/modules/profile/useHandleRequest';
-import { USERNAME, ID } from '@/shared/constants/storage';
 import { useTranslations } from 'next-intl';
 
 const ProfileForm: React.FC = () => {
@@ -27,29 +26,17 @@ const ProfileForm: React.FC = () => {
         const {
                 userInfo,
                 setUserInfo,
-                isEdit,
-                setIsEdit,
-                isValueChange,
-                setIsValueChange,
                 selectedSection,
                 setSelectedSection,
-                initialUserInfo,
                 setInitialUserInfo,
                 loading,
-                setLoading,
-                storedUsername,
+                setRequestError,
+                twoFAStatus,
+                initialUserInfo,
                 storedId,
                 setStoredId,
                 setStoredUsername,
-                setRequestError,
               } = useUserInfoStore();
-
-        useEffect(() => {
-          const id = localStorage.getItem(ID) || '';
-          const username = localStorage.getItem(USERNAME) || '';
-          setStoredId(id);
-          setStoredUsername(username);
-        }, []);
 
         const { data } = useFindOneUserById(storedId);
         useEffect(() => {
@@ -67,12 +54,17 @@ const ProfileForm: React.FC = () => {
               orgName: data.orgName || '',
             };
             setUserInfo(newUserInfo);
+            setStoredUsername(data.username);
+            setStoredId(data.id);
             setInitialUserInfo(newUserInfo);
           }
-        }, [data]);
+        }, [data, setUserInfo, setInitialUserInfo]);
 
         const handleSectionClick = (section: string) => {
           setSelectedSection(section);
+          if (section === 'Security') {
+            !twoFAStatus && setUserInfo({ ...userInfo, is2FAEnabled: initialUserInfo.is2FAEnabled });
+          }
           setRequestError('');
         };
 
@@ -80,12 +72,11 @@ const ProfileForm: React.FC = () => {
           <Box sx={{ padding: 3, width: '100%', maxWidth: 1000, margin: '0 auto' }}>
             <Typography variant="h4" gutterBottom>{t('title')}</Typography>
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-              <Box sx={{ width: { xs: '100%', md: '25%' }, flexGrow: 1 }}>
+              <Box sx={{ width: { xs: '100%', md: '35%' }, flexGrow: 1 }}>
                 <SideBar selectedSection={selectedSection} handleSectionClick={handleSectionClick} />
               </Box>
-              <Box sx={{ width: { xs: '100%', md: '75%' }, flexGrow: 2 }}
-              >
-                <Card>
+              <Box sx={{ width: { xs: '100%', md: '75%' }, flexGrow: 2 }}>
+                <Card sx={{ paddingBottom: 0 }}>
                   <CardContent>
                     {(selectedSection === 'Avatar' && userInfo) && (
                       <AvatarEditor />
@@ -105,7 +96,7 @@ const ProfileForm: React.FC = () => {
                     {(selectedSection === 'DisplayName' && userInfo) && (
                       <DisplayName />
                     )}
-                    {selectedSection === 'Security' && (
+                    {(selectedSection === 'Security' && userInfo) && (
                       <TwoFA />
                     )}
                     {(selectedSection === 'DeleteAccount' && userInfo) && (

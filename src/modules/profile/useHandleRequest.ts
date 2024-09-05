@@ -1,8 +1,8 @@
-import { FIND_ONE_USER_BY_ID } from '@/graphql/user';
+import { FIND_ONE_USER } from '@/graphql/user';
 import { useQuery, useMutation } from '@apollo/client';
 
 export const useFindOneUserById = (id: string) => {
-  const { data, error } = useQuery(FIND_ONE_USER_BY_ID, {
+  const { data, error } = useQuery(FIND_ONE_USER, {
     variables: {
       id,
     },

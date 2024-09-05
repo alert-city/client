@@ -4,33 +4,25 @@ import { Container, Box, FormControl, FormLabel, RadioGroup, FormControlLabel, R
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { IndexConfig } from '@/routes';
-import { LANGUAGE } from '@/shared/constants/storage';
 import { useTranslations } from 'next-intl';
 import { useLanguage } from '@/utils/switchLanguage';
 import { Locales } from '@/i18n/routing';
+import { useTheme } from '@/utils/switchTheme';
 
 const Preferences: React.FC = () => {
   const t = useTranslations('Preferences');
-  const { currentLocale, setLanguage, languageSwitcher } = useLanguage();
-  const [theme, setTheme] = useState('');
+  const { currentLocale, languageSwitcher } = useLanguage();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const { currentTheme, themeSwitcher } = useTheme();
 
   const languageOptions = IndexConfig.languageOptions.map(option => ({
     ...option,
     label: t(option.key),
   }));
 
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem(LANGUAGE) || 'en';
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setLanguage(savedLanguage as Locales);
-    setTheme(savedTheme);
-  }, []);
-
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedTheme = event.target.checked ? 'dark' : 'light';
-    setTheme(selectedTheme);
-    localStorage.setItem('theme', selectedTheme);
+    themeSwitcher(selectedTheme);
     setSnackbarOpen(true);
   };
 
@@ -52,12 +44,12 @@ const Preferences: React.FC = () => {
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={theme === 'dark'}
+                      checked={currentTheme === 'dark'}
                       onChange={handleThemeChange}
                       name="themeToggle"
                     />
                   }
-                  label={theme === 'dark' ? t('dark') : t('light')}
+                  label={currentTheme === 'dark' ? t('dark') : t('light')}
                 />
               </FormControl>
             </CardContent>
@@ -117,7 +109,7 @@ const Preferences: React.FC = () => {
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={handleSnackbarClose}
-          message="Settings saved"
+          message={t('snackbarMessage')}
         />
       </Box>
     </Container>

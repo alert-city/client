@@ -1,14 +1,13 @@
 import React from 'react';
-import Activate from '@/modules/auth/EmailLinkValidation/ValidateEmailPage';
+import Update from '@/modules/auth/EmailLinkValidation/ValidateEmailPage';
 import { RouteConfig } from '@/routes/route';
 
 export const metadata = RouteConfig.Activate.Metadata;
 
-const ActivatePage: React.FC = () => {
+const UpdatePage: React.FC = () => {
   return (
-    <Activate />
+    <Update />
   );
-
 };
 
-export default ActivatePage;
+export default UpdatePage;

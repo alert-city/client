@@ -1,8 +1,8 @@
-import create from 'zustand';
-import { UPDATE_USER_BY_USERNAME } from '@/graphql/user';
+import { create } from 'zustand';
+import { UPDATE_USER } from '@/graphql/user';
 import { useMutation } from '@apollo/client';
 import React from 'react';
-
+import { USERNAME, ID } from '@/shared/constants/storage';
 
 interface SubmitInput {
   firstName?: string;
@@ -44,6 +44,9 @@ interface UserInfoState {
   requestError: string;
   setRequestError: (error: string) => void;
   reset: () => void;
+  twoFAStatus: boolean;
+  setTwoFAStatus: (status: boolean) => void;
+  forceUpdate: () => void;
 }
 
 const initialUserInfo: UserInfo = {
@@ -95,16 +98,20 @@ export const useUserInfoStore = create<UserInfoState>((set, get) => ({
   isEdit: initialBooleanState,
   selectedSection: initialSelectedSection,
   loading: initialLoading,
-  storedUsername: '',
-  storedId: '',
+  storedUsername: typeof window !== 'undefined' ? window.localStorage.getItem(USERNAME) || '' : '',
+  storedId: typeof window !== 'undefined' ? window.localStorage.getItem(ID) || '' : '',
   setStoredId: (id: string) => set({ storedId: id }),
   setStoredUsername: (username: string) => set({ storedUsername: username }),
   requestError: '',
+  twoFAStatus: false,
   setRequestError: (error: string) => set({ requestError: error }),
   setUserInfo: (newUserInfo) =>
     set((state) => ({
       userInfo: { ...state.userInfo, ...newUserInfo },
     })),
+  forceUpdate: () => set((state) => ({
+    userInfo: { ...state.userInfo },
+  })),
   setInitialUserInfo: (newUserInfo) =>
     set((state) => ({
       initialUserInfo: { ...state.initialUserInfo, ...newUserInfo },
@@ -119,6 +126,7 @@ export const useUserInfoStore = create<UserInfoState>((set, get) => ({
     })),
   setSelectedSection: (section) => set({ selectedSection: section }),
   setLoading: (loading) => set({ loading: loading }),
+  setTwoFAStatus: (status) => set({ twoFAStatus: status }),
   reset: () => set({
     userInfo: initialUserInfo,
     initialUserInfo: initialUserInfo,
@@ -129,9 +137,9 @@ export const useUserInfoStore = create<UserInfoState>((set, get) => ({
     storedUsername: '',
     storedId: '',
     requestError: '',
+    twoFAStatus: false,
   }),
 }));
-
 
 export const handleCancel = (section: keyof UserInfo | 'name') => {
   const { setIsEdit, setUserInfo, initialUserInfo, setRequestError } = useUserInfoStore.getState();
@@ -160,9 +168,11 @@ export const handleValueChanged = (
   section: keyof typeof userInfo | 'firstName' | 'lastName',
   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
 ) => {
-  const { userInfo, setUserInfo, isValueChange, setIsValueChange, initialUserInfo } = useUserInfoStore.getState();
+  const {
+          userInfo, setUserInfo, isValueChange, setIsValueChange, initialUserInfo, setRequestError,
+        } = useUserInfoStore.getState();
+  setRequestError('');
   const initialInfo = initialUserInfo as typeof userInfo;
-
   if (section === 'firstName' || section === 'lastName') {
     if (e.target.value !== initialInfo.name[section]) {
       setUserInfo({
@@ -198,10 +208,10 @@ export const handleValueChanged = (
 
 
 export const useUserActions = () => {
-  const [updateUserByUsername] = useMutation(UPDATE_USER_BY_USERNAME);
+  const [updateUser] = useMutation(UPDATE_USER);
   const {
           userInfo, isValueChange, isEdit, setIsEdit, setUserInfo, setIsValueChange, setLoading, storedUsername,
-          setRequestError, setInitialUserInfo, initialUserInfo,
+          setRequestError, setInitialUserInfo, initialUserInfo, storedId,
         } = useUserInfoStore.getState();
 
   const handleSubmit = async (
@@ -210,13 +220,12 @@ export const useUserActions = () => {
   ) => {
     setLoading(true);
     try {
-      const { data } = await updateUserByUsername({
+      const { data } = await updateUser({
         variables: {
-          username: storedUsername,
+          id: storedId,
           input: section === 'name' ? { firstName: input.firstName, lastName: input.lastName } : input,
         },
       });
-      console.log('data: ', data);
       return { data: data, error: null };
     } catch (error) {
       return { data: null, error: (error as Error).message };
@@ -227,10 +236,6 @@ export const useUserActions = () => {
 
   const handleSave = async (section: keyof typeof userInfo | 'name') => {
     if (section === 'name') {
-      console.log('userInfo.name.firstName: ', userInfo.name.firstName);
-      console.log('initialUserInfo.name.firstName: ', initialUserInfo.name.firstName);
-      console.log('userInfo.name.lastName: ', userInfo.name.lastName);
-      console.log('initialUserInfo.name.lastName: ', initialUserInfo.name.lastName);
       if (userInfo[section].firstName !== initialUserInfo[section].firstName || userInfo[section].lastName !== initialUserInfo[section].lastName) {
         const { error } = await handleSubmit(
           { firstName: userInfo.name.firstName, lastName: userInfo.name.lastName }, 'name');
@@ -247,6 +252,8 @@ export const useUserActions = () => {
           setIsValueChange({ ...isValueChange, name: { firstName: false, lastName: false } });
           setInitialUserInfo({ name: { firstName: userInfo.name.firstName, lastName: userInfo.name.lastName } });
         }
+      } else {
+        handleCancel(section);
       }
     } else {
       if (userInfo[section] !== initialUserInfo[section]) {
@@ -258,6 +265,8 @@ export const useUserActions = () => {
           setInitialUserInfo({ [section]: userInfo[section] });
           setIsValueChange({ ...isValueChange, [section]: false });
         }
+      } else {
+        handleCancel(section);
       }
     }
   };

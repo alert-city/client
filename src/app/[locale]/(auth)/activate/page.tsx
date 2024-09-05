@@ -8,7 +8,6 @@ const ActivatePage: React.FC = () => {
   return (
     <Activate />
   );
-
 };
 
 export default ActivatePage;

@@ -11,7 +11,7 @@ type UpdateMobilePhoneFormValues = z.infer<typeof updateMobilePhoneSchema>;
 
 const Contact: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const { userInfo, setUserInfo, isEdit, setIsEdit } = useUserInfoStore();
+  const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
 
   const {
@@ -50,6 +50,12 @@ const Contact: React.FC = () => {
           })}
         />
         : <Typography>{userInfo.mobilePhone}</Typography>}
+      {requestError && (
+        <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error"
+                    variant="body2">
+          {requestError}
+        </Typography>
+      )}
       {isEdit.mobilePhone ?
         <>
           <Button variant="contained" sx={{ marginTop: 2 }} type="submit">{t('submit')}</Button>

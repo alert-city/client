@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { useUserInfoStore, handleCancel, handleValueChanged, useUserActions } from '@/store/profileState';
-import { useTopbarStore } from '@/store/topBar';
+import { useTopbarStore } from '@/store/topBarState';
 import { useTranslations } from 'next-intl';
 
 const DisplayName: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const { userInfo, setUserInfo, isEdit, setIsEdit } = useUserInfoStore();
+  const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
   const { setUpdatedDisplayName } = useTopbarStore();
 
@@ -24,6 +24,12 @@ const DisplayName: React.FC = () => {
           }}
         />
         : <Typography>{userInfo.displayName}</Typography>}
+      {requestError && (
+        <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error"
+                    variant="body2">
+          {requestError}
+        </Typography>
+      )}
       {isEdit.displayName ?
         <>
           <Button variant="contained" sx={{ marginTop: 2 }}
