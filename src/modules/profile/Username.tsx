@@ -1,5 +1,5 @@
 'use client';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { handleCancel, useUserInfoStore } from '@/store/profileState';
 import { useLogout } from '@/hooks/useLogout';
@@ -16,7 +16,7 @@ type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
 const Username: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
   const {
-          userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername,storedId
+          userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername, storedId,
         } = useUserInfoStore();
   const [updateUsernameError, setUpdateUsernameError] = useState<string | null>(null);
   const [updateUsernameInfo, setUpdateUsernameInfo] = useState<string | null>(null);
@@ -118,15 +118,15 @@ const Username: React.FC = () => {
 
       {!isSendSuccess && (isEdit.username ?
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button variant="contained" sx={{ marginTop: 2 }} type="submit">
-              {t('submit')}
-            </Button>
-            <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
+            <Button variant="outlined" sx={{ marginTop: 2 }}
                     onClick={() => {
                       handleCancel('username');
                       setUserInfo({ ...userInfo, username: initialUserInfo.username });
                       setValue('username', initialUserInfo.username);
                     }}>{t('cancel')}</Button>
+            <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }} type="submit">
+              {t('submit')}
+            </Button>
           </Box>
           :
           <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => setIsEdit({ ...isEdit, username: true })}>

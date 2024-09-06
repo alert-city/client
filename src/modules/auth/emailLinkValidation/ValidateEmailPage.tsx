@@ -59,10 +59,6 @@ const ValidateEmailPage: React.FC = () => {
   const [activationError, setActivationError] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
 
-  console.log('emailType: ', emailType);
-  console.log('emailType: ', typeof emailType);
-  console.log('emailType: ', typeof parseInt(emailType, 10));
-
   useEffect(() => {
     if (token) {
       setStatus('loading');

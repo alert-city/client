@@ -11,7 +11,7 @@ type UpdateMobilePhoneFormValues = z.infer<typeof updateMobilePhoneSchema>;
 
 const Contact: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
+  const { userInfo, setUserInfo, isEdit, setIsEdit, requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
 
   const {
@@ -22,7 +22,7 @@ const Contact: React.FC = () => {
         } = useForm<UpdateMobilePhoneFormValues>({
     resolver: zodResolver(updateMobilePhoneSchema),
     defaultValues: {
-      mobilePhone: userInfo.mobilePhone
+      mobilePhone: userInfo.mobilePhone,
     },
   });
 
@@ -58,9 +58,9 @@ const Contact: React.FC = () => {
       )}
       {isEdit.mobilePhone ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }} type="submit">{t('submit')}</Button>
-          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
+          <Button variant="outlined" sx={{ marginTop: 2 }}
                   onClick={() => handleCancel('mobilePhone')}>{t('cancel')}</Button>
+          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }} type="submit">{t('submit')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}

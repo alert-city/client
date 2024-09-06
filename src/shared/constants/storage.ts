@@ -7,6 +7,11 @@ export const DISPLAY_NAME = 'display_name';
 export const ID: string = 'id';
 export const AVATAR_URL = 'avatar_url';
 export const THEME = 'theme';
+export const LIGHT_THEME = 'lightTheme';
+export const DARK_THEME = 'darkTheme';
+export const SYSTEM = 'system';
+export const LIGHT = 'light';
+export const DARK = 'dark';
 export const ROLE = 'role';
 export const CAN_SHOW_SNACKBAR = 'can_show_snackbar';
-export const STORED_USER_INFO = 'stored_user_info';
+

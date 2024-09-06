@@ -143,7 +143,7 @@ const AvatarEditor: React.FC = () => {
         <Skeleton variant="circular" width={150} height={150} sx={{ marginBottom: 4 }} />
       ) : (
         <Avatar
-          sx={{ width: 150, height: 150, marginBottom: 4 }}
+          sx={{ width: 150, height: 150, marginBottom: 4, mt: 1.5 }}
           src={croppedImage || userInfo.avatarUrl || ''}
           alt={t('avatar.avatar')}
         />
@@ -162,7 +162,7 @@ const AvatarEditor: React.FC = () => {
               ref={cropperRef}
             />
           ) : (
-            <Button sx={{mt:0.5}} variant="contained" component="label">
+            <Button sx={{ mt: 0.5 }} variant="contained" component="label">
               {t('avatar.uploadImage')}
               <input type="file" accept="image/*" onChange={handleImageChange} hidden />
             </Button>

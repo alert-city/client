@@ -24,6 +24,7 @@ import Tune from '@mui/icons-material/Tune';
 import Logout from '@mui/icons-material/Logout';
 import MailIcon from '@mui/icons-material/Mail';
 import { VpnKey } from '@mui/icons-material';
+import getIconUrl from '@/utils/getIconUrl';
 
 interface TopBarProps {
   open: boolean;
@@ -62,6 +63,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const [isAvatarLoading, setIsAvatarLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const iconUrl = getIconUrl();
 
   useEffect(() => {
     setAvatarUrl(localStorage.getItem(AVATAR_URL) || '');
@@ -120,7 +122,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
     <StyledAppBar position="fixed" open={open}>
       <Box sx={{ width: '100%' }}>
         <Toolbar disableGutters sx={{ justifyContent: 'space-between', display: 'flex', padding: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '30px' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '25px' }}>
             <Tooltip title={t('openSidebarHover')}>
               <IconButton
                 color="inherit"
@@ -135,7 +137,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
                 <MenuIcon />
               </IconButton>
             </Tooltip>
-            <Avatar src="/images/alertcity-dark.png" alt="icon" sx={{ mr: 2 }} />
+            <Avatar src={iconUrl} alt="icon" sx={{ ml: 1, mr: 2 }} />
             <Typography
               variant="h6" noWrap onClick={async (e) => {
               await logout();
@@ -154,7 +156,8 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '30px' }}>
             <Tooltip title={t('openSettingHover')}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu}
+                          sx={{ p: 0, '&:hover': { backgroundColor: 'transparent', shadowboxShadow: 'none' } }}>
                 {isAvatarLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
                 ) : (

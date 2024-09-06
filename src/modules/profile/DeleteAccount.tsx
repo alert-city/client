@@ -106,20 +106,20 @@ const DeleteAccount: React.FC = () => {
       {isSubmitting &&
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <Button
-            variant="contained"
-            color="error"
-            sx={{ mt: 2 }}
-            onClick={handleDelete}
-          >
-            {t('submit')}
-          </Button>
-          <Button
-            variant="contained"
+            variant="outlined"
             color="error"
             sx={{ mt: 2 }}
             onClick={handleCancel}
           >
             {t('cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={handleDelete}
+          >
+            {t('submit')}
           </Button>
         </Box>
       }

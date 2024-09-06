@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, TextField, Typography } from '@mui/material';
-import { useUserInfoStore,handleCancel, handleValueChanged, useUserActions } from '@/store/profileState';
+import { useUserInfoStore, handleCancel, handleValueChanged, useUserActions } from '@/store/profileState';
 import { useTranslations } from 'next-intl';
 
 const OrgName: React.FC = () => {
-  const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
+  const { userInfo, setUserInfo, isEdit, setIsEdit, requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
   const t = useTranslations('ProfileUpdatePage');
 
@@ -30,9 +30,9 @@ const OrgName: React.FC = () => {
       )}
       {isEdit.orgName ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => handleSave('orgName')}>{t('submit')}</Button>
-          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
+          <Button variant="outlined" sx={{ marginTop: 2 }}
                   onClick={() => handleCancel('orgName')}>{t('cancel')}</Button>
+          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }} onClick={() => handleSave('orgName')}>{t('submit')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}

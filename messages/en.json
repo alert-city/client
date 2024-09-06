@@ -5,6 +5,7 @@
     "theme": "Theme",
     "dark": "Dark",
     "light": "Light",
+    "system": "System",
     "en": "English",
     "zh-cn": "Chinese",
     "snackbarMessage": "Settings saved"
@@ -45,7 +46,8 @@
     "resendError": "Resend email error, please try again later",
     "cancel": "Cancel",
     "resend": "Resend",
-    "close": "Close"
+    "close": "Close",
+    "setting": "Open Setting"
   },
   "RegistrationPage": {
     "title": "Registration",
@@ -184,7 +186,7 @@
     "seconds": "seconds"
   },
   "WelcomeSnackbar": {
-    "content": "Welcome back",
+    "content": "Welcome",
     "comma": ", ",
     "exclamation": "!"
   }

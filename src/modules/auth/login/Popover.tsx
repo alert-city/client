@@ -16,7 +16,7 @@ export default function MouseHoverPopover({ anchorEl, onClose }: MouseHoverPopov
     <div>
       <Popover
         id="mouse-over-popover"
-        sx={{ pointerEvents: 'none' }}
+        sx={{ pointerEvents: 'none', maxWidth: '66rem' }}
         open={open}
         anchorEl={anchorEl}
         anchorOrigin={{

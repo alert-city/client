@@ -5,6 +5,7 @@
     "theme": "主题",
     "dark": "深色模式",
     "light": "浅色模式",
+    "system": "跟随系统",
     "en": "英文",
     "zh-cn": "简体中文",
     "snackbarMessage": "设置已保存"
@@ -45,7 +46,8 @@
     "resendError": "重新发送邮件失败，请稍后再试",
     "cancel": "取消",
     "resend": "重新发送",
-    "close": "关闭"
+    "close": "关闭",
+    "setting": "打开设置"
   },
   "RegistrationPage": {
     "title": "注册",
@@ -186,7 +188,7 @@
     "seconds": "秒后重定向到登录页面"
   },
   "WelcomeSnackbar": {
-    "content": "欢迎回来",
+    "content": "欢迎您",
     "comma": "，",
     "exclamation": "！"
   }

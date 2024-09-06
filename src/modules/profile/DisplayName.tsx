@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 
 const DisplayName: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const { userInfo, setUserInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
+  const { userInfo, setUserInfo, isEdit, setIsEdit, requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
   const { setUpdatedDisplayName } = useTopbarStore();
 
@@ -32,15 +32,15 @@ const DisplayName: React.FC = () => {
       )}
       {isEdit.displayName ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }}
+          <Button variant="outlined" sx={{ marginTop: 2 }}
+                  onClick={() => handleCancel('displayName')}>{t('cancel')}</Button>
+          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
                   onClick={async () => {
                     await handleSave('displayName');
                     setUpdatedDisplayName(userInfo.displayName);
                   }}>
             {t('submit')}
           </Button>
-          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
-                  onClick={() => handleCancel('displayName')}>{t('cancel')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}

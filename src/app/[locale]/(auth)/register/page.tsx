@@ -6,7 +6,7 @@ export const metadata = RouteConfig.Register.Metadata
 
 const RegisterPage: React.FC = () => {
   return (
-    <div>
+    <div className="flex justify-center py-10">
       <RegisterForm />
     </div>
   );

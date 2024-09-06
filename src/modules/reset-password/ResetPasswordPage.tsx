@@ -21,7 +21,7 @@ const ResetPasswordPage: React.FC = () => {
     );
   } else {
     return (
-      <NavigationBarLayout isCentered>
+      <NavigationBarLayout>
         <div className="flex justify-center items-center">
           <ResetPassword />
         </div>
