@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { IS_FIRST_LOGIN,DISPLAY_NAME } from '@/shared/constants/storage';
+import { IS_FIRST_LOGIN, DISPLAY_NAME, CAN_SHOW_SNACKBAR } from '@/shared/constants/storage';
 import { useTranslations } from 'next-intl';
 
 const WelcomeSnackbar = () => {
@@ -15,7 +15,7 @@ const WelcomeSnackbar = () => {
     setDisplayName(displayName || '');
     const timer = setTimeout(() => {
       setOpen(false);
-      localStorage.setItem(IS_FIRST_LOGIN, 'false');
+      localStorage.setItem(CAN_SHOW_SNACKBAR, 'false');
     }, 6000);
 
     return () => {

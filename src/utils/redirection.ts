@@ -15,13 +15,6 @@ interface LoginRedirectState extends TwoFARedirectState {
 
 export function useLogin() {
   const router = useRouter();
-  const [locale, setLocale] = useState('en');
-
-  useEffect(() => {
-    getPreferenceInfo().then(({ locale }) => {
-      setLocale(locale as Locales);
-    });
-  }, []);
 
   const twoFARedirect = ({ accountType, role }: TwoFARedirectState) => {
     if (accountType === IndexConfig.Organization.AccountType) {

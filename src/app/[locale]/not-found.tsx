@@ -23,7 +23,7 @@ export default function NotFoundPage() {
 
   return (
     <Container
-      maxWidth="xl"
+      maxWidth={false}
       sx={{
         height: '100vh',
         display: 'flex',

@@ -25,8 +25,8 @@ function createApolloClient() {
       if (typeof window !== 'undefined') {
         const context = operation.getContext();
         const headers = context.response?.headers;
-        const newAccessToken = headers?.get('x-new-access-token');
-        const authStatus = headers?.get('x-auth-status');
+        const newAccessToken = headers?.get('New-Access-Token');
+        const authStatus = headers?.get('Auth-Status');
         if (newAccessToken) Cookies.set(ACCESS_TOKEN, newAccessToken);
         if (authStatus === 'invalid') {
           const currentLocale = Cookies.get('NEXT_LOCALE') ?? 'en';

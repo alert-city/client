@@ -5,15 +5,14 @@ import TopBar from './topbar/Topbar';
 import Sidebar from './sidebar/Sidebar';
 import styled from '@mui/material/styles/styled';
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isCentered' })<{
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
-  isCentered?: boolean;
-}>(({ theme, open, isCentered }) => ({
+}>(({ theme, open }) => ({
   width: '100%',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent:  'center',
+  justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
   transition: theme.transitions.create('margin', {
@@ -38,10 +37,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-const NavigationBarLayout: React.FC<React.PropsWithChildren<{ isCentered?: boolean }>> = ({
-  children,
-  isCentered = false,
-}) => {
+const NavigationBarLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -55,7 +51,7 @@ const NavigationBarLayout: React.FC<React.PropsWithChildren<{ isCentered?: boole
     <Box sx={{ display: 'flex' }}>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
-      <Main open={open} isCentered={isCentered}>
+      <Main open={open}>
         <DrawerHeader />
         {children}
       </Main>

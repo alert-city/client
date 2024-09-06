@@ -1,5 +1,5 @@
 import React from 'react';
-import Update from '@/modules/auth/EmailLinkValidation/ValidateEmailPage';
+import Update from '@/modules/auth/emailLinkValidation/ValidateEmailPage';
 import { RouteConfig } from '@/routes/route';
 
 export const metadata = RouteConfig.Activate.Metadata;

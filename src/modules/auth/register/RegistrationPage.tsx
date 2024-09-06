@@ -29,6 +29,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTranslations } from 'next-intl';
+import useTheme from '@/utils/switchTheme';
+import { DARK, LIGHT, LIGHT_THEME, SYSTEM } from '@/shared/constants/storage';
 
 const accountTypeOptions = {
   personal: 'Personal',
@@ -49,6 +51,18 @@ const RegistrationPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { isSystemDark, displayTheme } = useTheme();
+
+  useEffect(() => {
+    if (displayTheme === DARK) {
+      setTheme(DARK);
+    } else if (displayTheme === LIGHT) {
+      setTheme(LIGHT);
+    } else {
+      isSystemDark ? setTheme(DARK) : setTheme(LIGHT);
+    }
+  }, [displayTheme, isSystemDark]);
 
   const {
           register,
@@ -156,272 +170,264 @@ const RegistrationPage: React.FC = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      padding={3}
-      sx={{ borderRadius: '16px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        padding: '20px 40px',
+        maxWidth: 800,
+        borderRadius: 4,
+        minHeight: '100vh',
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+      }}
     >
+      <Box sx={{ position: 'relative', width: '100%', mb: 6 }}>
+        <Tooltip title={t('return')} placement="right">
+          <IconButton
+            onClick={() => router.back()}
+            sx={{ position: 'absolute' }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Typography variant="h4" gutterBottom>
+        {t('title')}
+      </Typography>
       <Box
-        component="div"
-        sx={{
-          width: '100%',
-          maxWidth: 800,
-          border: '1px solid #ddd',
-          borderRadius: 4,
-          boxShadow: 3,
-          padding: 4,
-          backgroundColor: '#fff',
-        }}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={3}
+        width="100%"
       >
-        <Box sx={{ position: 'relative', width: '100%', mb: 6 }}>
-          <Tooltip title={t('return')} placement="right">
-            <IconButton
-              onClick={() => router.back()}
-              sx={{ position: 'absolute' }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Typography variant="h4" gutterBottom>
-          {t('title')}
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap={3}
-          width="100%"
-        >
-
-          <Card sx={{ width: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {t('accountInformation')}
-              </Typography>
-              <Box display="flex" flexDirection="column" gap={2} mb={2}>
-                <FormControl fullWidth>
-                  <InputLabel>{t('accountType')}</InputLabel>
-                  <Select
-                    label={t('accountType')}
-                    defaultValue="Personal"
-                    {...register('accountType', {
-                      onChange: (e) => {
-                        if (e.target.value) {
-                          setAccountType(e.target.value);
-                        }
-                      },
-                    })}
-                  >
-                    <MenuItem value={accountTypeOptions.personal}>{t('personal')}</MenuItem>
-                    <MenuItem value={accountTypeOptions.organization}>{t('organization')}</MenuItem>
-                  </Select>
-                  {errors.accountType && (
-                    <FormHelperText>{errors.accountType.message}</FormHelperText>
-                  )}
-                </FormControl>
-              </Box>
-              <Box display="flex" gap={2} mb={2}>
-                <TextField
-                  label={t('username')}
-                  {...register('username', {
-                      onChange: (e) => {
-                        setRegistrationInfo(null);
-                      },
+        <Card sx={{ width: '100%' }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              {t('accountInformation')}
+            </Typography>
+            <Box display="flex" flexDirection="column" gap={2} mb={2}>
+              <FormControl fullWidth>
+                <InputLabel>{t('accountType')}</InputLabel>
+                <Select
+                  label={t('accountType')}
+                  defaultValue="Personal"
+                  {...register('accountType', {
+                    onChange: (e) => {
+                      if (e.target.value) {
+                        setAccountType(e.target.value);
+                      }
                     },
-                  )}
-                  fullWidth
-                  placeholder={t('usernamePlaceholder')}
-                  error={!!errors.username}
-                  helperText={errors.username?.message}
-                />
-                <TextField
-                  label={t('displayName')}
-                  fullWidth
-                  {...register('displayName')}
-                  error={!!errors.displayName}
-                  helperText={errors.displayName?.message}
-                />
-              </Box>
-              <Box display="flex" gap={2} mb={2}>
-                <TextField
-                  label={t('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  fullWidth
-                  {...register('password')}
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle new password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          size="small"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  label={t('confirmPassword')}
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  fullWidth
-                  {...register('confirmPassword')}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle confirm new password visibility"
-                          onClick={handleClickShowConfirmPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          size="small"
-                        >
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-
-
-          {/* Basic Information */}
-          <Card sx={{ width: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {t('basicInformation')}
-              </Typography>
-              {(accountType === 'Personal') &&
-                <Box display="flex" gap={2} mb={2}>
-                  <TextField
-                    label={t('firstName')}
-                    fullWidth
-                    {...register('firstName')}
-                    error={!!errors?.firstName}
-                    helperText={errors.firstName?.message}
-                  />
-                  <TextField
-                    label={t('lastName')}
-                    fullWidth
-                    {...register('lastName')}
-                    error={!!errors?.lastName}
-                    helperText={errors.lastName?.message}
-                  />
-                </Box>
-              }
-              <Box display="flex" gap={2} mb={2}>
-                {(accountType === 'Organization') &&
-                  <TextField
-                    label={t('orgName')}
-                    fullWidth
-                    {...register('orgName')}
-                    error={!!errors.orgName}
-                    helperText={errors.orgName?.message}
-                  />
-                }
-                <TextField
-                  label={t('mobilePhone')}
-                  fullWidth
-                  {...register('mobilePhone')}
-                  error={!!errors.mobilePhone}
-                  helperText={errors.mobilePhone?.message}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* CAPTCHA */}
-          <Card sx={{ width: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {t('verification')}
-              </Typography>
-              <FormControl error={!!errors.captchaVerified} fullWidth>
-                <Box display="flex" justifyContent="center">
-                  <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                    onChange={handleCaptchaChange}
-                  />
-                </Box>
-                {errors.captchaVerified && (
-                  <FormHelperText sx={{ textAlign: 'center', marginTop: 2 }}>
-                    {errors.captchaVerified.message}
-                  </FormHelperText>
+                  })}
+                >
+                  <MenuItem value={accountTypeOptions.personal}>{t('personal')}</MenuItem>
+                  <MenuItem value={accountTypeOptions.organization}>{t('organization')}</MenuItem>
+                </Select>
+                {errors.accountType && (
+                  <FormHelperText>{errors.accountType.message}</FormHelperText>
                 )}
               </FormControl>
-            </CardContent>
-          </Card>
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <TextField
+                label={t('username')}
+                {...register('username', {
+                    onChange: (e) => {
+                      setRegistrationInfo(null);
+                    },
+                  },
+                )}
+                fullWidth
+                placeholder={t('usernamePlaceholder')}
+                error={!!errors.username}
+                helperText={errors.username?.message}
+              />
+              <TextField
+                label={t('displayName')}
+                fullWidth
+                {...register('displayName')}
+                error={!!errors.displayName}
+                helperText={errors.displayName?.message}
+              />
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <TextField
+                label={t('password')}
+                type={showPassword ? 'text' : 'password'}
+                fullWidth
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle new password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        size="small"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                label={t('confirmPassword')}
+                type={showConfirmPassword ? 'text' : 'password'}
+                fullWidth
+                {...register('confirmPassword')}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle confirm new password visibility"
+                        onClick={handleClickShowConfirmPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        size="small"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
 
-          <Box className="flex justify-center">
-            {registrationInfo &&
-              <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="primary" variant="body2">
-                {registrationInfo}
-              </Typography>
-            }
-            {registrationError &&
-              <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error" variant="body2">
-                {registrationError}
-              </Typography>
-            }
-          </Box>
 
-          {!registrationStatus &&
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              {t('register')}
-            </Button>
+        {/* Basic Information */}
+        <Card sx={{ width: '100%' }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              {t('basicInformation')}
+            </Typography>
+            {(accountType === 'Personal') &&
+              <Box display="flex" gap={2} mb={2}>
+                <TextField
+                  label={t('firstName')}
+                  fullWidth
+                  {...register('firstName')}
+                  error={!!errors?.firstName}
+                  helperText={errors.firstName?.message}
+                />
+                <TextField
+                  label={t('lastName')}
+                  fullWidth
+                  {...register('lastName')}
+                  error={!!errors?.lastName}
+                  helperText={errors.lastName?.message}
+                />
+              </Box>
+            }
+            <Box display="flex" gap={2} mb={2}>
+              {(accountType === 'Organization') &&
+                <TextField
+                  label={t('orgName')}
+                  fullWidth
+                  {...register('orgName')}
+                  error={!!errors.orgName}
+                  helperText={errors.orgName?.message}
+                />
+              }
+              <TextField
+                label={t('mobilePhone')}
+                fullWidth
+                {...register('mobilePhone')}
+                error={!!errors.mobilePhone}
+                helperText={errors.mobilePhone?.message}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* CAPTCHA */}
+        <Card sx={{ width: '100%' }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              {t('verification')}
+            </Typography>
+            <FormControl error={!!errors.captchaVerified} fullWidth>
+              <Box display="flex" justifyContent="center"
+              >
+                <ReCAPTCHA
+                  key={theme}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                  onChange={handleCaptchaChange}
+                  theme={theme}
+                />
+              </Box>
+              {errors.captchaVerified && (
+                <FormHelperText sx={{ textAlign: 'center', marginTop: 2 }}>
+                  {errors.captchaVerified.message}
+                </FormHelperText>
+              )}
+            </FormControl>
+          </CardContent>
+        </Card>
+        <Box className="flex justify-center">
+          {registrationInfo &&
+            <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="primary" variant="body2">
+              {registrationInfo}
+            </Typography>
           }
-          {!registrationStatus &&
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              fullWidth
-              onClick={() => router.back()}
-            >
-              {t('returnToLogin')}
-            </Button>
+          {registrationError &&
+            <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error" variant="body2">
+              {registrationError}
+            </Typography>
           }
-          {registrationStatus &&
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              type="button"
-              onClick={() => router.push(RouteConfig.Login.Path)}
-            >
-              {t('nextPage')}
-            </Button>
-          }
-          <Typography variant="body2" mt={2} color="primary">
-            <RouteConfig.Login.Link>
-              {t('alreadyHaveAccount')}
-            </RouteConfig.Login.Link>
-          </Typography>
         </Box>
+        {!registrationStatus &&
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            {t('register')}
+          </Button>
+        }
+        {!registrationStatus &&
+          <Button
+            type="button"
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            onClick={() => router.back()}
+          >
+            {t('returnToLogin')}
+          </Button>
+        }
+        {registrationStatus &&
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            type="button"
+            onClick={() => router.push(RouteConfig.Login.Path)}
+          >
+            {t('nextPage')}
+          </Button>
+        }
+        <Typography variant="body2" mt={2} color="primary">
+          <RouteConfig.Login.Link>
+            {t('alreadyHaveAccount')}
+          </RouteConfig.Login.Link>
+        </Typography>
       </Box>
       <LoadingOverlay loading={loading} />
-    </Box>
+    </Card>
   );
 };
 

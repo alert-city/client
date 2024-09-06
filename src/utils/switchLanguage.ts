@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Locales } from '@/i18n/routing';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, usePathname } from '@/i18n/routing';
 import { usePreferenceSetting } from '@/store/preferenceState';
 import { RouteConfig } from '@/routes/route';
 import { getPreferenceInfo } from '@/utils/getPreferenceInfo';
@@ -13,6 +13,7 @@ type HandlerProps = {
 export function useLanguage() {
   const router = useRouter();
   const { currentLocale, setLanguage } = usePreferenceSetting();
+  const pathname = usePathname();
 
   useEffect(() => {
     getPreferenceInfo().then(({ locale }) => {
@@ -24,8 +25,9 @@ export function useLanguage() {
     path = RouteConfig.Preferences.Path,
     locale,
   }: HandlerProps) {
+    const redirectPath = pathname.includes('login') ? RouteConfig.Login.Path : path;
     setLanguage(locale as Locales);
-    router.replace(path, {
+    router.replace(redirectPath, {
       locale,
     });
   }
