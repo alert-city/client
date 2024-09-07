@@ -83,3 +83,18 @@ export const RESEND_ACTIVATION_LINK_EMAIL = gql`
     }
 `;
 
+export const FIND_USER_BY_USERNAME = gql`
+    query FindUserByUsername($username: String!) {
+        findUserByUsername(username: $username) {
+            id
+            firstName
+            lastName
+            username
+            mobilePhone
+            is2FAEnabled
+            avatarUrl
+            displayName
+            orgName
+        }
+    }
+`;

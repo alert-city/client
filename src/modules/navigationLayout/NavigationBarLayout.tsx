@@ -4,17 +4,19 @@ import Box from '@mui/material/Box';
 import TopBar from './topbar/Topbar';
 import Sidebar from './sidebar/Sidebar';
 import styled from '@mui/material/styles/styled';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
-}>(({ theme, open }) => ({
+  islargescreen?: number;
+}>(({ theme, open, islargescreen }) => ({
   width: '100%',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
+  height: islargescreen ? '100vh' : '100%',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -38,6 +40,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 
 const NavigationBarLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const theme = useTheme();
+  const islargescreen = useMediaQuery(theme.breakpoints.up("xl"));
+
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -51,7 +56,7 @@ const NavigationBarLayout: React.FC<React.PropsWithChildren> = ({ children }) =>
     <Box sx={{ display: 'flex' }}>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
-      <Main open={open}>
+      <Main open={open} islargescreen={islargescreen ? 1 : 0}>
         <DrawerHeader />
         {children}
       </Main>
