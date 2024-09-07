@@ -14,7 +14,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import Tooltip from '@mui/material/Tooltip';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import PublishIcon from '@mui/icons-material/Publish';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import WarningIcon from '@mui/icons-material/Warning';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import MailIcon from '@mui/icons-material/Mail';
 import PeopleIcon from '@mui/icons-material/People';
 import { IndexConfig } from '@/routes';
@@ -24,8 +26,10 @@ import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 
 const iconMap: { [key: string]: React.ReactNode } = {
+  Dashboard: <SpaceDashboardIcon />,
   Review: <AssignmentTurnedInIcon />,
-  Submission: <PublishIcon />,
+  Emergency: <WarningIcon />,
+  Routine: <CalendarMonthIcon />,
   Staff: <PeopleIcon />,
 };
 
@@ -104,16 +108,22 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
 
   const handleClick = (item: string) => {
     if (accountType === IndexConfig.Organization.AccountType) {
-      if (item === t('Submission')) {
-        router.push('/admin' + RouteConfig.Submission.Path);
+      if (item === t('Dashboard')) {
+        router.push('/admin' + RouteConfig.Dashboard.Path);
+      } else if (item === t('Emergency')) {
+        router.push('/admin' + RouteConfig.Submission.Path + RouteConfig.EmergencySubmission.Path);
+      } else if (item === t('Routine')) {
+        router.push('/admin' + RouteConfig.Submission.Path + RouteConfig.RoutineSubmission.Path);
       } else if (item === t('Review')) {
         router.push('/admin' + RouteConfig.Review.Path);
       } else if (item === t('Staff')) {
         router.push('/admin' + RouteConfig.StaffManagement.Path);
       }
     } else if (accountType === IndexConfig.Personal.AccountType) {
-      if (item === t('Submission')) {
-        router.push('/staff' + RouteConfig.Submission.Path);
+      if (item === t('Routine')) {
+        router.push('/staff' + RouteConfig.Dashboard.Path);
+      } else if (item === t('Routine')) {
+        router.push('/staff' + RouteConfig.Submission.Path + RouteConfig.RoutineSubmission.Path);
       }
     }
   };

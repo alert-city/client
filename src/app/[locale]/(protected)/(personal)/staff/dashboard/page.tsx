@@ -1,13 +1,11 @@
 import React from 'react';
-import { RouteConfig } from '@/routes/route';
 import Dashboard from '@/modules/dashboard/Dashboard';
+import { RouteConfig } from '@/routes/route';
 
 export const metadata = RouteConfig.Dashboard.Metadata;
 
-const page: React.FC = () => {
-  return (
-    <Dashboard />
-  );
+const DashboardPage: React.FC = () => {
+    return <Dashboard />
 };
 
-export default page;
+export default DashboardPage;

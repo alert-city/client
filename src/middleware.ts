@@ -80,10 +80,10 @@ export const config = {
 
 const getRedirectUrl = async (locale: string, accountType: string, role: string[]) => {
   if (accountType === IndexConfig.Organization.AccountType) {
-    return `/${locale}${RouteConfig.AdminSubmission.Path}`;
+    return `/${locale}${RouteConfig.Admin.Path + RouteConfig.Dashboard.Path}`;
   } else if (accountType === IndexConfig.Personal.AccountType) {
     if (role?.includes('staff')) {
-      return `/${locale}${RouteConfig.StaffSubmission.Path}`;
+      return `/${locale}${RouteConfig.Staff.Path + RouteConfig.Dashboard.Path}`;
     }
   }
   return `/${locale}${RouteConfig.Login.Path}`;
