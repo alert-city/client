@@ -43,7 +43,7 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          build-args:
+          build-args: |
             NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_REST_API_URL: ${{ secrets.NEXT_PUBLIC_REST_API_URL }}
             NEXT_PUBLIC_WEBSOCKET_URL: ${{ secrets.NEXT_PUBLIC_WEBSOCKET_URL }}
