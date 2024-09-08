@@ -10,6 +10,7 @@ import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 
 let apolloClient: ApolloClient<any>;
+const env = process.env.NODE_ENV;
 
 function createApolloClient() {
   const httpLink = new HttpLink({
@@ -44,41 +45,39 @@ function createApolloClient() {
   });
 
   const wsLink =
-    typeof window !== 'undefined'
-      ? new GraphQLWsLink(
-        createClient({
-          url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51003/subscriptions',
-          connectionParams: {
-            reconnect: true,
-          },
-          retryAttempts: Infinity, // 自动重连
+          typeof window !== 'undefined'
+            ? new GraphQLWsLink(
+              createClient({
+                url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51003/subscriptions',
+                connectionParams: {
+                  reconnect: true,
+                },
+                retryAttempts: Infinity, // 自动重连
+                keepAlive: 30000, // 30 seconds
 
-          keepAlive: 30000, // 30 seconds
-          // retryAttempts: 5,
-
-          on: {
-            connected: () => console.log('websocket connected'),
-            closed: () => console.log('websocket closed'),
-            error: (err: any) => console.error('error', err),
-          },
-        }),
-      )
-      : null;
+                on: {
+                  connected: () => console.log('websocket connected'),
+                  closed: () => console.log('websocket closed'),
+                  error: (err: any) => console.error('error', err),
+                },
+              }),
+            )
+            : null;
 
   const splitLink =
-    typeof window !== 'undefined' && wsLink
-      ? split(
-        ({ query }) => {
-          const definition = getMainDefinition(query);
-          return (
-            definition.kind === 'OperationDefinition' &&
-            definition.operation === 'subscription'
-          );
-        },
-        wsLink,
-        httpLink,
-      )
-      : httpLink;
+          typeof window !== 'undefined' && wsLink
+            ? split(
+              ({ query }) => {
+                const definition = getMainDefinition(query);
+                return (
+                  definition.kind === 'OperationDefinition' &&
+                  definition.operation === 'subscription'
+                );
+              },
+              wsLink,
+              httpLink,
+            )
+            : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
@@ -89,7 +88,7 @@ function createApolloClient() {
           path,
           code,
           status,
-          ...(typeof data === 'object' && data !== null && { data })
+          ...(typeof data === 'object' && data !== null && { data }),
         };
         console.error(`Error: ${JSON.stringify(errorDetails, null, 2)}`);
       });
@@ -104,18 +103,22 @@ function createApolloClient() {
     operation,
     forward,
   ) => {
-    console.log(`GraphQL operation: ${operation.operationName}`);
     return forward(operation).map((response) => {
-      console.log('Connection: GraphQL request completed successfully');
+      console.log(`Connection: GraphQL request completed successfully. GraphQL operation: ${operation.operationName}`);
       return response;
     });
   });
 
-  const link = ApolloLink.from([errorLink, responseLink, logLink, splitLink]);
+  let link: ApolloLink | null = null;
+  if (env === 'development') {
+    link = ApolloLink.from([errorLink, responseLink, logLink, splitLink]);
+  } else if (env === 'production') {
+    link = ApolloLink.from([responseLink, splitLink]);
+  }
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: link,
+    link: link!,
     cache: new InMemoryCache(),
   });
 }

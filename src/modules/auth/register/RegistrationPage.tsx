@@ -39,7 +39,6 @@ const accountTypeOptions = {
   organization: 'Organization',
 };
 
-
 const RegistrationPage: React.FC = () => {
   const t = useTranslations('RegistrationPage');
   const router = useRouter();
@@ -62,15 +61,9 @@ const RegistrationPage: React.FC = () => {
   const language = currentLocale === 'en' ? 'en' : 'zh-CN';
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-  console.log('API URL in layout:', process.env.NEXT_PUBLIC_API_URL);
-  console.log('NEXT_PUBLIC_REST_API_URL in layout:', process.env.NEXT_PUBLIC_REST_API_URL);
-  console.log('NEXT_PUBLIC_WEBSOCKET_URL in layout:', process.env.NEXT_PUBLIC_WEBSOCKET_URL);
-  console.log('NEXT_PUBLIC_RECAPTCHA_SITE_KEY in layout:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-
   useEffect(() => {
     console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
   }, []);
-
 
   useEffect(() => {
     setRecaptchaKey((prevKey) => prevKey + 1);

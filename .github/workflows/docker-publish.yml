@@ -2,8 +2,9 @@ name: Build and Push Docker Image for Client
 
 on:
   push:
+    #monitor only the dev branch
     branches:
-      - dev  # 监听 dev 分支
+      - dev
 
 jobs:
   build:

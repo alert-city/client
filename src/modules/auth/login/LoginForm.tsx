@@ -48,11 +48,6 @@ const LoginForm: React.FC = () => {
   const [settingModalOpen, setSettingModalOpen] = useState(false);
   const iconUrl = getIconUrl();
 
-  console.log('API URL in layout:', process.env.NEXT_PUBLIC_API_URL);
-  console.log('NEXT_PUBLIC_REST_API_URL in layout:', process.env.NEXT_PUBLIC_REST_API_URL);
-  console.log('NEXT_PUBLIC_WEBSOCKET_URL in layout:', process.env.NEXT_PUBLIC_WEBSOCKET_URL);
-  console.log('NEXT_PUBLIC_RECAPTCHA_SITE_KEY in layout:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-
   type LoginValues = z.infer<typeof loginSchema>;
   const {
           register,
