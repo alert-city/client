@@ -13,7 +13,7 @@ interface SubmitInput {
 
 interface UserInfo {
   displayName: string;
-  mobilePhone: string;
+  phoneNumber: string;
   username: string;
   avatarUrl: string;
   name: {
@@ -51,7 +51,7 @@ interface UserInfoState {
 
 const initialUserInfo: UserInfo = {
   displayName: '',
-  mobilePhone: '',
+  phoneNumber: '',
   username: '',
   avatarUrl: '',
   name: {
@@ -64,7 +64,7 @@ const initialUserInfo: UserInfo = {
 
 interface BooleanUserInfo {
   displayName: boolean;
-  mobilePhone: boolean;
+  phoneNumber: boolean;
   username: boolean;
   avatarUrl: boolean;
   name: {
@@ -77,7 +77,7 @@ interface BooleanUserInfo {
 
 const initialBooleanState: BooleanUserInfo = {
   displayName: false,
-  mobilePhone: false,
+  phoneNumber: false,
   username: false,
   avatarUrl: false,
   name: {
@@ -91,7 +91,7 @@ const initialBooleanState: BooleanUserInfo = {
 const initialSelectedSection = 'Avatar';
 const initialLoading = false;
 
-export const useUserInfoStore = create<UserInfoState>((set, get) => ({
+export const useUserInfoStore = create<UserInfoState>((set) => ({
   userInfo: initialUserInfo,
   initialUserInfo: initialUserInfo,
   isValueChange: initialBooleanState,
@@ -210,7 +210,7 @@ export const handleValueChanged = (
 export const useUserActions = () => {
   const [updateUser] = useMutation(UPDATE_USER);
   const {
-          userInfo, isValueChange, isEdit, setIsEdit, setUserInfo, setIsValueChange, setLoading, storedUsername,
+          userInfo, isValueChange, isEdit, setIsEdit, setUserInfo, setIsValueChange, setLoading,
           setRequestError, setInitialUserInfo, initialUserInfo, storedId,
         } = useUserInfoStore.getState();
 

@@ -4,7 +4,7 @@ import { useUserInfoStore, handleCancel, useUserActions, handleValueChanged } fr
 import { useTranslations } from 'next-intl';
 
 const Name: React.FC = () => {
-  const { userInfo, isEdit, setIsEdit,requestError } = useUserInfoStore();
+  const { userInfo, isEdit, setIsEdit, requestError } = useUserInfoStore();
   const { handleSave } = useUserActions();
   const t = useTranslations('ProfileUpdatePage');
 
@@ -52,9 +52,10 @@ const Name: React.FC = () => {
       )}
       {(isEdit.name.firstName || isEdit.name.lastName) ?
         <>
-          <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => handleSave('name')}>{t('submit')}</Button>
-          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }}
+          <Button variant="contained" sx={{ marginTop: 2 }}
                   onClick={() => handleCancel('name')}>{t('cancel')}</Button>
+          <Button variant="contained" sx={{ marginTop: 2, marginLeft: 2 }} onClick={() => handleSave('name')}>{t(
+            'submit')}</Button>
         </>
         :
         <Button variant="contained" sx={{ marginTop: 2 }}

@@ -41,6 +41,7 @@
     "hoverStaySignedIn": "The session will remain active for 7 days if you check this box",
     "resendEmailTitle": "Resend Activation Email",
     "resendEmailDescription": "Your account is not activated. Would you like to resend the activation email?",
+    "resendEmailDescriptionRegister": "The username exists but the account is not activated. Would you like to resend the activation email?",
     "resendSuccess": "Resend email success, please check your email. This dialog will close in",
     "seconds": "seconds",
     "resendError": "Resend email error, please try again later",
@@ -62,7 +63,7 @@
     "basicInformation": "Basic Information",
     "firstName": "First Name",
     "lastName": "Last Name",
-    "mobilePhone": "Mobile Phone",
+    "phoneNumber": "Phone Number",
     "verification": "Verification",
     "register": "Register",
     "returnToLogin": "Return to Login",
@@ -89,9 +90,9 @@
     "skip": "Skip for now",
     "scanDescription1": "Scan the QR code using your",
     "scanDescription2": "app to add your account",
-    "verificationInfo":"2FA enabled successfully. You will be redirected to Dashboard page in",
+    "verificationInfo": "2FA enabled successfully. You will be redirected to Dashboard page in",
     "seconds": "seconds",
-    "verificationInfoShort":"2FA enabled successfully.",
+    "verificationInfoShort": "2FA enabled successfully.",
     "default2FAError": "Failed to verify 2FA code. Please try again later."
   },
   "ValidationEmailPage": {
@@ -131,7 +132,7 @@
       "displayName": "Display Name",
       "orgName": "Organization Name",
       "name": "Name",
-      "contact": "Contact",
+      "phoneNumber": "Phone Number",
       "2FA": "2FA",
       "deleteAccount": "Delete Account"
     },
@@ -140,9 +141,7 @@
       "crop": "Crop",
       "avatar": "Avatar"
     },
-    "contact": {
-      "mobilePhone": "Mobile Phone"
-    },
+    "phoneNumber": "Phone Number",
     "twoFA": {
       "2FATitle": "Two-Factor Authentication",
       "2FAStatus": "2FA is currently",
@@ -189,5 +188,44 @@
     "content": "Welcome",
     "comma": ", ",
     "exclamation": "!"
+  },
+  "validation": {
+    "username": {
+      "required": "Username is required",
+      "invalidEmail": "Username must be a valid email address"
+    },
+    "password": {
+      "minLength": "Password must be at least 8 characters long",
+      "specialChar": "Password must contain at least one special character (e.g. +-!@#$%^&*)",
+      "uppercase": "Password must contain at least one uppercase letter",
+      "lowercase": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "match": "Passwords do not match"
+    },
+    "displayName": {
+      "required": "Display name cannot be empty"
+    },
+    "phoneNumber": {
+      "required": "Phone number cannot be empty",
+      "format": "Phone number must start with +61 or 0, and contain either 9 digits for mobile (starting with 4) or 8 digits for landline (starting with 2, 3, 7, or 8), without spaces"
+    },
+    "captcha": {
+      "required": "CAPTCHA verification is required"
+    },
+    "firstName": {
+      "required": "First name is required for Personal account type",
+      "length": "First name must be between 2 and 255 characters"
+    },
+    "lastName": {
+      "required": "Last name is required for Personal account type",
+      "length": "Last name must be between 2 and 255 characters"
+    },
+    "orgName": {
+      "required": "Organization name is required for Organization account type",
+      "length": "Organization name must be between 2 and 255 characters"
+    },
+    "verificationCode": {
+      "minLength": "Verification code must be at least 6 characters"
+    }
   }
 }

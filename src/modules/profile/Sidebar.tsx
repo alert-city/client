@@ -14,9 +14,6 @@ import { ACCOUNT_TYPE } from '@/shared/constants/storage';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
 import { useTranslations } from 'next-intl';
-import { AccountCircle, VpnKey } from '@mui/icons-material';
-import Tune from '@mui/icons-material/Tune';
-import Logout from '@mui/icons-material/Logout';
 import Person from '@mui/icons-material/Person';
 import Badge from '@mui/icons-material/Badge';
 import PersonPin from '@mui/icons-material/PersonPin';
@@ -30,13 +27,6 @@ interface SideBarProps {
   selectedSection: string;
   handleSectionClick: (section: string) => void;
 }
-
-const iconMap: { [key: string]: React.ReactNode } = {
-  profile: <AccountCircle />,
-  resetPassword: <VpnKey />,
-  preferences: <Tune />,
-  logout: <Logout />,
-};
 
 const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }) => {
   const t = useTranslations('ProfileUpdatePage');
@@ -153,12 +143,12 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
           )}
           <Divider />
           <ListItemButton
-            selected={selectedSection === 'Contact'}
-            onClick={() => handleSectionClick('Contact')}
+            selected={selectedSection === 'PhoneNumber'}
+            onClick={() => handleSectionClick('PhoneNumber')}
             sx={{
               borderRadius: 1,
               mb: 1,
-              backgroundColor: selectedSection === 'Contact' ? 'primary.light' : 'transparent',
+              backgroundColor: selectedSection === 'PhoneNumber' ? 'primary.light' : 'transparent',
               '&:hover': {
                 backgroundColor: 'primary.main',
                 color: 'white',
@@ -167,7 +157,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
           >
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <ContactPhone />
-              <ListItemText primary={t('navigation.contact')} />
+              <ListItemText primary={t('navigation.phoneNumber')} />
             </Box>
           </ListItemButton>
           <Divider />

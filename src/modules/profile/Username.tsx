@@ -1,29 +1,29 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { handleCancel, useUserInfoStore } from '@/store/profileState';
 import { useLogout } from '@/hooks/useLogout';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateUsernameSchema } from '@/validation/schemas/update-profile/update-profile.schema';
+import { useValidationSchemas } from '@/validation/schemas/update-profile/update-profile.schema';
 import { z } from 'zod';
 import { useMutation } from '@apollo/client';
 import { SEND_UPDATE_USERNAME_EMAIL } from '@/graphql/user';
 import { useTranslations } from 'next-intl';
 
-type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
-
 const Username: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
   const {
-          userInfo, setUserInfo, isEdit, setIsEdit, loading, setLoading, initialUserInfo, storedUsername, storedId,
+          userInfo, setUserInfo, isEdit, setIsEdit, setLoading, initialUserInfo,  storedId,
         } = useUserInfoStore();
   const [updateUsernameError, setUpdateUsernameError] = useState<string | null>(null);
   const [updateUsernameInfo, setUpdateUsernameInfo] = useState<string | null>(null);
   const [isSendSuccess, setIsSendSuccess] = useState(false);
   const logout = useLogout();
   const [sendUpdateUsernameEmail] = useMutation(SEND_UPDATE_USERNAME_EMAIL);
+  const { updateUsernameSchema } = useValidationSchemas();
 
+  type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
   const {
           register,
           handleSubmit,
