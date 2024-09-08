@@ -41,6 +41,7 @@
     "hoverStaySignedIn": "开启此项会话将保持活动状态7天",
     "resendEmailTitle": "重新发送激活邮件",
     "resendEmailDescription": "您的账户尚未激活，是否重新发送激活邮件？",
+    "resendEmailDescriptionRegister": "用户名已存在但账户尚未激活，是否重新发送激活邮件？",
     "resendSuccess": "重新发送邮件成功，请查看您的电子邮件，此对话框将在",
     "seconds": "秒后关闭",
     "resendError": "重新发送邮件失败，请稍后再试",
@@ -62,7 +63,7 @@
     "basicInformation": "基本信息",
     "firstName": "名字",
     "lastName": "姓氏",
-    "mobilePhone": "手机号",
+    "phoneNumber": "电话号码",
     "verification": "验证",
     "register": "注册",
     "returnToLogin": "返回登录",
@@ -132,7 +133,7 @@
       "displayName": "显示名称",
       "orgName": "组织名称",
       "name": "姓名",
-      "contact": "联系方式",
+      "phoneNumber": "电话号码",
       "2FA": "双因素认证",
       "deleteAccount": "删除账户"
     },
@@ -141,9 +142,7 @@
       "crop": "裁剪",
       "avatar": "头像"
     },
-    "contact": {
-      "mobilePhone": "手机号码"
-    },
+    "phoneNumber": "电话号码",
     "twoFA": {
       "2FATitle": "双因素认证",
       "2FAStatus": "双重认证当前:",
@@ -191,5 +190,44 @@
     "content": "欢迎您",
     "comma": "，",
     "exclamation": "！"
+  },
+  "validation": {
+    "username": {
+      "required": "用户名是必填项",
+      "invalidEmail": "用户名必须是有效的电子邮件地址"
+    },
+    "password": {
+      "minLength": "密码长度必须至少为 8 个字符",
+      "specialChar": "密码必须包含至少一个特殊字符（例如 +-!@#$%^&*）",
+      "number": "密码必须包含至少一个数字",
+      "uppercase": "密码必须包含至少一个大写字母",
+      "lowercase": "密码必须包含至少一个小写字母",
+      "match": "密码不匹配"
+    },
+    "displayName": {
+      "required": "显示名称不能为空"
+    },
+    "phoneNumber": {
+      "required": "手机号不能为空",
+      "format": "电话号码必须以 +61 或 0 开头，手机为以 4 开头的 9 位数字，固话为以 2, 3, 7 或 8 开头的 8 位数字，不包含空格"
+    },
+    "captcha": {
+      "required": "需要进行 CAPTCHA 验证"
+    },
+    "firstName": {
+      "required": "个人账户类型需要填写名字",
+      "length": "名字必须在 2 到 255 个字符之间"
+    },
+    "lastName": {
+      "required": "个人账户类型需要填写姓氏",
+      "length": "姓氏必须在 2 到 255 个字符之间"
+    },
+    "orgName": {
+      "required": "组织账户类型需要填写组织名称",
+      "length": "组织名称必须在 2 到 255 个字符之间"
+    },
+    "verificationCode": {
+      "minLength": "验证码长度必须至少为 6 个字符"
+    }
   }
 }

@@ -143,7 +143,7 @@ const AvatarEditor: React.FC = () => {
         <Skeleton variant="circular" width={150} height={150} sx={{ marginBottom: 4 }} />
       ) : (
         <Avatar
-          sx={{ width: 150, height: 150, marginBottom: 4, mt: 1.5 }}
+          sx={{ width: 150, height: 150, marginBottom: 4, mt: 1 }}
           src={croppedImage || userInfo.avatarUrl || ''}
           alt={t('avatar.avatar')}
         />

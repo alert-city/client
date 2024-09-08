@@ -1,11 +1,17 @@
 # 使用指定版本官方 Node.js 镜像
-FROM node:22.4.1-alpine
+FROM node:20.10.0-alpine
 
 # 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 package-lock.json
-COPY package*.json ./
+# 定义构建时的环境变量
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_REST_API_URL
+ARG NEXT_PUBLIC_WEBSOCKET_URL
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+
+# 复制 package.json 和 yarn.lock
+COPY package.json yarn.lock ./
 
 # 安装依赖
 RUN yarn install
@@ -13,11 +19,19 @@ RUN yarn install
 # 复制所有文件
 COPY . .
 
-# 设置环境变量
+#COPY .env.production .env.development
+
+# 设置生产环境
 ENV NODE_ENV=production
 
-# 构建应用
-RUN yarn run build --verbose
+RUN NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL}" \
+    NEXT_PUBLIC_REST_API_URL="${NEXT_PUBLIC_REST_API_URL}" \
+    NEXT_PUBLIC_WEBSOCKET_URL="${NEXT_PUBLIC_WEBSOCKET_URL}" \
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY="${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}" \
+    yarn run build
+
+### 构建应用
+#RUN yarn run build
 
 # 暴露应用端口
 EXPOSE 3000

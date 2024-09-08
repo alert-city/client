@@ -1,8 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
-  Grid,
   Typography,
   Card,
   CardContent,
@@ -11,7 +10,7 @@ import SideBar from '@/modules/profile/Sidebar';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import DeleteAccount from '@/modules/profile/DeleteAccount';
 import AvatarEditor from '@/modules/profile/AvatarEditor';
-import Contact from '@/modules/profile/Contact';
+import PhoneNumber from '@/modules/profile/PhoneNumber';
 import TwoFA from '@/modules/profile/TwoFA';
 import DisplayName from '@/modules/profile/DisplayName';
 import Username from '@/modules/profile/Username';
@@ -43,7 +42,7 @@ const ProfileForm: React.FC = () => {
           if (data) {
             const newUserInfo = {
               displayName: data.displayName || '',
-              mobilePhone: data.mobilePhone || '',
+              phoneNumber: data.phoneNumber || '',
               username: data.username || '',
               avatarUrl: data.avatarUrl || '',
               name: {
@@ -87,8 +86,8 @@ const ProfileForm: React.FC = () => {
                     {(selectedSection === 'OrgName' && userInfo) && (
                       <OrgName />
                     )}
-                    {(selectedSection === 'Contact' && userInfo) && (
-                      <Contact />
+                    {(selectedSection === 'PhoneNumber' && userInfo) && (
+                      <PhoneNumber />
                     )}
                     {(selectedSection === 'Username' && userInfo) && (
                       <Username />

@@ -3,7 +3,7 @@ interface FileUpload {
 }
 
 export const uploadAvatar = async (formData: FormData): Promise<FileUpload> => {
-  const url = process.env.NEXT_PUBLIC_REST_API_URL + '/files/upload';
+  const url = `${process.env.NEXT_PUBLIC_REST_API_URL}/files/upload`;
   try {
     const response = await fetch(url, {
       method: 'POST',

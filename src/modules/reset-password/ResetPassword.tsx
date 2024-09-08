@@ -9,7 +9,7 @@ import {
   Grid,
   Collapse, InputAdornment, Card,
 } from '@mui/material';
-import { getCodeSchema, resetPasswordSchema } from '@/validation/schemas/reset-password/reset-password.schema';
+import { useValidationSchemas } from '@/validation/schemas/reset-password/reset-password.schema';
 import { z } from 'zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,9 +29,6 @@ import Cookies from 'js-cookie';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTranslations } from 'next-intl';
 
-type GetCodeFormValues = z.infer<typeof getCodeSchema>;
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
-
 const ResetPassword: React.FC = () => {
   const t = useTranslations('ResetPasswordPage');
   const logout = useLogout();
@@ -50,6 +47,7 @@ const ResetPassword: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { getCodeSchema, resetPasswordSchema } = useValidationSchemas();
 
   useEffect(() => {
     const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
@@ -58,13 +56,14 @@ const ResetPassword: React.FC = () => {
     setUsername(user);
   }, []);
 
-  // useForm to get verification code
+  type GetCodeFormValues = z.infer<typeof getCodeSchema>;
+  type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
   const {
           register: registerGetCode,
           handleSubmit: handleSubmitGetCode,
           getValues: getCodeValue,
           setValue: setCodeValue,
-          reset: resetGetCode,
           formState: { errors: getCodeErrors },
         } = useForm<GetCodeFormValues>({
     resolver: zodResolver(getCodeSchema),
@@ -83,7 +82,6 @@ const ResetPassword: React.FC = () => {
           register: registerResetPassword,
           handleSubmit: handleSubmitResetPassword,
           setValue: setResetPasswordValue,
-          reset: resetResetPassword,
           formState: { errors: resetPasswordErrors },
         } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -206,7 +204,7 @@ const ResetPassword: React.FC = () => {
           <Typography component="h1" variant="h5">
             {t('title')}
           </Typography>
-          <Box component="form" onSubmit={handleSubmitGetCode(onGetCodeSubmit)} sx={{mb: 3, mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmitGetCode(onGetCodeSubmit)} sx={{ mb: 3, mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
