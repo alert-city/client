@@ -16,7 +16,7 @@ import {
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useMutation } from '@apollo/client';
 import { z } from 'zod';
-import { createUserSchema } from '@/validation/schemas/user/user.schema';
+import { useCreateUserSchema } from '@/validation/schemas/user/user.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CREATE_USER } from '@/graphql/user';
@@ -30,14 +30,15 @@ import Visibility from '@mui/icons-material/Visibility';
 import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTranslations } from 'next-intl';
 import useTheme from '@/utils/switchTheme';
-import { DARK, LIGHT, LIGHT_THEME, SYSTEM } from '@/shared/constants/storage';
+import { DARK, LIGHT } from '@/shared/constants/storage';
+import { useLanguage } from '@/utils/switchLanguage';
+import ResendActivationEmail from '@/modules/auth/login/ResendEmail';
 
 const accountTypeOptions = {
   personal: 'Personal',
   organization: 'Organization',
 };
 
-type RegistrationValues = z.infer<typeof createUserSchema>;
 
 const RegistrationPage: React.FC = () => {
   const t = useTranslations('RegistrationPage');
@@ -53,6 +54,27 @@ const RegistrationPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const { isSystemDark, displayTheme } = useTheme();
+  const { currentLocale } = useLanguage();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [idForResend, setIdForResend] = useState<string | null>(null);
+  const { createUserSchema } = useCreateUserSchema();
+  const [recaptchaKey, setRecaptchaKey] = useState(0);
+  const language = currentLocale === 'en' ? 'en' : 'zh-CN';
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  console.log('API URL in layout:', process.env.NEXT_PUBLIC_API_URL);
+  console.log('NEXT_PUBLIC_REST_API_URL in layout:', process.env.NEXT_PUBLIC_REST_API_URL);
+  console.log('NEXT_PUBLIC_WEBSOCKET_URL in layout:', process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+  console.log('NEXT_PUBLIC_RECAPTCHA_SITE_KEY in layout:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+
+  useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+  }, []);
+
+
+  useEffect(() => {
+    setRecaptchaKey((prevKey) => prevKey + 1);
+  }, [theme, language]);
 
   useEffect(() => {
     if (displayTheme === DARK) {
@@ -64,6 +86,7 @@ const RegistrationPage: React.FC = () => {
     }
   }, [displayTheme, isSystemDark]);
 
+  type RegistrationValues = z.infer<typeof createUserSchema>;
   const {
           register,
           handleSubmit,
@@ -80,7 +103,7 @@ const RegistrationPage: React.FC = () => {
       password: '',
       displayName: '',
       accountType: 'Personal',
-      mobilePhone: '',
+      phoneNumber: '',
       captchaVerified: false,
     },
   });
@@ -89,12 +112,11 @@ const RegistrationPage: React.FC = () => {
     register('captchaVerified');
   }, [register]);
 
-
   const onSubmit = async (data: RegistrationValues) => {
     setLoading(true);
     setRegistrationError(null);
 
-    let role = '';
+    let role: string;
     if (data.accountType === 'Personal') {
       role = 'normal';
     } else {
@@ -104,6 +126,7 @@ const RegistrationPage: React.FC = () => {
     const formData = {
       ...data,
       role: [role],
+      captchaToken: captchaToken,
     };
 
     if (formData.accountType === 'Personal') {
@@ -140,8 +163,15 @@ const RegistrationPage: React.FC = () => {
         }, 1000);
         setLoading(false);
       }
-    } catch (err) {
-      setRegistrationError((err as Error).message || t('defaultRegistrationError'));
+    } catch (err: any) {
+      const statusCode = err.graphQLErrors[0]?.extensions?.status;
+      const id = err.graphQLErrors[0]?.extensions?.data;
+      if (statusCode && id && statusCode === 1000) {
+        setDialogOpen(true);
+        setIdForResend(id);
+      } else {
+        setRegistrationError((err as Error).message || t('defaultRegistrationError'));
+      }
     } finally {
       setLoading(false);
     }
@@ -150,6 +180,8 @@ const RegistrationPage: React.FC = () => {
   const handleCaptchaChange = (value: string | null) => {
     if (value) {
       setCaptchaStatus('verified');
+      console.log("value", value);
+      setCaptchaToken(value);
       setValue('captchaVerified', true, { shouldValidate: true });
     } else {
       setCaptchaStatus('expired');
@@ -167,6 +199,10 @@ const RegistrationPage: React.FC = () => {
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -237,7 +273,7 @@ const RegistrationPage: React.FC = () => {
               <TextField
                 label={t('username')}
                 {...register('username', {
-                    onChange: (e) => {
+                    onChange: () => {
                       setRegistrationInfo(null);
                     },
                   },
@@ -305,8 +341,6 @@ const RegistrationPage: React.FC = () => {
             </Box>
           </CardContent>
         </Card>
-
-
         {/* Basic Information */}
         <Card sx={{ width: '100%' }}>
           <CardContent>
@@ -342,16 +376,15 @@ const RegistrationPage: React.FC = () => {
                 />
               }
               <TextField
-                label={t('mobilePhone')}
+                label={t('phoneNumber')}
                 fullWidth
-                {...register('mobilePhone')}
-                error={!!errors.mobilePhone}
-                helperText={errors.mobilePhone?.message}
+                {...register('phoneNumber')}
+                error={!!errors.phoneNumber}
+                helperText={errors.phoneNumber?.message}
               />
             </Box>
           </CardContent>
         </Card>
-
         {/* CAPTCHA */}
         <Card sx={{ width: '100%' }}>
           <CardContent>
@@ -362,10 +395,11 @@ const RegistrationPage: React.FC = () => {
               <Box display="flex" justifyContent="center"
               >
                 <ReCAPTCHA
-                  key={theme}
+                  key={recaptchaKey}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                   onChange={handleCaptchaChange}
                   theme={theme}
+                  hl={language}
                 />
               </Box>
               {errors.captchaVerified && (
@@ -404,7 +438,7 @@ const RegistrationPage: React.FC = () => {
             variant="outlined"
             color="secondary"
             fullWidth
-            onClick={() => router.back()}
+            onClick={() => router.push(RouteConfig.Login.Path)}
           >
             {t('returnToLogin')}
           </Button>
@@ -427,6 +461,14 @@ const RegistrationPage: React.FC = () => {
         </Typography>
       </Box>
       <LoadingOverlay loading={loading} />
+      {dialogOpen && (
+        <ResendActivationEmail
+          open={dialogOpen}
+          handleClose={handleCloseDialog}
+          id={idForResend as string}
+          isRegister={true}
+        />
+      )}
     </Card>
   );
 };

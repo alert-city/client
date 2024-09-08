@@ -104,10 +104,9 @@ const DeleteAccount: React.FC = () => {
       </Box>
 
       {isSubmitting &&
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 2 }}>
           <Button
             variant="outlined"
-            color="error"
             sx={{ mt: 2 }}
             onClick={handleCancel}
           >
@@ -115,7 +114,6 @@ const DeleteAccount: React.FC = () => {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             sx={{ mt: 2 }}
             onClick={handleDelete}
           >

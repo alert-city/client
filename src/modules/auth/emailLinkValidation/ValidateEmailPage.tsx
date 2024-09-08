@@ -11,12 +11,13 @@ import {
   Box,
   Alert,
   AlertTitle,
-  CardMedia,
+  CardMedia, Card,
 } from '@mui/material';
 import { VALIDATE_EMAIL_LINK, RESEND_ACTIVATION_LINK_EMAIL } from '@/graphql/user';
 import { useMutation } from '@apollo/client';
 import { RouteConfig } from '@/routes/route';
 import { useTranslations } from 'next-intl';
+import getIconUrl from '@/utils/getIconUrl';
 
 const emailInfoType = {
   1: {
@@ -49,8 +50,9 @@ const ValidateEmailPage: React.FC = () => {
   const token = searchParams?.get('token');
   const username = searchParams?.get('username');
   const newUsername = searchParams?.get('newUsername');
+  const id = searchParams?.get('id');
   const emailType = searchParams?.get('emailInfoType') as '1' | '2';
-
+  const iconUrl = getIconUrl();
   const [validateEmailLink] = useMutation(VALIDATE_EMAIL_LINK);
   const [resendActivationLinkEmail] = useMutation(RESEND_ACTIVATION_LINK_EMAIL);
   const [canRedirect, setCanRedirect] = useState(false);
@@ -84,10 +86,10 @@ const ValidateEmailPage: React.FC = () => {
   const handleResendLinkEmail = async () => {
     setResendStatus('loading');
     setStatus(null);
-
     try {
-      const variables: { username: string; emailInfoType: number; newUsername?: string } = {
+      const variables: { id: string, username: string; emailInfoType: number; newUsername?: string } = {
         username: username || '',
+        id: id || '',
         emailInfoType: parseInt(emailType, 10),
       };
       if (newUsername) {
@@ -108,97 +110,106 @@ const ValidateEmailPage: React.FC = () => {
   const emailInfo = emailInfoType[emailType] || emailInfoType[1];
 
   return (
-    <div className="border-2 border-yellow-600 min-h-screen flex ">
-      <Container maxWidth="sm"
-                 sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <CardMedia
-          component="img"
-          height="5"
-          image="/favicon.ico"
-          alt={t('iconAlt')}
-          sx={{
-            height: 100,
-            width: 100,
-            objectFit: 'contain',
-            mb: 4,
-          }}
-        />
-        <Box textAlign="center">
-          <Typography variant="h4" gutterBottom sx={{ mb: 2 }}>
-            {t(emailInfo.title)}
-          </Typography>
-          {(status === 'loading' || resendStatus === 'loading') && (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <CircularProgress />
+    <div className="min-h-screen flex justify-center items-center">
+      <Card
+        sx={{
+          padding: '40px',
+          borderRadius: '16px',
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+          position: 'relative',
+        }}
+      >
+        <Container maxWidth="sm"
+                   sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <CardMedia
+            component="img"
+            height="5"
+            image={iconUrl}
+            alt={t('iconAlt')}
+            sx={{
+              height: 100,
+              width: 100,
+              objectFit: 'contain',
+              mb: 4,
+            }}
+          />
+          <Box textAlign="center">
+            <Typography variant="h4" gutterBottom sx={{ mb: 2 }}>
+              {t(emailInfo.title)}
+            </Typography>
+            {(status === 'loading' || resendStatus === 'loading') && (
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <CircularProgress />
+              </Box>
+            )}
+            {status === 'success' && (
+              <Alert severity="success">
+                <AlertTitle>{t('successTitle')}</AlertTitle>
+                {t(emailInfo.successMessage)}
+                <Typography
+                  component="div"
+                  sx={{ color: 'blue', mt: 1 }}
+                >
+                  <strong>{t(emailInfo.successSubMessage)}</strong>
+                </Typography>
+              </Alert>
+            )}
+            {status === 'error' && (
+              <Alert severity="error">
+                <AlertTitle>{t('errorTitle')}</AlertTitle>
+                {`${t(emailInfo.errorTitle)}: ${activationError}!`}
+              </Alert>
+            )}
+
+            {resendStatus === 'success' && (
+              <Alert severity="success">
+                <AlertTitle>{t('successTitle')}</AlertTitle>
+                {t(emailInfo.resendSuccessMessage)}
+                <Typography
+                  component="div"
+                  sx={{ color: 'blue', mt: 1 }}
+                >
+                  <strong>{t(emailInfo.resendSuccessSubMessage)}</strong>
+                </Typography>
+              </Alert>
+            )}
+
+            {resendStatus === 'error' && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                <AlertTitle>{t('errorTitle')}</AlertTitle>
+                {`${t(emailInfo.resendErrorMessage)}: ${resendError}!`}
+                <Typography component="div" sx={{ mt: 1 }}>
+                  {t('tryAgain')}
+                </Typography>
+              </Alert>
+            )}
+
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              {activationError &&
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ mt: 4 }}
+                  onClick={handleResendLinkEmail}
+                  disabled={resendStatus === 'loading'}
+                >
+                  {resendStatus === 'loading' ? t('resending') : t(emailInfo.resendButtonText)}
+                </Button>
+              }
+              {canRedirect &&
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 4 }}
+                  onClick={() => router.push(RouteConfig.Login.Path)}
+                >
+                  {t('returnToLogin')}
+                </Button>
+              }
             </Box>
-          )}
-          {status === 'success' && (
-            <Alert severity="success">
-              <AlertTitle>{t('successTitle')}</AlertTitle>
-              {t(emailInfo.successMessage)}
-              <Typography
-                component="div"
-                sx={{ color: 'blue', mt: 1 }}
-              >
-                <strong>{t(emailInfo.successSubMessage)}</strong>
-              </Typography>
-            </Alert>
-          )}
-          {status === 'error' && (
-            <Alert severity="error">
-              <AlertTitle>{t('errorTitle')}</AlertTitle>
-              {`${t(emailInfo.errorTitle)}: ${activationError}!`}
-            </Alert>
-          )}
-
-          {resendStatus === 'success' && (
-            <Alert severity="success">
-              <AlertTitle>{t('successTitle')}</AlertTitle>
-              {t(emailInfo.resendSuccessMessage)}
-              <Typography
-                component="div"
-                sx={{ color: 'blue', mt: 1 }}
-              >
-                <strong>{t(emailInfo.resendSuccessSubMessage)}</strong>
-              </Typography>
-            </Alert>
-          )}
-
-          {resendStatus === 'error' && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              <AlertTitle>{t('errorTitle')}</AlertTitle>
-              {`${t(emailInfo.resendErrorMessage)}: ${resendError}!`}
-              <Typography component="div" sx={{ mt: 1 }}>
-                {t('tryAgain')}
-              </Typography>
-            </Alert>
-          )}
-
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {activationError &&
-              <Button
-                variant="outlined"
-                color="secondary"
-                sx={{ mt: 4 }}
-                onClick={handleResendLinkEmail}
-                disabled={resendStatus === 'loading'}
-              >
-                {resendStatus === 'loading' ? t('resending') : t(emailInfo.resendButtonText)}
-              </Button>
-            }
-            {canRedirect &&
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 4 }}
-                onClick={() => router.push(RouteConfig.Login.Path)}
-              >
-                {t('returnToLogin')}
-              </Button>
-            }
           </Box>
-        </Box>
-      </Container>
+        </Container>
+      </Card>
     </div>
   );
 };

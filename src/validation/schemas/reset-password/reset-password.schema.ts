@@ -1,16 +1,28 @@
 import { z } from 'zod';
-import { passwordSchema } from '@/validation/schemas/user/user.schema';
+import { useCreateUserSchema } from '@/validation/schemas/user/user.schema';
+import { useTranslations } from 'next-intl';
 
+export const useValidationSchemas = () => {
+  const t = useTranslations('validation');
+  const { passwordSchema } = useCreateUserSchema();
 
-export const getCodeSchema = z.object({
-  username: z.string().min(1, 'Username is required').email('Invalid email address'),
-});
+  const getCodeSchema = z.object({
+    username: z.string().min(1, { message: t('username.required') }).email({ message: t('username.invalidEmail') }),
+  });
 
-export const resetPasswordSchema = z.object({
-  verificationCode: z.string().min(6, 'Verification code must be at least 6 characters'),
-  password: passwordSchema,
-  confirmPassword: passwordSchema,
-}).refine(data => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
+  const resetPasswordSchema = z
+    .object({
+      verificationCode: z.string().min(6, { message: t('verificationCode.minLength') }),
+      password: passwordSchema,
+      confirmPassword: passwordSchema,
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('password.match'),
+      path: ['confirmPassword'],
+    });
+
+  return {
+    getCodeSchema,
+    resetPasswordSchema,
+  };
+};

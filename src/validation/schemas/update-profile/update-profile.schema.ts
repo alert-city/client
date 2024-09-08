@@ -1,13 +1,27 @@
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 
+export const useValidationSchemas = () => {
+  const t = useTranslations('validation');
 
-export const updateUsernameSchema = z.object({
-  username: z.string().min(1, 'Email cannot be empty').max(255).email('Invalid email address'),
-});
+  const updateUsernameSchema = z.object({
+    username: z
+      .string()
+      .min(1, { message: t('username.required') })
+      .max(255)
+      .email({ message: t('username.invalidEmail') }),
+  });
 
-export const updateMobilePhoneSchema = z.object({
-  mobilePhone: z.string()
-    .min(1, 'Mobile phone cannot be empty')
-    .max(255)
-    .regex(/^\+61\d{9}$/, 'Mobile phone number must start with +61 and contain 9 digits after the country code'),
-});
+  const updatePhoneNumberSchema = z.object({
+    phoneNumber: z
+      .string()
+      .min(1, { message: t('phoneNumber.required') })
+      .max(255)
+      .regex(/^(?:\+61|0)([2378]\d{8}|4\d{8})$/, t('phoneNumber.format')),
+  });
+
+  return {
+    updateUsernameSchema,
+    updatePhoneNumberSchema,
+  };
+};

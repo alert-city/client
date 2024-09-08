@@ -7,7 +7,7 @@ import { LOGIN } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '@/validation/schemas/login/login.schema';
+import { useLoginSchema } from '@/validation/schemas/login/login.schema';
 import { ACCESS_TOKEN, ACCOUNT_TYPE, AVATAR_URL, CAN_SHOW_SNACKBAR, DISPLAY_NAME, ID, IS_FIRST_LOGIN, IS_STAY_SIGNED_IN, ROLE, USERNAME } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -33,10 +33,9 @@ type LoginFormInputs = {
   isStaySignedIn: boolean;
 };
 
-type LoginValues = z.infer<typeof loginSchema>;
-
 const LoginForm: React.FC = () => {
   const t = useTranslations('LoginPage');
+  const loginSchema = useLoginSchema();
   const [login] = useMutation(LOGIN);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -49,6 +48,12 @@ const LoginForm: React.FC = () => {
   const [settingModalOpen, setSettingModalOpen] = useState(false);
   const iconUrl = getIconUrl();
 
+  console.log('API URL in layout:', process.env.NEXT_PUBLIC_API_URL);
+  console.log('NEXT_PUBLIC_REST_API_URL in layout:', process.env.NEXT_PUBLIC_REST_API_URL);
+  console.log('NEXT_PUBLIC_WEBSOCKET_URL in layout:', process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+  console.log('NEXT_PUBLIC_RECAPTCHA_SITE_KEY in layout:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+
+  type LoginValues = z.infer<typeof loginSchema>;
   const {
           register,
           handleSubmit,
@@ -94,9 +99,9 @@ const LoginForm: React.FC = () => {
         loginRedirect({ isFirstLogin, accountType, role });
       }
     } catch (err: any) {
-      const statusCode = err.graphQLErrors[0].extensions.status;
-      const id = err.graphQLErrors[0].extensions.data;
-      if (statusCode === 1000) {
+      const statusCode = err.graphQLErrors[0]?.extensions?.status;
+      const id = err.graphQLErrors[0]?.extensions?.data;
+      if (statusCode && id && statusCode === 1000) {
         setDialogOpen(true);
         setIdForResend(id);
       } else {

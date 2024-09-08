@@ -24,7 +24,7 @@ export const FIND_ONE_USER = gql`
             avatarUrl
             username
             displayName
-            mobilePhone
+            phoneNumber
             orgName
             is2FAEnabled
         }
