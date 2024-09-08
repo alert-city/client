@@ -243,6 +243,7 @@
     "routineSubmission": "常规事件发布",
     "eventDescription": "事件描述",
     "subject": "主题",
+    "matter": "详细信息",
     "details": "请描述详细信息",
     "eventTime": "事件时间",
     "startTime": "开始时间",

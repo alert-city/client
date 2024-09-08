@@ -1,25 +1,26 @@
 "use client";
 import React from "react";
-import { Box, Typography, Card, CardContent, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, Card, CardContent } from "@mui/material";
 import SideBar from "@/modules/dashboard/Sidebar";
 import { useState } from "react";
 import { useEffect } from "react";
-import { IS_FIRST_LOGIN, ACCOUNT_TYPE } from '@/shared/constants/storage';
+import { IS_FIRST_LOGIN, ACCOUNT_TYPE, DARK, LIGHT } from '@/shared/constants/storage';
 import WelcomeSnackbar from "@/modules/welcome-snackbar/WelcomeSnackbar";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import "@fontsource/poppins";
+import useTheme from "@/utils/switchTheme";
 
 const Dashboard: React.FC = () => {
     const [accountType, setAccountType] = useState<string | null>(null);
     const [isFirstLogin, setIsFirstLogin] = useState<string | null>(null);
 
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     const t = useTranslations("DashboardPage");
+    const { isSystemDark, displayTheme } = useTheme();
+    const isDark = displayTheme === DARK ? true : (displayTheme === LIGHT ? false : isSystemDark);
 
     const cardStyle = {
+        width: "100%",
         flexGrow: 1,
         borderRadius: "24px",
         boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.15)',
@@ -42,43 +43,46 @@ const Dashboard: React.FC = () => {
             display="flex"
             flexDirection="column"
             minHeight="80vh"
-            width={isMobile ? "100%" : "80%"}
-            minWidth={isMobile ? "auto" : "800px"}
             maxWidth={800}
-            padding={isMobile ? 2 : 4}
             gap={2}
             mb={2}
             sx={{
                 margin: "auto",
+                border: isDark ? "1px solid #fff" : "none",
                 borderRadius: '24px',
                 boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.15)',
-                backgroundColor: theme.palette.background.default,
+                width: {sm: '100%', md: '80%'},
+                minWidth: {sm: 'auto', md: '800px'},
+                padding: {sm: 2,md: 4}
             }}
         >
             <Typography
-                variant={isMobile ? "h5" : "h4"}
+                variant="h4"
                 mb={3}
                 textAlign="center"
                 sx={{
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
-                    color: theme.palette.primary.main
                 }}
             >
                 {t("dashboard")}
             </Typography>
             <Box
                 display="flex"
-                flexDirection={isMobile ? "column" : "row"}
                 gap={3}
+                sx={{
+                    flexDirection: {sm: 'column', md: 'row'}
+                }}
             >
                 <Box
-                    width={isMobile ? "100%" : "30%"}
-                    mb={isMobile ? 3 : 0}
+                    sx={{
+                        width: {sm: '100%', md: '30%'},
+                        mb: {sm: 3, md: 0}
+                    }}
                 >
-                    <SideBar accountType={accountType!} isMobile={isMobile}/>
+                    <SideBar accountType={accountType!} isDark={isDark}/>
                 </Box>
-                <Box display="flex" flexDirection="column" gap={3} width={isMobile ? "100%" : "70%"}>
+                <Box display="flex" flexDirection="column" gap={3} sx={{width: {sm: '100%', md: '70%'}}}>
                     <Card sx={cardStyle}>
                         <CardContent>
                             <Typography
@@ -86,7 +90,8 @@ const Dashboard: React.FC = () => {
                                 gutterBottom
                                 sx={{
                                     fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    width: '100%'
                                 }}
                             >
                                 {t("inReview")}
@@ -100,7 +105,8 @@ const Dashboard: React.FC = () => {
                                 gutterBottom
                                 sx={{
                                     fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    width: '100%'
                                 }}
                             >
                                 {t("posts")}

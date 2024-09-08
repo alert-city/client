@@ -8,13 +8,13 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-const getRandomColor = (): string => {
+const getRandomColor = (isDark: boolean): string => {
     let color = 'rgba(';
     for (let i = 0; i < 3; i++) {
-        color += Math.floor(Math.random() * 255);
+        color += Math.floor(Math.random() * 175) + 80;
         color += ',';
     }
-    color += ' 0.5)';
+    color += ` ${isDark ? 1 : 0.5})`;
     return color;
 };
 
@@ -22,21 +22,23 @@ interface EasyToPostSectionProps {
     handleOpenDialog: (subject: string, matter: string, matter_t_key: string) => void;
     checked: boolean;
     handleChange: () => void;
-    isMobile: boolean;
+    isDark: boolean;
 };
 
-const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog, checked, handleChange, isMobile }) => {
+const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({
+    handleOpenDialog, checked, handleChange, isDark
+}) => {
     const t = useTranslations("EasyToPostSection");
     const router = useRouter();
 
     const ButtonStyle = {
-        height: isMobile ? "50px" : "70px",
-        width: isMobile ? "50px" : "70px",
+        height: {sm: "50px", md: "70px"},
+        width: {sm: "50px", md: "70px"},
         borderRadius: "20px",
         boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
         color: "white",
         fontWeight: "bold",
-        fontSize: isMobile ? "14px" : "16px",
+        fontSize: {sm: "14px", md: "16px"},
         textTransform: "none",
         padding: "12px",
         transition: "background-color 0.3s, transform 0.3s ease-in-out",
@@ -61,7 +63,6 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
                 borderRadius: "24px",
                 boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.15)",
                 padding: 4,
-                // backgroundColor: "#f9f9f9",
                 fontFamily: "Poppins, sans-serif"
             }}
         >
@@ -77,13 +78,13 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
             </Box>
 
             <Typography
-                variant={isMobile ? 'h5' : 'h4'}
+                variant='h4'
                 gutterBottom
                 mb={4}
                 sx={{
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
-                    color: '#333'
+                    color: isDark ? '#ccc' : '#333'
                 }}
             >
                 Easy To Post
@@ -92,7 +93,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
                 container
                 rowSpacing={1}
                 columnSpacing={1}
-                columns={isMobile ? 8 : 16}
+                columns={{sm: 8, md: 16}}
             >
                 {IndexConfig.VisibleEmergencies.map(item => (
                     <Grid
@@ -121,7 +122,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
                             }}
                             sx={{
                                 ...ButtonStyle,
-                                backgroundColor: getRandomColor(),
+                                backgroundColor: getRandomColor(isDark),
                                 backgroundImage: `url(/images/submission-icons/${item.icon_name}.svg)`,
                             }}
                         />
@@ -136,7 +137,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
             </Grid>
 
             <Collapse in={checked} timeout={1000}>
-                <Grid container rowSpacing={2} columnSpacing={2} columns={isMobile ? 8 : 16}>
+                <Grid container rowSpacing={2} columnSpacing={2} columns={{sm: 8, md: 16}}>
                     {IndexConfig.InvisibleEmergencies.map(item => (
                         <Grid
                             key={item.matter}
@@ -160,7 +161,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
                                 onClick={() => handleOpenDialog(item.subject, item.matter, item.t_key)}
                                 sx={{
                                     ...ButtonStyle,
-                                    backgroundColor: getRandomColor(),
+                                    backgroundColor: getRandomColor(isDark),
                                     backgroundImage: `url(/images/submission-icons/${item.icon_name}.svg)`,
                                 }}
                             />

@@ -4,11 +4,10 @@ import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 import { useTranslations } from 'next-intl';
-import useTheme from '@mui/material';
 import "@fontsource/poppins";
 
-const SideBar: React.FC<{ accountType: string, isMobile: boolean }> = ({
-    accountType, isMobile
+const SideBar: React.FC<{ accountType: string, isDark: boolean }> = ({
+    accountType, isDark
 }) => {
     const t = useTranslations("DashboardSideBar");
     const router = useRouter();
@@ -22,11 +21,11 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean }> = ({
 
     const buttonStyles = {
         minWidth: "150px",
-        padding: isMobile ? 1.5 : 2,
+        padding: {sm: 1.5, md: 2},
         marginBottom: 2,
-        backgroundSize: isMobile ? "5%" : "15%",
+        backgroundSize: {sm: '5%', md: '15%'},
         backgroundRepeat: "no-repeat",
-        backgroundPosition: `left ${isMobile ? 15 : 10}px center`,
+        backgroundPosition: {sm: 'left calc(35% + 5px) center', md: 'left calc(10% + 5px) center'},
         backgroundBlendMode: "overlay",
         color: "white",
         border: 0,
@@ -42,16 +41,16 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean }> = ({
 
     return (
         <Box
-            maxWidth={isMobile ? "800px" : 800}
-            padding={isMobile ? 2 : 3}
             gap={2}
             mb={2}
             sx={{
+                padding: {sm: 2, md: 3},
                 borderRadius: '24px',
                 boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.1)',
                 width: '100%',
                 minWidth: '200px',
-                // backgroundColor: "#f9f9f9"
+                maxWidth: {sm: '800px', md: 800},
+                backgroundColor: isDark ? "#222" : "#f9f9f9"
             }}
         >
             <Typography
@@ -60,7 +59,7 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean }> = ({
                 sx={{
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
-                    color: '#333' // Elegant dark color
+                    color: isDark ? '#ccc' : '#333' // Elegant dark color
                 }}
             >
                 {t("postAnEvent")}

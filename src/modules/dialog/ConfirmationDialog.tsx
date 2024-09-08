@@ -36,7 +36,6 @@ export default function ConfirmationDialog(
                 "& .MuiPaper-root": {
                     borderRadius: "16px",
                     padding: theme.spacing(2),
-                    background: "linear-gradient(135deg, #f8f9fa 30%, #e9ecef 90%)",
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                 }
             }}

@@ -1,8 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { ACCOUNT_TYPE, EVENT_TYPE } from '@/shared/constants/storage';
+import { ACCOUNT_TYPE, EVENT_TYPE, DARK, LIGHT } from '@/shared/constants/storage';
 import { useRouter } from '@/i18n/routing';
-import { useTheme, useMediaQuery } from '@mui/material';
 import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 import { z } from 'zod';
@@ -14,6 +13,7 @@ import { USERNAME } from '@/shared/constants/storage';
 import RoutineSection from '@/modules/submission/RoutineSection';
 import Cookies from 'js-cookie';
 import { useTranslations } from 'next-intl';
+import useTheme from '@/utils/switchTheme';
 
 type EventValues = z.infer<typeof createEventSchema>;
 
@@ -28,8 +28,8 @@ const RoutineSubmissionPage: React.FC = () => {
   const [submissionInfo, setSubmissionInfo] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { isSystemDark, displayTheme } = useTheme();
+  const isDark = displayTheme === DARK ? true : (displayTheme === LIGHT ? false : isSystemDark);
 
   useEffect(() => {
     const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
@@ -70,10 +70,10 @@ const RoutineSubmissionPage: React.FC = () => {
   return (
     <RoutineSection
       onSubmit={onSubmit}
-      isMobile={isMobile}
       submissionStatus={submissionStatus}
       submissionInfo={submissionInfo}
       submissionError={submissionError}
+      isDark={isDark}
     />
   );
 };

@@ -5,10 +5,7 @@ import {
   Card,
   CardContent,
   TextField,
-  Button,
-  FormControl,
-  FormHelperText,
-  TextareaAutosize
+  Button
 } from '@mui/material';
 import { LocalizationProvider, DateField, DatePicker, TimeField, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -30,14 +27,14 @@ type EventValues = z.infer<typeof createEventSchema>;
 
 interface RoutineSectionProps {
   onSubmit: (data: EventValues) => void;
-  isMobile: boolean;
   submissionStatus: boolean;
   submissionInfo: string | null;
   submissionError: string | null;
+  isDark: boolean;
 };
 
 const RoutineSection: React.FC<RoutineSectionProps> = ({
-  onSubmit, isMobile, submissionStatus, submissionInfo, submissionError,
+  onSubmit, submissionStatus, submissionInfo, submissionError, isDark
 }) => {
   const t = useTranslations('RoutineSection');
   const router = useRouter();
@@ -68,10 +65,10 @@ const RoutineSection: React.FC<RoutineSectionProps> = ({
       flexDirection="column"
       gap={2}
       alignItems="center"
-      padding={isMobile ? 2 : 4}
       sx={{
         width: '100%',
-        // backgroundColor: '#fff',
+        padding: {sm: 2, md: 4},
+        border: isDark ? '1px solid #fff' : 'none',
         borderRadius: '16px',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
         fontFamily: 'Poppins, sans-serif',
@@ -95,7 +92,7 @@ const RoutineSection: React.FC<RoutineSectionProps> = ({
         sx={{
           fontFamily: 'Poppins, sans-serif',
           fontWeight: 600,
-          color: '#333',
+          color: isDark ? '#ccc' : '#333',
         }}
       >
         {t('routineSubmission')}
@@ -129,27 +126,17 @@ const RoutineSection: React.FC<RoutineSectionProps> = ({
                 error={!!errors.subject}
                 helperText={errors.subject?.message}
               />
-              <FormControl
-                sx={{
-                  padding: 1,
-                  border: "1px solid #ddd",
-                  borderRadius: '4px',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)'
-                }}>
-                <TextareaAutosize
-                  placeholder={t('details')}
-                  size="md"
-                  minRows={4}
-                  sx={{
-                    padding: 3,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                  {...register('matter')}
-                />
-                {errors.matter && (
-                  <FormHelperText>{errors.matter.message}</FormHelperText>
-                )}
-              </FormControl>
+              <TextField
+                label={t('matter')}
+                multiline
+                rows={4}
+                variant='outlined'
+                placeholder={t('details')}
+                fullWidth
+                {...register('matter')}
+                error={!!errors.matter}
+                helperText={errors.matter?.message}
+              />
             </Box>
           </CardContent>
         </Card>

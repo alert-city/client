@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { ACCOUNT_TYPE } from '@/shared/constants/storage';
+import { ACCOUNT_TYPE, EVENT_TYPE, DARK, LIGHT } from '@/shared/constants/storage';
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from 'next-intl';
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import { RouteConfig } from "@/routes/route";
 import { IndexConfig } from "@/routes";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import ConfirmationDialog from "@/modules/dialog/ConfirmationDialog";
 import SuccessDialog from '@/modules/dialog/SuccessDialog';
 import EasyToPostSection from '@/modules/submission/EasyToPostSection';
 import Cookies from 'js-cookie';
+import useTheme from '@/utils/switchTheme';
 
 type EventValues = z.infer<typeof createEventSchema>;
 
@@ -31,12 +32,12 @@ const EmergencySubmissionPage: React.FC = () => {
     const [checked, setChecked] = useState<boolean>(false);
     const [accountType, setAccountType] = useState<string | null>(null);
     const username = localStorage.getItem(USERNAME);
-    const { loading, error, data } = useQuery(FIND_USER_BY_USERNAME, { variables: { username } });
+    const { data } = useQuery(FIND_USER_BY_USERNAME, { variables: { username } });
     const [createEvent] = useMutation(CREATE_EVENT);
     const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const {displayTheme, isSystemDark} = useTheme();
+    const isDark = displayTheme === DARK ? true : (displayTheme === LIGHT ? false : isSystemDark);
 
     useEffect(() => {
         const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
@@ -54,7 +55,7 @@ const EmergencySubmissionPage: React.FC = () => {
 
     const handleConfirm = async () => {
         setOpenConfirmDialog(false);
-        Cookies.set("eventType", "Emergency");
+        localStorage.setItem(EVENT_TYPE, "Emergency");
         await onSubmit(
             {
                 date: new Date().toDateString(),
@@ -90,7 +91,7 @@ const EmergencySubmissionPage: React.FC = () => {
     const onSubmit = async (eventData: EventValues) => {
         const formattedData = {
             ...eventData,
-            eventType: Cookies.get("eventType"),
+            eventType: localStorage.getItem(EVENT_TYPE),
             submitter: data?.findUserByUsername?.id,
             orgName: data?.findUserByUsername?.orgName
         };
@@ -122,20 +123,17 @@ const EmergencySubmissionPage: React.FC = () => {
             alignItems="center"
             minHeight="80vh"
             width="100%"
-            minWidth={isMobile ? "auto" : "800px"}
-            padding={isMobile ? 2 : 4}
             gap={2}
             mb={2}
-            // sx={{
-            //     borderRadius: '16px',
-            //     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
-            // }}
+            sx={{
+                borderRadius: '16px'
+            }}
         >
             <EasyToPostSection
                 handleOpenDialog={handleOpenConfirmDialog}
                 checked={checked}
                 handleChange={handleChange}
-                isMobile={isMobile}
+                isDark={isDark}
             />
             <ConfirmationDialog
                 open={openConfirmDialog}
