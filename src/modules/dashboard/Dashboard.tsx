@@ -9,9 +9,6 @@ import WelcomeSnackbar from "@/modules/welcome-snackbar/WelcomeSnackbar";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import "@fontsource/poppins";
-import { FIND_USER_BY_USERNAME } from "@/graphql/user";
-import { USERNAME } from "@/shared/constants/storage";
-import { useQuery } from "@apollo/client";
 
 const Dashboard: React.FC = () => {
     const [accountType, setAccountType] = useState<string | null>(null);
@@ -21,11 +18,6 @@ const Dashboard: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const t = useTranslations("DashboardPage");
-
-    const username = localStorage.getItem(USERNAME);
-    const { data } = useQuery(FIND_USER_BY_USERNAME, { variables: { username } });
-    const role = data?.findUserByUsername?.role;
-    const isAdmin = role ? role.includes("admin") : false;
 
     const cardStyle = {
         flexGrow: 1,
@@ -84,7 +76,7 @@ const Dashboard: React.FC = () => {
                     width={isMobile ? "100%" : "30%"}
                     mb={isMobile ? 3 : 0}
                 >
-                    <SideBar accountType={accountType!} isMobile={isMobile} isAdmin={isAdmin}/>
+                    <SideBar accountType={accountType!} isMobile={isMobile}/>
                 </Box>
                 <Box display="flex" flexDirection="column" gap={3} width={isMobile ? "100%" : "70%"}>
                     <Card sx={cardStyle}>

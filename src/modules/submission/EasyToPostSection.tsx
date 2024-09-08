@@ -61,7 +61,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = ({ handleOpenDialog,
                 borderRadius: "24px",
                 boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.15)",
                 padding: 4,
-                backgroundColor: "#f9f9f9",
+                // backgroundColor: "#f9f9f9",
                 fontFamily: "Poppins, sans-serif"
             }}
         >

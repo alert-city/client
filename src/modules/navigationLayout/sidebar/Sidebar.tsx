@@ -120,8 +120,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, handleDrawerClose }) => {
         router.push('/admin' + RouteConfig.StaffManagement.Path);
       }
     } else if (accountType === IndexConfig.Personal.AccountType) {
-      if (item === t('Routine')) {
+      if (item === t('Dashboard')) {
         router.push('/staff' + RouteConfig.Dashboard.Path);
+      } else if (item === t('Emergency')) {
+        router.push('/staff' + RouteConfig.Submission.Path + RouteConfig.EmergencySubmission.Path);
       } else if (item === t('Routine')) {
         router.push('/staff' + RouteConfig.Submission.Path + RouteConfig.RoutineSubmission.Path);
       }

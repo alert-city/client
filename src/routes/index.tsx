@@ -13,7 +13,7 @@ const SideBarAdmin = {
 };
 
 const SideBarPersonal = {
-  Page: ['Dashboard', 'Routine'],
+  Page: ['Dashboard', 'Emergency', 'Routine'],
 };
 
 const Setting = {

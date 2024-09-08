@@ -29,7 +29,7 @@ export default function SuccessDialog(
                 "& .MuiPaper-root": {
                     borderRadius: "16px",
                     padding: theme.spacing(3),
-                    backgroundColor: "#f0f4f8",
+                    // backgroundColor: "#f0f4f8",
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                     backdropFilter: "blur(8px)"
                 }

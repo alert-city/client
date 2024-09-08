@@ -8,15 +8,14 @@ import { useMediaQuery, useTheme } from '@mui/material';
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
-  islargescreen?: number;
-}>(({ theme, open, islargescreen }) => ({
+}>(({ theme, open }) => ({
   width: '100%',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  height: islargescreen ? '100vh' : '100%',
+  height: '100vh',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -56,7 +55,7 @@ const NavigationBarLayout: React.FC<React.PropsWithChildren> = ({ children }) =>
     <Box sx={{ display: 'flex' }}>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
-      <Main open={open} islargescreen={islargescreen ? 1 : 0}>
+      <Main open={open}>
         <DrawerHeader />
         {children}
       </Main>

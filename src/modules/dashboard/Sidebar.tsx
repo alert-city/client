@@ -4,10 +4,11 @@ import { useRouter } from '@/i18n/routing';
 import { RouteConfig } from '@/routes/route';
 import { IndexConfig } from '@/routes';
 import { useTranslations } from 'next-intl';
+import useTheme from '@mui/material';
 import "@fontsource/poppins";
 
-const SideBar: React.FC<{ accountType: string, isMobile: boolean, isAdmin: boolean }> = ({
-    accountType, isMobile, isAdmin
+const SideBar: React.FC<{ accountType: string, isMobile: boolean }> = ({
+    accountType, isMobile
 }) => {
     const t = useTranslations("DashboardSideBar");
     const router = useRouter();
@@ -50,7 +51,7 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean, isAdmin: boole
                 boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.1)',
                 width: '100%',
                 minWidth: '200px',
-                backgroundColor: "#f9f9f9"
+                // backgroundColor: "#f9f9f9"
             }}
         >
             <Typography
@@ -65,8 +66,7 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean, isAdmin: boole
                 {t("postAnEvent")}
             </Typography>
             <List>
-                {isAdmin &&
-                <Button
+            <Button
                     variant='contained'
                     color='warning'
                     fullWidth
@@ -79,7 +79,7 @@ const SideBar: React.FC<{ accountType: string, isMobile: boolean, isAdmin: boole
                     <Typography variant='subtitle2' sx={{ fontSize: "12px", fontFamily: 'Poppins, sans-serif' }}>
                         {t("emergency")}
                     </Typography>
-                </Button>}
+                </Button>
                 <Button
                     variant='contained'
                     color='primary'
