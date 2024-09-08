@@ -11,7 +11,7 @@ interface SubmitInput {
   [key: string]: string | boolean | undefined;
 }
 
-interface UserInfo {
+export interface UserInfo {
   displayName: string;
   phoneNumber: string;
   username: string;

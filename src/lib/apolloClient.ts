@@ -48,17 +48,16 @@ function createApolloClient() {
           typeof window !== 'undefined'
             ? new GraphQLWsLink(
               createClient({
-                url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51003/subscriptions',
+                url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51004/graphql',
                 connectionParams: {
                   reconnect: true,
                 },
                 retryAttempts: Infinity, // 自动重连
                 keepAlive: 30000, // 30 seconds
-
                 on: {
                   connected: () => console.log('websocket connected'),
                   closed: () => console.log('websocket closed'),
-                  error: (err: any) => console.error('error', err),
+                  error: (err: any) => console.error('websocket error: ', err),
                 },
               }),
             )
@@ -115,6 +114,7 @@ function createApolloClient() {
   } else if (env === 'production') {
     link = ApolloLink.from([responseLink, splitLink]);
   }
+
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',

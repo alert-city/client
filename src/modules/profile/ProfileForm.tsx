@@ -19,9 +19,12 @@ import Name from '@/modules/profile/Name';
 import { useUserInfoStore } from '@/store/profileState';
 import { useFindOneUserById } from '@/modules/profile/useHandleRequest';
 import { useTranslations } from 'next-intl';
+import { USER_UPDATED } from '@/graphql/user';
+import { useSubscription } from '@apollo/client';
 
 const ProfileForm: React.FC = () => {
         const t = useTranslations('ProfileUpdatePage');
+        const { data: updatedData } = useSubscription(USER_UPDATED);
         const {
                 userInfo,
                 setUserInfo,
@@ -58,6 +61,27 @@ const ProfileForm: React.FC = () => {
             setInitialUserInfo(newUserInfo);
           }
         }, [data, setUserInfo, setInitialUserInfo]);
+
+        useEffect(() => {
+          if (updatedData) {
+            const newUserInfo = {
+              displayName: data.displayName || '',
+              phoneNumber: data.phoneNumber || '',
+              username: data.username || '',
+              avatarUrl: data.avatarUrl || '',
+              name: {
+                firstName: data.firstName || '',
+                lastName: data.lastName || '',
+              },
+              is2FAEnabled: data.is2FAEnabled || false,
+              orgName: data.orgName || '',
+            };
+            setUserInfo(newUserInfo);
+            setStoredUsername(data.username);
+            setStoredId(data.id);
+            setInitialUserInfo(newUserInfo);
+          }
+        }, [updatedData, setUserInfo]);
 
         const handleSectionClick = (section: string) => {
           setSelectedSection(section);
