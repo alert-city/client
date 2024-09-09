@@ -14,4 +14,6 @@ export const LIGHT = 'light';
 export const DARK = 'dark';
 export const ROLE = 'role';
 export const CAN_SHOW_SNACKBAR = 'can_show_snackbar';
-
+export const EMERGENCY = 'Emergency';
+export const ROUTINE = 'Routine';
+export const IS_DARK = "0";

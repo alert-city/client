@@ -20,7 +20,9 @@
   },
   "Sidebar": {
     "Review": "事件审核",
-    "Submission": "事件提交",
+    "Dashboard": "控制板",
+    "Emergency": "紧急事件",
+    "Routine": "常规事件",
     "Staff": "员工管理"
   },
   "NotFoundPage": {
@@ -189,6 +191,67 @@
     "content": "欢迎您",
     "comma": "，",
     "exclamation": "！"
+  },
+  "DashboardPage": {
+    "dashboard": "控制面板",
+    "inReview": "正在审核中",
+    "posts": "已发布"
+  },
+  "DashboardSideBar": {
+    "postAnEvent": "一键发布",
+    "emergency": "紧急事件",
+    "routine": "常规事件"
+  },
+  "EmergencySubmissionPage": {
+    "return": "返回",
+    "confirm": "确认",
+    "areYouSureYouWantToPost": "你确定要发布",
+    "question": "吗?",
+    "submissionSuccessful": "提交成功!",
+    "theEventHasBeenSubmitted": "事件已提交！",
+    "cancel": "取消",
+    "submissionError": "提交错误!"
+  },
+  "EasyToPostSection": {
+    "return": "返回",
+    "fires": "火灾",
+    "earthquakes": "地震",
+    "internetDisconnect": "网络中断",
+    "waterSupplyDisruptions": "供水中断",
+    "powerOutages": "停电",
+    "civilUnrest": "骚乱",
+    "cyclones": "气旋",
+    "floods": "洪水",
+    "terrorism": "恐怖袭击",
+    "tsunamis": "海啸",
+    "pandemics": "疫情",
+    "heatwaves": "热浪",
+    "industrialAccidents": "工业事故",
+    "marineRescue": "海上救援",
+    "livestockDiseaseOutbreaks": "牲畜疾病",
+    "drought": "干旱",
+    "more": "更多"
+  },
+  "RoutineSubmissionPage": {
+    "return": "返回",
+    "submissionInfo": "提交成功!",
+    "seconds": "秒后将重定向到控制面板"
+  },
+  "RoutineSection": {
+    "return": "返回",
+    "routineSubmission": "常规事件发布",
+    "eventDescription": "事件描述",
+    "subject": "主题",
+    "matter": "详细信息",
+    "details": "请描述详细信息",
+    "eventTime": "事件时间",
+    "startTime": "开始时间",
+    "startDate": "开始日期",
+    "estimatedRecoveryTime": "预计恢复时间",
+    "estimatedRecoveryDate": "预计恢复日期",
+    "eventLocation": "事件地点",
+    "location": "地点",
+    "submit": "提交"
   },
   "validation": {
     "username": {

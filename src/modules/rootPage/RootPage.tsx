@@ -27,9 +27,9 @@ const RootPage:React.FC = () => {
       router.push(RouteConfig.Login.Path);
     } else if (isAuthenticated === true) {
       if (accountType === IndexConfig.Organization.AccountType) {
-        router.push('/admin' + RouteConfig.Submission.Path);
+        router.push('/admin' + RouteConfig.Dashboard.Path);
       } else if (accountType === IndexConfig.Personal.AccountType) {
-        router.push('/staff' + RouteConfig.Submission.Path);
+        router.push('/staff' + RouteConfig.Dashboard.Path);
       }
     }
   }, [isAuthenticated, accountType, router]);
