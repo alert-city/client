@@ -15,6 +15,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
+  padding: '4px',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

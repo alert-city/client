@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { RouteConfig } from '@/routes/route';
-import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE } from '@/shared/constants/storage';
+import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE, ID } from '@/shared/constants/storage';
 import createMiddleware from 'next-intl/middleware';
 import { IndexConfig } from '@/routes';
 import { routing } from './i18n/routing';
@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) {
     `^\/(?:en|zh-cn)?\/?(?:${pagesWithoutToken.join('|')})$`,
   );
   const locale = request.cookies.get('NEXT_LOCALE')?.value || 'en';
-
   const validLocales = ['en', 'zh-cn'];
   const isValidLocale = validLocales.some((loc) => pathname.startsWith(`/${loc}`));
   if (!isValidLocale) {
@@ -80,10 +79,10 @@ export const config = {
 
 const getRedirectUrl = async (locale: string, accountType: string, role: string[]) => {
   if (accountType === IndexConfig.Organization.AccountType) {
-    return `/${locale}${RouteConfig.AdminSubmission.Path}`;
+    return `/${locale}${RouteConfig.Admin.Path + RouteConfig.Dashboard.Path}`;
   } else if (accountType === IndexConfig.Personal.AccountType) {
     if (role?.includes('staff')) {
-      return `/${locale}${RouteConfig.StaffSubmission.Path}`;
+      return `/${locale}${RouteConfig.Staff.Path + RouteConfig.Dashboard.Path}`;
     }
   }
   return `/${locale}${RouteConfig.Login.Path}`;

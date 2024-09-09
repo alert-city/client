@@ -27,12 +27,10 @@ const WelcomeSnackbar = () => {
     event: React.SyntheticEvent | Event,
     reason?: string,
   ) => {
-    if (reason === 'clickaway') {
-      localStorage.setItem(IS_FIRST_LOGIN, 'false');
-      return;
+    localStorage.setItem(CAN_SHOW_SNACKBAR, 'false');
+    if (reason !== 'clickaway') {
+      setOpen(false);
     }
-    localStorage.setItem(IS_FIRST_LOGIN, 'false');
-    setOpen(false);
   };
 
   return (

@@ -187,6 +187,42 @@ const Preferences = {
   ),
 }
 
+const Dashboard = {
+  Metadata: {
+    title: "Dashboard | Alert City",
+  },
+  Path: "/dashboard" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={Dashboard.Path} className={className}>
+      {children}
+    </Link>
+  ),
+};
+
+const EmergencySubmission = {
+  Metadata: {
+    title: "Emergency Submission | Alert City",
+  },
+  Path: "/emergency" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={StaffSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
+const RoutineSubmission = {
+  Metadata: {
+    title: "Routine Submission | Alert City",
+  },
+  Path: "/routine" as const,
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href={StaffSubmission.Path} className={className}>
+      {children}
+    </Link>
+  ),
+}
+
 export const RouteConfig = {
   Root,
   Login,
@@ -203,4 +239,7 @@ export const RouteConfig = {
   AdminSubmission,
   StaffSubmission,
   Preferences,
+  Dashboard,
+  EmergencySubmission,
+  RoutineSubmission
 };
