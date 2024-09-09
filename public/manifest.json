@@ -1,0 +1,26 @@
+{
+  "name": "Alert City",
+  "short_name": "Alert City",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "Alert City is a web application that allows users to report and view incidents in their city.",
+  "icons": [
+    {
+      "src": "/images/alertcity-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/alertcity-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/alertcity-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#ffffff"
+}

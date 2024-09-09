@@ -14,6 +14,10 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Alert City',
   description: 'A CMS for managing campus events and activities including registration and ticketing.',
+  icons: {
+    icon: '/images/alertcity-dark.png',
+    apple: '/images/alertcity-IOS.png',
+  },
 };
 
 type RootLayoutProps = {
@@ -25,10 +29,15 @@ const RootLayout = async ({ children, params: { locale } }: RootLayoutProps) => 
   const messages = await getMessages();
   return (
     <html lang={locale}>
+    <head>
+      <title>Alert City</title>
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="theme-color" content="#ffffff" />
+    </head>
     <body className={inter.className}>
     <ProviderWrapper>
       <ThemeWrapper>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+      <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
       </ThemeWrapper>

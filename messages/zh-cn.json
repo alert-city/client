@@ -66,7 +66,6 @@
     "phoneNumber": "电话号码",
     "verification": "验证",
     "register": "注册",
-    "returnToLogin": "返回登录",
     "alreadyHaveAccount": "已有账号？登录",
     "return": "返回",
     "orgName": "组织名称",
@@ -216,15 +215,15 @@
     },
     "firstName": {
       "required": "个人账户类型需要填写名字",
-      "length": "名字必须在 2 到 255 个字符之间"
+      "length": "名字必须在 1 到 100 个字符之间"
     },
     "lastName": {
       "required": "个人账户类型需要填写姓氏",
-      "length": "姓氏必须在 2 到 255 个字符之间"
+      "length": "姓氏必须在 1 到 100 个字符之间"
     },
     "orgName": {
       "required": "组织账户类型需要填写组织名称",
-      "length": "组织名称必须在 2 到 255 个字符之间"
+      "length": "组织名称必须在 1 到 255 个字符之间"
     },
     "verificationCode": {
       "minLength": "验证码长度必须至少为 6 个字符"
