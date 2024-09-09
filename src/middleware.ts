@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { RouteConfig } from '@/routes/route';
 import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE } from '@/shared/constants/storage';
 import createMiddleware from 'next-intl/middleware';
@@ -73,7 +73,7 @@ export const config = {
   matcher: [
     '/',
     '/(zh-cn|en)/:path*',
-    '/((?!api|_next/static|_next/image|favicon.ico|images/).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|images/).*)',
   ],
 };
 

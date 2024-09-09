@@ -109,16 +109,16 @@ const RegistrationPage: React.FC = () => {
     setLoading(true);
     setRegistrationError(null);
 
-    let role: string;
+    let role: string[];
     if (data.accountType === 'Personal') {
-      role = 'normal';
+      role = ['normal', 'staff'];
     } else {
-      role = 'admin';
+      role = ['admin'];
     }
 
     const formData = {
       ...data,
-      role: [role],
+      role: role,
       captchaToken: captchaToken,
     };
 
@@ -425,17 +425,6 @@ const RegistrationPage: React.FC = () => {
             {t('register')}
           </Button>
         }
-        {!registrationStatus &&
-          <Button
-            type="button"
-            variant="outlined"
-            color="secondary"
-            fullWidth
-            onClick={() => router.push(RouteConfig.Login.Path)}
-          >
-            {t('returnToLogin')}
-          </Button>
-        }
         {registrationStatus &&
           <Button
             fullWidth
@@ -447,7 +436,7 @@ const RegistrationPage: React.FC = () => {
             {t('nextPage')}
           </Button>
         }
-        <Typography variant="body2" mt={2} color="primary">
+        <Typography variant="body2" color="primary">
           <RouteConfig.Login.Link>
             {t('alreadyHaveAccount')}
           </RouteConfig.Login.Link>
