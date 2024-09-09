@@ -1,9 +1,8 @@
 import { lightTheme, darkTheme } from '@/modules/theme/themeColour';
-import { THEME } from '@/shared/constants/storage';
 import { create } from 'zustand';
 import { Theme } from '@mui/material/styles';
 import { useEffect } from 'react';
-import { LIGHT_THEME, DARK_THEME, SYSTEM, DARK, LIGHT } from '@/shared/constants/storage';
+import { THEME, LIGHT_THEME, DARK_THEME, SYSTEM, DARK, LIGHT, IS_DARK } from '@/shared/constants/storage';
 
 export type ThemeKey = typeof LIGHT_THEME | typeof DARK_THEME | typeof SYSTEM;
 
@@ -81,6 +80,9 @@ const useTheme = () => {
   } else {
     displayTheme = LIGHT;
   }
+
+  const isDark = displayTheme === DARK ? true : (displayTheme === LIGHT ? false : isSystemDark);
+  localStorage.setItem(IS_DARK, (isDark ? "1" : "0"));
 
   return { currentTheme, toggleTheme, displayTheme, isSystemDark };
 };

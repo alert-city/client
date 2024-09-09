@@ -18,10 +18,10 @@ export function useLogin() {
 
   const twoFARedirect = ({ accountType, role }: TwoFARedirectState) => {
     if (accountType === IndexConfig.Organization.AccountType) {
-      router.push(RouteConfig.AdminSubmission.Path);
+      router.push(RouteConfig.Admin.Path + RouteConfig.Dashboard.Path);
     } else if (accountType === IndexConfig.Personal.AccountType) {
       if (role?.includes('staff')) {
-        router.push(RouteConfig.StaffSubmission.Path);
+        router.push(RouteConfig.Staff.Path + RouteConfig.Dashboard.Path);
       }
     }
   };
