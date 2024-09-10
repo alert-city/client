@@ -10,7 +10,7 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-import { ACCOUNT_TYPE } from '@/shared/constants/storage';
+import { ACCOUNT_TYPE, LOGIN_TYPE } from '@/shared/constants/storage';
 import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
 import { useTranslations } from 'next-intl';
@@ -22,6 +22,7 @@ import Business from '@mui/icons-material/Business';
 import ContactPhone from '@mui/icons-material/ContactPhone';
 import Security from '@mui/icons-material/Security';
 import DeleteForever from '@mui/icons-material/DeleteForever';
+import { OAUTH } from '@/shared/constants/storage';
 
 interface SideBarProps {
   selectedSection: string;
@@ -31,10 +32,13 @@ interface SideBarProps {
 const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }) => {
   const t = useTranslations('ProfileUpdatePage');
   const [accountType, setAccountType] = useState<string>('');
+  const [loginType, setLoginType] = useState<string>('');
 
   useEffect(() => {
     const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
+    const loginType = typeof window !== 'undefined' ? localStorage.getItem(LOGIN_TYPE) : null;
     setAccountType(accountType || '');
+    setLoginType(loginType || '');
   }, []);
 
   return (
@@ -63,25 +67,29 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
             </Box>
           </ListItemButton>
           <Divider />
-          <ListItemButton
-            selected={selectedSection === 'Username'}
-            onClick={() => handleSectionClick('Username')}
-            sx={{
-              borderRadius: 1,
-              mb: 1,
-              backgroundColor: selectedSection === 'Username' ? 'primary.light' : 'transparent',
-              '&:hover': {
-                backgroundColor: 'primary.main',
-                color: 'white',
-              },
-            }}
-          >
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Badge />
-              <ListItemText primary={t('navigation.username')} />
-            </Box>
-          </ListItemButton>
-          <Divider />
+          {loginType !== OAUTH &&
+            <>
+              <ListItemButton
+                selected={selectedSection === 'Username'}
+                onClick={() => handleSectionClick('Username')}
+                sx={{
+                  borderRadius: 1,
+                  mb: 1,
+                  backgroundColor: selectedSection === 'Username' ? 'primary.light' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                    color: 'white',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Badge />
+                  <ListItemText primary={t('navigation.username')} />
+                </Box>
+              </ListItemButton>
+              <Divider />
+            </>
+          }
           <ListItemButton
             selected={selectedSection === 'DisplayName'}
             onClick={() => handleSectionClick('DisplayName')}
@@ -161,25 +169,29 @@ const SideBar: React.FC<SideBarProps> = ({ selectedSection, handleSectionClick }
             </Box>
           </ListItemButton>
           <Divider />
-          <ListItemButton
-            selected={selectedSection === 'Security'}
-            onClick={() => handleSectionClick('Security')}
-            sx={{
-              borderRadius: 1,
-              mb: 1,
-              backgroundColor: selectedSection === 'Security' ? 'primary.light' : 'transparent',
-              '&:hover': {
-                backgroundColor: 'primary.main',
-                color: 'white',
-              },
-            }}
-          >
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Security />
-              <ListItemText primary={t('navigation.2FA')} />
-            </Box>
-          </ListItemButton>
-          <Divider />
+          {loginType !== OAUTH &&
+            <>
+              <ListItemButton
+                selected={selectedSection === 'Security'}
+                onClick={() => handleSectionClick('Security')}
+                sx={{
+                  borderRadius: 1,
+                  mb: 1,
+                  backgroundColor: selectedSection === 'Security' ? 'primary.light' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                    color: 'white',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Security />
+                  <ListItemText primary={t('navigation.2FA')} />
+                </Box>
+              </ListItemButton>
+              <Divider />
+            </>
+          }
           <ListItemButton
             selected={selectedSection === 'DeleteAccount'}
             onClick={() => handleSectionClick('DeleteAccount')}

@@ -6,7 +6,8 @@ import ProviderWrapper from '@/lib/ProviderWrapper';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic';
+
 const ThemeWrapper = dynamic(() => import('@/modules/theme/ThemeWrapper'), { ssr: false })
 
 const inter = Inter({ subsets: ['latin'] });

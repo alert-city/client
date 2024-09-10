@@ -1,14 +1,12 @@
 import React from 'react';
 import { RouteConfig } from '@/routes/route';
-import SubmissionPage from '@/modules/submission/Submission';
+import Dashboard from '@/modules/dashboard/Dashboard';
 
-export const metadata = RouteConfig.Submission.Metadata;
+export const metadata = RouteConfig.Dashboard.Metadata;
 
 const page: React.FC = () => {
   return (
-    <div>
-      <SubmissionPage />
-    </div>
+    <Dashboard />
   );
 };
 

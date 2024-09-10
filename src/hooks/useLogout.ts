@@ -6,13 +6,14 @@ import { IndexConfig } from '@/routes';
 import Cookies from 'js-cookie';
 import { useUserInfoStore } from '@/store/profileState';
 import { useLoginUserInfo } from '@/store/loginUserInfoState';
+import { signOut } from 'next-auth/react';
 
 export const useLogout = () => {
   const router = useRouter();
-  const { reset } =  useUserInfoStore();
+  const { reset } = useUserInfoStore();
   const { clearUserInfo } = useLoginUserInfo();
 
-  const clearDataAndRedirect = () => {
+  const clearDataAndRedirect = async () => {
     IndexConfig.RemoveLocalStorage.Item.forEach((item) => {
       localStorage.removeItem(item);
     });
@@ -21,6 +22,7 @@ export const useLogout = () => {
     });
     reset();
     clearUserInfo();
+    await signOut({ redirect: false });
     router.push(RouteConfig.Login.Path);
   };
 
@@ -29,5 +31,5 @@ export const useLogout = () => {
     onError: clearDataAndRedirect,
   });
 
-  return revokeTokens;
+  return {revokeTokens, clearDataAndRedirect};
 };

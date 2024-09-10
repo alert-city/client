@@ -20,7 +20,9 @@
   },
   "Sidebar": {
     "Review": "Review",
-    "Submission": "Submission",
+    "Dashboard": "Dashboard",
+    "Emergency": "Emergency Event",
+    "Routine": "Routine Event",
     "Staff": "Staff"
   },
   "NotFoundPage": {
@@ -48,7 +50,9 @@
     "cancel": "Cancel",
     "resend": "Resend",
     "close": "Close",
-    "setting": "Open Setting"
+    "setting": "Open Setting",
+    "quickLogin": "Quick Login",
+    "quickLoginHover": "Login as a Personal account"
   },
   "RegistrationPage": {
     "title": "Registration",
@@ -141,6 +145,7 @@
       "avatar": "Avatar"
     },
     "phoneNumber": "Phone Number",
+    "phoneNotProvided": "Phone number not provided",
     "twoFA": {
       "2FATitle": "Two-Factor Authentication",
       "2FAStatus": "2FA is currently",
@@ -187,6 +192,67 @@
     "content": "Welcome",
     "comma": ", ",
     "exclamation": "!"
+  },
+  "DashboardPage": {
+    "dashboard": "Dashboard",
+    "inReview": "In Review",
+    "posts": "Posts"
+  },
+  "DashboardSideBar": {
+    "postAnEvent": "Post an event",
+    "emergency": "Emergency",
+    "routine": "Routine"
+  },
+  "EmergencySubmissionPage": {
+    "return": "Return",
+    "confirm": "Confirm",
+    "areYouSureYouWantToPost": "Are you sure you want to post",
+    "question": "?",
+    "submissionSuccessful": "Submission Successful!",
+    "theEventHasBeenSubmitted": "The event has been submitted!",
+    "cancel": "Cancel",
+    "submissionError": "Submission Error!"
+  },
+  "EasyToPostSection": {
+    "return": "Return",
+    "fires": "Fires",
+    "earthquakes": "Earthquakes",
+    "internetDisconnect": "Internet Disconnect",
+    "waterSupplyDisruptions": "Water Supply Disruptions",
+    "powerOutages": "Power Outages",
+    "civilUnrest": "Civil Unrest",
+    "cyclones": "Cyclones",
+    "floods": "Floods",
+    "terrorism": "Terrorism",
+    "tsunamis": "Tsunamis",
+    "pandemics": "Pandemics",
+    "heatwaves": "Heatwaves",
+    "industrialAccidents": "Industrial Accidents",
+    "marineRescue": "Marine Rescue",
+    "livestockDiseaseOutbreaks": "Livestock Disease Outbreaks",
+    "drought": "Drought",
+    "more": "More"
+  },
+  "RoutineSubmissionPage": {
+    "return": "Return",
+    "submissionInfo": "Submit successful!",
+    "seconds": "seconds"
+  },
+  "RoutineSection": {
+    "return": "Return",
+    "routineSubmission": "Routine Submission",
+    "eventDescription": "Event Description",
+    "subject": "Subject",
+    "matter": "Matter",
+    "details": "Please describe details",
+    "eventTime": "Event Time",
+    "startTime": "Start Time",
+    "startDate": "Start Date",
+    "estimatedRecoveryTime": "Recovery Time",
+    "estimatedRecoveryDate": "Recovery Date",
+    "eventLocation": "Event Location",
+    "location": "Location",
+    "submit": "Submit"
   },
   "validation": {
     "username": {

@@ -14,14 +14,14 @@ import { useTranslations } from 'next-intl';
 const Username: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
   const {
-          userInfo, setUserInfo, isEdit, setIsEdit, setLoading, initialUserInfo,  storedId,
+          userInfo, setUserInfo, isEdit, setIsEdit, setLoading, initialUserInfo, storedId,
         } = useUserInfoStore();
   const [updateUsernameError, setUpdateUsernameError] = useState<string | null>(null);
   const [updateUsernameInfo, setUpdateUsernameInfo] = useState<string | null>(null);
   const [isSendSuccess, setIsSendSuccess] = useState(false);
-  const logout = useLogout();
   const [sendUpdateUsernameEmail] = useMutation(SEND_UPDATE_USERNAME_EMAIL);
   const { updateUsernameSchema } = useValidationSchemas();
+  const { revokeTokens } = useLogout();
 
   type UpdateUsernameFormValues = z.infer<typeof updateUsernameSchema>;
   const {
@@ -39,14 +39,12 @@ const Username: React.FC = () => {
   const handleUsernameUpdate = async (formData: UpdateUsernameFormValues) => {
     setLoading(true);
     try {
-      const input = {
-        newUsername: formData.username,
-        emailInfoType: 2,
-      };
       const { data } = await sendUpdateUsernameEmail({
         variables: {
           id: storedId,
-          input: input,
+          input: {
+            newUsername: formData.username,
+          },
         },
       });
       if (data.sendUpdateUsernameEmail) {
@@ -60,7 +58,7 @@ const Username: React.FC = () => {
             `${t('username.updateUsernameInfo')} ${countdown} ${t('username.seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
-            logout();
+            revokeTokens();
           }
         }, 1000);
       }
