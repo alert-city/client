@@ -50,7 +50,9 @@
     "cancel": "取消",
     "resend": "重新发送",
     "close": "关闭",
-    "setting": "打开设置"
+    "setting": "打开设置",
+    "quickLogin": "快速登录",
+    "quickLoginHover": "作为个人账户登录"
   },
   "RegistrationPage": {
     "title": "注册",
@@ -144,6 +146,7 @@
       "avatar": "头像"
     },
     "phoneNumber": "电话号码",
+    "phoneNotProvided": "尚未提供电话号码",
     "twoFA": {
       "2FATitle": "双因素认证",
       "2FAStatus": "双重认证当前:",

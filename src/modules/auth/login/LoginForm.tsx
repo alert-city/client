@@ -1,14 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Checkbox, Container, CssBaseline, FormControlLabel, InputAdornment, Typography } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import { Divider, Button } from '@mui/material';
 import CustomButton from '@/modules/common/Button';
 import CustomTextField from '@/modules/common/TextField';
-import { LOGIN } from '@/graphql/auth';
+import { LOGIN, OAUTH_LOGIN } from '@/graphql/auth';
 import { useMutation } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLoginSchema } from '@/validation/schemas/login/login.schema';
-import { ACCESS_TOKEN, ACCOUNT_TYPE, AVATAR_URL, CAN_SHOW_SNACKBAR, DISPLAY_NAME, ID, IS_FIRST_LOGIN, IS_STAY_SIGNED_IN, ROLE, USERNAME } from '@/shared/constants/storage';
+import { ACCESS_TOKEN, ACCOUNT_TYPE, AVATAR_URL, CAN_SHOW_SNACKBAR, DISPLAY_NAME, ID, LOGIN_TYPE, IS_STAY_SIGNED_IN, ROLE, USERNAME } from '@/shared/constants/storage';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
@@ -26,6 +29,7 @@ import ResendActivationEmail from '@/modules/auth/login/ResendEmail';
 import SettingModal from '@/modules/auth/login/SettingModal';
 import { z } from 'zod';
 import getIconUrl from '@/utils/getIconUrl';
+import { signIn, useSession } from 'next-auth/react';
 
 type LoginFormInputs = {
   username: string;
@@ -37,39 +41,83 @@ const LoginForm: React.FC = () => {
   const t = useTranslations('LoginPage');
   const loginSchema = useLoginSchema();
   const [login] = useMutation(LOGIN);
+  const [OAuthLogin] = useMutation(OAUTH_LOGIN);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { loginRedirect } = useLogin();
+  const { loginRedirect, twoFARedirect } = useLogin();
   const { setStoredId } = useUserInfoStore();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [idForResend, setIdForResend] = useState<string | null>(null);
   const [settingModalOpen, setSettingModalOpen] = useState(false);
   const iconUrl = getIconUrl();
+  const { data: session, status } = useSession();
 
   type LoginValues = z.infer<typeof loginSchema>;
   const {
           register,
           handleSubmit,
           watch,
+          getValues,
           formState: { errors },
         } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: '',
       password: '',
-      isStaySignedIn: true,
+      isStaySignedIn: localStorage.getItem(IS_STAY_SIGNED_IN) === 'true' || false,
     },
   });
 
   const isStaySignedIn = watch('isStaySignedIn');
 
   useEffect(() => {
-    if (isStaySignedIn !== undefined && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && isStaySignedIn !== undefined) {
       localStorage.setItem(IS_STAY_SIGNED_IN, isStaySignedIn.toString());
     }
   }, [isStaySignedIn]);
+
+  const setUserInfo = async (userInfo: any) => {
+    Cookies.set(ACCESS_TOKEN, userInfo.accessToken);
+    Cookies.set(ACCOUNT_TYPE, userInfo.accountType);
+    localStorage.setItem(ID, userInfo.id);
+    localStorage.setItem(DISPLAY_NAME, userInfo.displayName);
+    localStorage.setItem(AVATAR_URL, userInfo.avatarUrl);
+    localStorage.setItem(USERNAME, userInfo.username);
+    Cookies.set(ROLE, userInfo.role.toString());
+    localStorage.setItem(CAN_SHOW_SNACKBAR, 'true');
+    setStoredId(userInfo.id);
+  };
+
+  useEffect(() => {
+    const handleOAuthLoginResult = async () => {
+      if (session?.userInfo) {
+        try {
+          const isStaySignedIn = getValues('isStaySignedIn');
+          const input = {
+            ...session.userInfo, isStaySignedIn, displayName: session.userInfo.firstName, accountType: 'Personal',
+            role: ['normal', 'staff'],
+          };
+          const response = await OAuthLogin({ variables: { input } });
+          const accountType = response.data.OAuthLogin.accountType;
+          const role = response.data.OAuthLogin.role;
+          if (response.data.OAuthLogin) {
+            const userInfo = response.data.OAuthLogin;
+            await setUserInfo(userInfo);
+            localStorage.setItem(LOGIN_TYPE, 'OAuth');
+            twoFARedirect({ accountType, role });
+          }
+        } catch (err: any) {
+          setLoginError(err.message);
+        }
+      }
+    };
+    if (status === 'authenticated') {
+      setLoading(true);
+      handleOAuthLoginResult().then(() => setLoading(false));
+    }
+  }, [status, session]);
 
   const onSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
@@ -78,19 +126,11 @@ const LoginForm: React.FC = () => {
       const response = await login({ variables: { input: data } });
       const role: string[] = response.data.login.role;
       const accountType = response.data.login.accountType;
-      const displayName = response.data.login.displayName;
       const isFirstLogin = response.data.login.isFirstLogin;
       if (response.data.login) {
-        Cookies.set(ACCESS_TOKEN, response.data.login.accessToken);
-        Cookies.set(ACCOUNT_TYPE, accountType);
-        localStorage.setItem(ID, response.data.login.id);
-        localStorage.setItem(DISPLAY_NAME, displayName);
-        localStorage.setItem(AVATAR_URL, response.data.login.avatarUrl);
-        localStorage.setItem(USERNAME, response.data.login.username);
-        Cookies.set(ROLE, role?.toString());
+        const userInfo = response.data.login;
+        await setUserInfo(userInfo);
         localStorage.setItem(CAN_SHOW_SNACKBAR, 'true');
-        localStorage.setItem(IS_FIRST_LOGIN, isFirstLogin?.toString());
-        setStoredId(response.data.login.id);
         loginRedirect({ isFirstLogin, accountType, role });
       }
     } catch (err: any) {
@@ -133,6 +173,11 @@ const LoginForm: React.FC = () => {
 
   const handleSettingsClose = () => {
     setSettingModalOpen(false);
+  };
+
+  const handleOAuthLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const provider = e.currentTarget.textContent?.toLowerCase();
+    await signIn(provider);
   };
 
   return (
@@ -233,6 +278,38 @@ const LoginForm: React.FC = () => {
               </RouteConfig.Register.Link>
             </Typography>
           </Box>
+        </Box>
+        <Box sx={{ width: '100%', textAlign: 'center', my: 2 }}>
+          <Divider>{t('quickLogin')}</Divider>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 4,
+            mt: 2,
+            mb: 1.5,
+          }}
+        >
+          <Tooltip title={t('quickLoginHover')}>
+            <Button
+              variant="outlined"
+              startIcon={<GoogleIcon />}
+              sx={{ width: '150px' }}
+              onClick={handleOAuthLogin}
+            >
+              Google
+            </Button>
+          </Tooltip>
+          {/*<Tooltip title={t('quickLoginHover')}>*/}
+          {/*  <Button*/}
+          {/*    variant="outlined"*/}
+          {/*    startIcon={<FacebookIcon />}*/}
+          {/*    sx={{ width: '150px' }}*/}
+          {/*  >*/}
+          {/*    Facebook*/}
+          {/*  </Button>*/}
+          {/*</Tooltip>*/}
         </Box>
         <LoadingOverlay loading={loading} />
         <SettingModal open={settingModalOpen} handleClose={handleSettingsClose} />

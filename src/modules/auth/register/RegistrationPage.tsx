@@ -62,10 +62,6 @@ const RegistrationPage: React.FC = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-  }, []);
-
-  useEffect(() => {
     setRecaptchaKey((prevKey) => prevKey + 1);
   }, [theme, language]);
 
@@ -135,9 +131,9 @@ const RegistrationPage: React.FC = () => {
     try {
       const response = await createUser({
         variables: {
+          platform: 'web',
           input: {
             ...filteredData,
-            emailInfoType: 1,
           },
         },
       });
@@ -173,7 +169,6 @@ const RegistrationPage: React.FC = () => {
   const handleCaptchaChange = (value: string | null) => {
     if (value) {
       setCaptchaStatus('verified');
-      console.log("value", value);
       setCaptchaToken(value);
       setValue('captchaVerified', true, { shouldValidate: true });
     } else {

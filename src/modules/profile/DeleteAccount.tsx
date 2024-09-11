@@ -14,7 +14,6 @@ import { useTranslations } from 'next-intl';
 
 const DeleteAccount: React.FC = () => {
   const t = useTranslations('ProfileUpdatePage');
-  const logout = useLogout();
   const [deleteUser] = useMutation(DELETE_USER);
   const [confirmationText, setConfirmationText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +22,7 @@ const DeleteAccount: React.FC = () => {
   const [deleteInfo, setDeleteInfo] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const { storedUsername, storedId } = useUserInfoStore();
+  const { clearDataAndRedirect } = useLogout();
 
   const handleDelete = async () => {
     if (confirmationText === `${t('deleteAccount.content')} ${storedUsername}`) {
@@ -37,7 +37,7 @@ const DeleteAccount: React.FC = () => {
             setDeleteInfo(`${t('deleteAccount.deleteInfo')} ${countdown} ${t('deleteAccount.seconds')}`);
             if (countdown === 0) {
               clearInterval(intervalId);
-              logout();
+              clearDataAndRedirect();
             }
           }, 1000);
         }

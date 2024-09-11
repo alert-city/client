@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import { useLogout } from '@/hooks/useLogout';
 import { IndexConfig } from '@/routes';
 import { RouteConfig } from '@/routes/route';
-import { DISPLAY_NAME, AVATAR_URL } from '@/shared/constants/storage';
+import { DISPLAY_NAME, AVATAR_URL, LOGIN_TYPE } from '@/shared/constants/storage';
 import { useTopbarStore } from '@/store/topBarState';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
@@ -25,6 +25,7 @@ import Logout from '@mui/icons-material/Logout';
 import MailIcon from '@mui/icons-material/Mail';
 import { VpnKey } from '@mui/icons-material';
 import getIconUrl from '@/utils/getIconUrl';
+import { OAUTH } from '@/shared/constants/storage';
 
 interface TopBarProps {
   open: boolean;
@@ -58,16 +59,18 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
   const t = useTranslations('TopBar');
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const logout = useLogout();
   const { avatarUrl: avatarUrlFromStore, displayName: displayNameFromStore } = useTopbarStore();
   const [isAvatarLoading, setIsAvatarLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [displayName, setDisplayName] = useState('');
   const iconUrl = getIconUrl();
+  const { revokeTokens } = useLogout();
+  const [loginType, setLoginType] = useState<string>('');
 
   useEffect(() => {
     setAvatarUrl(localStorage.getItem(AVATAR_URL) || '');
     setDisplayName(localStorage.getItem(DISPLAY_NAME) || '');
+    setLoginType(localStorage.getItem(LOGIN_TYPE) || '');
   }, []);
 
   useEffect(() => {
@@ -94,7 +97,6 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
     }
   }, [avatarUrl]);
 
-
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -103,12 +105,12 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
     setAnchorElUser(null);
   };
 
-  const settings = IndexConfig.Setting.Page || [];
+  const settings = loginType === OAUTH ? IndexConfig.Setting.PageOAuth || [] : IndexConfig.Setting.PageLocal || [];
 
   const handleSettingClick = async (setting: string) => {
     handleCloseUserMenu();
     if (setting === t('logout')) {
-      await logout();
+      await revokeTokens();
     } else if (setting === t('profile')) {
       router.push(RouteConfig.Profile.Path);
     } else if (setting === t('resetPassword')) {
@@ -139,8 +141,8 @@ const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
             </Tooltip>
             <Avatar src={iconUrl} alt="icon" sx={{ ml: 1, mr: 2 }} />
             <Typography
-              variant="h6" noWrap onClick={async (e) => {
-              await logout();
+              variant="h6" noWrap onClick={async () => {
+              await revokeTokens();
             }}
               sx={{
                 mr: 2,

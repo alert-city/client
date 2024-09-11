@@ -50,7 +50,9 @@
     "cancel": "Cancel",
     "resend": "Resend",
     "close": "Close",
-    "setting": "Open Setting"
+    "setting": "Open Setting",
+    "quickLogin": "Quick Login",
+    "quickLoginHover": "Login as a Personal account"
   },
   "RegistrationPage": {
     "title": "Registration",
@@ -143,6 +145,7 @@
       "avatar": "Avatar"
     },
     "phoneNumber": "Phone Number",
+    "phoneNotProvided": "Phone number not provided",
     "twoFA": {
       "2FATitle": "Two-Factor Authentication",
       "2FAStatus": "2FA is currently",

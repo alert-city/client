@@ -12,7 +12,6 @@ export const FIND_ALL_USERS = gql`
     }
 `;
 
-
 export const FIND_ONE_USER = gql`
     query FindOneUser($id: String!) {
         findOneUser(id: $id) {
@@ -31,16 +30,17 @@ export const FIND_ONE_USER = gql`
     }
 `;
 
-
 export const UPDATE_USER = gql`
     mutation UpdateUser($id: String!, $input: UpdateUserRequestDto!) {
-        updateUser(id: $id, input: $input)
+        updateUser(id: $id, input: $input){
+            id
+        }
     }
 `;
 
 export const CREATE_USER = gql`
-    mutation  CreateUser($input:UserRequestDto!) {
-        createUser(input: $input) {
+    mutation  CreateUser($input:UserRequestDto!, $platform:String!) {
+        createUser(input: $input, platform: $platform) {
             id
         }
     }
@@ -50,8 +50,7 @@ export const DELETE_USER = gql`
     mutation DeleteUser($id: String!) {
         deleteUser(id: $id)
     }
-`;
-
+`
 
 export const GET_VERIFICATION_CODE = gql`
     mutation SendVerificationCodeEmail($username:String!, $emailInfoType:Int!) {

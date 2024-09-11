@@ -1,4 +1,4 @@
-import { USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL, ROLE,ACCESS_TOKEN,ACCOUNT_TYPE,CAN_SHOW_SNACKBAR } from '@/shared/constants/storage';
+import { USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL, ROLE, ACCESS_TOKEN, ACCOUNT_TYPE, CAN_SHOW_SNACKBAR, LOGIN_TYPE } from '@/shared/constants/storage';
 
 const Organization = {
   AccountType: 'Organization',
@@ -17,11 +17,12 @@ const SideBarPersonal = {
 };
 
 const Setting = {
-  Page: ['profile', 'resetPassword', 'preferences', 'logout'],
+  PageLocal: ['profile', 'resetPassword', 'preferences', 'logout'],
+  PageOAuth: ['profile', 'preferences', 'logout'],
 };
 
 const RemoveLocalStorage = {
-  Item: [USERNAME,IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL, CAN_SHOW_SNACKBAR],
+  Item: [USERNAME, IS_FIRST_LOGIN, DISPLAY_NAME, ID, AVATAR_URL, CAN_SHOW_SNACKBAR, LOGIN_TYPE],
 };
 
 const RemoveCookie = {
