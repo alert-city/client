@@ -1,12 +1,12 @@
 import { NextRequest } from 'next/server';
 import { RouteConfig } from '@/routes/route';
-import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE, ID } from '@/shared/constants/storage';
+import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE } from '@/shared/constants/storage';
 import createMiddleware from 'next-intl/middleware';
 import { IndexConfig } from '@/routes';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
-const commonPaths = ['profile', 'update', 'preferences', 'activate', 'enable-2FA'];
+const commonPaths = ['profile', 'update', 'preferences', 'activate', 'enable-2FA','privacy-policy'];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get(ACCESS_TOKEN);

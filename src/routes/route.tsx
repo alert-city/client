@@ -1,5 +1,5 @@
-import React from "react";
-import { Link,useRouter } from '@/i18n/routing';
+import React from 'react';
+import { Link } from '@/i18n/routing';
 
 type RouteLinkProps = {
   children: React.ReactNode;
@@ -8,9 +8,9 @@ type RouteLinkProps = {
 
 const Root = {
   Metadata: {
-    title: " Submission | Alert City",
+    title: ' Submission | Alert City',
   },
-  Path: "/" as const,
+  Path: '/' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Root.Path} className={className}>
       {children}
@@ -20,9 +20,9 @@ const Root = {
 
 const Login = {
   Metadata: {
-    title: "Sign In | Alert City",
+    title: 'Sign In | Alert City',
   },
-  Path: "/login" as const,
+  Path: '/login' as const,
   PathWithLocale: (locale: string) => `/${locale}${Login.Path}`,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Login.Path} className={className}>
@@ -33,9 +33,9 @@ const Login = {
 
 const Register = {
   Metadata: {
-    title: "Sign Up | Alert City",
+    title: 'Sign Up | Alert City',
   },
-  Path: "/register" as const,
+  Path: '/register' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Register.Path} className={className}>
       {children}
@@ -45,9 +45,9 @@ const Register = {
 
 const ResetPassword = {
   Metadata: {
-    title: "Reset Password | Alert City",
+    title: 'Reset Password | Alert City',
   },
-  Path: "/reset-password" as const,
+  Path: '/reset-password' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={ResetPassword.Path} className={className}>
       {children}
@@ -57,141 +57,141 @@ const ResetPassword = {
 
 const Submission = {
   Metadata: {
-    title: "Submission | Alert City",
+    title: 'Submission | Alert City',
   },
-  Path: "/submission" as const,
+  Path: '/submission' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Submission.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Admin = {
   Metadata: {
-    title: "Admin | Alert City",
+    title: 'Admin | Alert City',
   },
-  Path: "/admin" as const,
+  Path: '/admin' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Admin.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
-const Staff ={
+const Staff = {
   Metadata: {
-    title: "Staff | Alert City",
+    title: 'Staff | Alert City',
   },
-  Path: "/staff" as const,
+  Path: '/staff' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Staff.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Enable2FA = {
   Metadata: {
-    title: "Enable 2FA | Alert City",
+    title: 'Enable 2FA | Alert City',
   },
-  Path: "/enable-2FA" as const,
+  Path: '/enable-2FA' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Enable2FA.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Review = {
   Metadata: {
-    title: "Review | Alert City",
+    title: 'Review | Alert City',
   },
-  Path: "/review" as const,
+  Path: '/review' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Review.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Profile = {
   Metadata: {
-    title: "Profile | Alert City",
+    title: 'Profile | Alert City',
   },
-  Path: "/profile" as const,
+  Path: '/profile' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Profile.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Activate = {
   Metadata: {
-    title: "Activate Account | Alert City",
+    title: 'Activate Account | Alert City',
   },
-  Path: "/activate" as const,
+  Path: '/activate' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Activate.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const StaffManagement = {
   Metadata: {
-    title: "User Management | Alert City",
+    title: 'User Management | Alert City',
   },
-  Path: "/user-management" as const,
+  Path: '/user-management' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={StaffManagement.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const AdminSubmission = {
   Metadata: {
-    title: "Submission | Alert City",
+    title: 'Submission | Alert City',
   },
-  Path: "/admin/submission" as const,
+  Path: '/admin/submission' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={AdminSubmission.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const StaffSubmission = {
   Metadata: {
-    title: "Submission | Alert City",
+    title: 'Submission | Alert City',
   },
-  Path: "/staff/submission" as const,
+  Path: '/staff/submission' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={StaffSubmission.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Preferences = {
   Metadata: {
-    title: "Preferences | Alert City",
+    title: 'Preferences | Alert City',
   },
-  Path: "/preferences" as const,
+  Path: '/preferences' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Preferences.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const Dashboard = {
   Metadata: {
-    title: "Dashboard | Alert City",
+    title: 'Dashboard | Alert City',
   },
-  Path: "/dashboard" as const,
+  Path: '/dashboard' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={Dashboard.Path} className={className}>
       {children}
@@ -201,27 +201,38 @@ const Dashboard = {
 
 const EmergencySubmission = {
   Metadata: {
-    title: "Emergency Submission | Alert City",
+    title: 'Emergency Submission | Alert City',
   },
-  Path: "/emergency" as const,
+  Path: '/emergency' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={StaffSubmission.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
 
 const RoutineSubmission = {
   Metadata: {
-    title: "Routine Submission | Alert City",
+    title: 'Routine Submission | Alert City',
   },
-  Path: "/routine" as const,
+  Path: '/routine' as const,
   Link: ({ children, className }: RouteLinkProps) => (
     <Link href={StaffSubmission.Path} className={className}>
       {children}
     </Link>
   ),
-}
+};
+
+const PrivacyPolicy = {
+  Metadata: {
+    title: 'Privacy Policy | Alert City',
+  },
+  Link: ({ children, className }: RouteLinkProps) => (
+    <Link href="/privacy-policy" className={className}>
+      {children}
+    </Link>
+  ),
+};
 
 export const RouteConfig = {
   Root,
@@ -241,5 +252,6 @@ export const RouteConfig = {
   Preferences,
   Dashboard,
   EmergencySubmission,
-  RoutineSubmission
+  RoutineSubmission,
+  PrivacyPolicy,
 };
