@@ -52,7 +52,9 @@
     "close": "关闭",
     "setting": "打开设置",
     "quickLogin": "快速登录",
-    "quickLoginHover": "作为个人账户登录"
+    "quickLoginHover": "作为个人账户登录",
+    "signInAgreement": "登录即表示您同意我们的",
+    "privacyPolicy": "隐私政策"
   },
   "RegistrationPage": {
     "title": "注册",
@@ -294,5 +296,34 @@
     "verificationCode": {
       "minLength": "验证码长度必须至少为 6 个字符"
     }
+  },
+  "privacyPolicy": {
+    "title": "隐私政策",
+    "effectiveDate": "生效日期：2024年9月12日",
+    "section1Title": "1. 我们收集的信息",
+    "section1Content": "在您使用 Alert City 平台时，我们可能会收集以下信息：",
+    "personalInformation": "个人信息：包括您的名字、姓氏、用户名、显示名称、组织名称和电话号码。",
+    "loginInformation": "登录信息：包括您的用户名、密码、Google ID 和 Facebook ID。",
+    "accountInformation": "账户信息：包括您的账户类型、角色、组织详细信息和员工详细信息。",
+    "securityInformation": "安全信息：包括是否启用了双因素身份验证（2FA）、您的 2FA 密钥、账户激活状态和首次登录状态。",
+    "authenticationTokens": "身份验证令牌：我们保存您的访问令牌和刷新令牌，以确保登录后可以安全访问。",
+    "otherInformation": "其他信息：包括您的头像 URL 以及验证码失败尝试的次数。",
+    "section2Title": "2. 我们如何使用您的信息",
+    "section2Content": "我们使用您的信息来提供和改进我们的服务，包括但不限于以下目的：",
+    "section3Title": "3. 信息共享和披露",
+    "section3Content": "在未经您同意的情况下，我们不会向第三方出售、出租或以其他方式披露您的个人信息，除非在以下情况下：",
+    "legalRequirements": "法律要求：如果我们认为需要披露您的信息以遵守法律义务、法院命令或其他法律程序，我们可能会披露您的信息。",
+    "serviceProviders": "服务提供商：我们可能会与可信赖的第三方服务提供商共享您的信息，以帮助我们提供服务。",
+    "section4Title": "4. 信息存储与安全",
+    "section4Content": "我们采取合理的措施保护您的个人信息，防止未经授权的访问、使用或披露。您的数据存储在加密的服务器上，我们采用了多种安全措施，包括数据加密、访问控制和定期的安全审计。",
+    "section5Title": "5. 您的权利",
+    "section5Content": "根据适用法律，您有权访问、更正或删除我们持有的您的个人信息。您还可以选择取消接收我们的电子邮件通知或其他通讯。如果您希望行使这些权利，请使用以下信息联系我们。",
+    "section6Title": "6. 隐私政策的变更",
+    "section6Content": "我们保留随时修改本隐私政策的权利。任何更改将立即生效，并会在本页面发布更新版本。我们鼓励您定期查看本隐私政策，以了解我们如何保护您的信息。",
+    "section7Title": "7. 联系我们",
+    "contactUs": "如果您对本隐私政策有任何疑问或需要进一步的信息，请通过以下方式联系我们：",
+    "email": "电子邮件",
+    "phone": "电话",
+    "address": "地址"
   }
 }
