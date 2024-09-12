@@ -26,6 +26,7 @@ const RoutineSubmissionPage: React.FC = () => {
       eventType: ROUTINE,
       submitter: data?.findOneUser?.id,
       orgName: data?.findOneUser?.orgName,
+      reviewPassed: false
     };
     try {
       const { data } = await createEvent({ variables: { input: formattedData } });

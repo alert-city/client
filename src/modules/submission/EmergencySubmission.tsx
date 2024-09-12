@@ -86,7 +86,8 @@ const EmergencySubmissionPage: React.FC = () => {
             ...eventData,
             eventType: EMERGENCY,
             submitter: data?.findOneUser?.id,
-            orgName: data?.findOneUser?.orgName
+            orgName: data?.findOneUser?.orgName,
+            reviewPassed: true
         };
         try {
             const { data } = await createEvent({ variables: { input: formattedData } });
