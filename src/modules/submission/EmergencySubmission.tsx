@@ -44,7 +44,7 @@ const EmergencySubmissionPage: React.FC = () => {
     const handleCloseConfirmDialog = () => setOpenConfirmDialog(false);
 
     const handleConfirm = async () => {
-        setOpenConfirmDialog(false);
+        handleCloseConfirmDialog();
         await onSubmit(
             {
                 date: new Date().toDateString(),
@@ -87,7 +87,8 @@ const EmergencySubmissionPage: React.FC = () => {
             eventType: EMERGENCY,
             submitter: data?.findOneUser?.id,
             orgName: data?.findOneUser?.orgName,
-            reviewPassed: true
+            isReviewed: true,
+            isApproved: true
         };
         try {
             const { data } = await createEvent({ variables: { input: formattedData } });

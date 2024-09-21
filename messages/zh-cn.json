@@ -199,13 +199,16 @@
   },
   "DashboardPage": {
     "dashboard": "控制面板",
-    "inReview": "正在审核中",
-    "posts": "已发布"
+    "inReview": "审核列表",
+    "emergencyEvents": "紧急事件列表",
+    "routineEvents": "常规事件列表",
+    "subject": "主题",
+    "matter": "事项"
   },
   "DashboardSideBar": {
     "postAnEvent": "一键发布",
-    "emergency": "紧急事件",
-    "routine": "常规事件"
+    "emergency": "发布紧急事件",
+    "routine": "发布常规事件"
   },
   "EmergencySubmissionPage": {
     "return": "返回",
@@ -325,5 +328,27 @@
     "email": "电子邮件",
     "phone": "电话",
     "address": "地址"
+  },
+  "ReviewPage": {
+    "confirm": "确认",
+    "confirmSubmission": "您确定要提交审核吗？",
+    "reviewSubmitted": "已提交审核！",
+    "hasBeenSubmited": "审核已提交！",
+    "submissionError": "提交错误",
+    "eventDescription": "事件描述",
+    "submitter": "提交人",
+    "subject": "主题",
+    "matter": "事项",
+    "eventTime": "事件时间",
+    "startTime": "开始时间",
+    "startDate": "开始日期",
+    "recoveryTime": "恢复时间",
+    "recoveryDate": "恢复日期",
+    "eventLocation": "事件地点",
+    "location": "地点",
+    "eventReview": "事件审核",
+    "reviewComment": "审核意见（可选）",
+    "reject": "拒绝",
+    "approve": "批准"
   }
 }
