@@ -20,7 +20,9 @@
   },
   "Sidebar": {
     "Review": "Review",
-    "Submission": "Submission",
+    "Dashboard": "Dashboard",
+    "Emergency": "Emergency Event",
+    "Routine": "Routine Event",
     "Staff": "Staff"
   },
   "NotFoundPage": {
@@ -48,7 +50,11 @@
     "cancel": "Cancel",
     "resend": "Resend",
     "close": "Close",
-    "setting": "Open Setting"
+    "setting": "Open Setting",
+    "quickLogin": "Quick Login",
+    "quickLoginHover": "Login as a Personal account",
+    "signInAgreement": "By signing in, you agree to our",
+    "privacyPolicy": "Privacy Policy"
   },
   "RegistrationPage": {
     "title": "Registration",
@@ -66,7 +72,6 @@
     "phoneNumber": "Phone Number",
     "verification": "Verification",
     "register": "Register",
-    "returnToLogin": "Return to Login",
     "alreadyHaveAccount": "Already have an account? Log in",
     "return": "Return",
     "orgName": "Organization Name",
@@ -142,6 +147,7 @@
       "avatar": "Avatar"
     },
     "phoneNumber": "Phone Number",
+    "phoneNotProvided": "Phone number not provided",
     "twoFA": {
       "2FATitle": "Two-Factor Authentication",
       "2FAStatus": "2FA is currently",
@@ -189,6 +195,70 @@
     "comma": ", ",
     "exclamation": "!"
   },
+  "DashboardPage": {
+    "dashboard": "Dashboard",
+    "inReview": "In Review",
+    "emergencyEvents": "Emergency Events",
+    "routineEvents": "Routine Events",
+    "subject": "Subject",
+    "matter": "Matter"
+  },
+  "DashboardSideBar": {
+    "postAnEvent": "Post an event",
+    "emergency": "Emergency",
+    "routine": "Routine"
+  },
+  "EmergencySubmissionPage": {
+    "return": "Return",
+    "confirm": "Confirm",
+    "areYouSureYouWantToPost": "Are you sure you want to post",
+    "question": "?",
+    "submissionSuccessful": "Submission Successful!",
+    "theEventHasBeenSubmitted": "The event has been submitted!",
+    "cancel": "Cancel",
+    "submissionError": "Submission Error!"
+  },
+  "EasyToPostSection": {
+    "return": "Return",
+    "fires": "Fires",
+    "earthquakes": "Earthquakes",
+    "internetDisconnect": "Internet Disconnect",
+    "waterSupplyDisruptions": "Water Supply Disruptions",
+    "powerOutages": "Power Outages",
+    "civilUnrest": "Civil Unrest",
+    "cyclones": "Cyclones",
+    "floods": "Floods",
+    "terrorism": "Terrorism",
+    "tsunamis": "Tsunamis",
+    "pandemics": "Pandemics",
+    "heatwaves": "Heatwaves",
+    "industrialAccidents": "Industrial Accidents",
+    "marineRescue": "Marine Rescue",
+    "livestockDiseaseOutbreaks": "Livestock Disease Outbreaks",
+    "drought": "Drought",
+    "more": "More"
+  },
+  "RoutineSubmissionPage": {
+    "return": "Return",
+    "submissionInfo": "Submit successful!",
+    "seconds": "seconds"
+  },
+  "RoutineSection": {
+    "return": "Return",
+    "routineSubmission": "Routine Submission",
+    "eventDescription": "Event Description",
+    "subject": "Subject",
+    "matter": "Matter",
+    "details": "Please describe details",
+    "eventTime": "Event Time",
+    "startTime": "Start Time",
+    "startDate": "Start Date",
+    "estimatedRecoveryTime": "Recovery Time",
+    "estimatedRecoveryDate": "Recovery Date",
+    "eventLocation": "Event Location",
+    "location": "Location",
+    "submit": "Submit"
+  },
   "validation": {
     "username": {
       "required": "Username is required",
@@ -214,18 +284,69 @@
     },
     "firstName": {
       "required": "First name is required for Personal account type",
-      "length": "First name must be between 2 and 255 characters"
+      "length": "First name must be between 1 and 100 characters"
     },
     "lastName": {
       "required": "Last name is required for Personal account type",
-      "length": "Last name must be between 2 and 255 characters"
+      "length": "Last name must be between 1 and 100 characters"
     },
     "orgName": {
       "required": "Organization name is required for Organization account type",
-      "length": "Organization name must be between 2 and 255 characters"
+      "length": "Organization name must be between 1 and 255 characters"
     },
     "verificationCode": {
       "minLength": "Verification code must be at least 6 characters"
     }
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective Date: September 12, 2024",
+    "section1Title": "1. Information We Collect",
+    "section1Content": "We may collect the following information when you use the Alert City platform:",
+    "personalInformation": "Personal Information: This includes your first name, last name, username, display name, organization name, and phone number.",
+    "loginInformation": "Login Information: This includes your username, password, Google ID, and Facebook ID.",
+    "accountInformation": "Account Information: This includes your account type, roles, organization details, and staff details.",
+    "securityInformation": "Security Information: This includes whether two-factor authentication (2FA) is enabled, your 2FA secret, account activation status, and first login status.",
+    "authenticationTokens": "Authentication Tokens: We store your access token and refresh token to ensure secure access after login.",
+    "otherInformation": "Other Information: This includes your avatar URL and the number of failed code attempts.",
+    "section2Title": "2. How We Use Your Information",
+    "section2Content": "We use your information to provide and improve our services, including but not limited to the following purposes:",
+    "section3Title": "3. Sharing and Disclosure of Information",
+    "section3Content": "We do not sell, rent, or otherwise disclose your personal information to third parties without your consent, except in the following circumstances:",
+    "legalRequirements": "Legal Requirements: We may disclose your information if we believe it is necessary to comply with a legal obligation, court order, or other legal process.",
+    "serviceProviders": "Service Providers: We may share your information with trusted third-party service providers who assist us in delivering our services.",
+    "section4Title": "4. Information Storage and Security",
+    "section4Content": "We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure. Your data is stored on encrypted servers, and we employ various security measures, including data encryption, access controls, and regular security audits.",
+    "section5Title": "5. Your Rights",
+    "section5Content": "Under applicable laws, you have the right to access, correct, or delete your personal information that we hold. You can also choose to opt out of receiving email notifications or other communications from us. If you wish to exercise these rights, please contact us using the information below.",
+    "section6Title": "6. Changes to the Privacy Policy",
+    "section6Content": "We reserve the right to modify this Privacy Policy at any time. Any changes will take effect immediately and will be posted on this page. We encourage you to review this Privacy Policy regularly to stay informed about how we protect your information.",
+    "section7Title": "7. Contact Us",
+    "contactUs": "If you have any questions or need further information about this Privacy Policy, please contact us at:",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address"
+  },
+  "ReviewPage": {
+    "confirm": "Confirm",
+    "confirmSubmission": "Are you sure to submit the review?",
+    "reviewSubmitted": "Review submitted!",
+    "hasBeenSubmited": "The review has been submited!",
+    "submissionError": "Submission Error",
+    "eventDescription": "Event Description",
+    "submitter": "Submitter",
+    "subject": "Subject",
+    "matter": "Matter",
+    "eventTime": "Event Time",
+    "startTime": "Start Time",
+    "startDate": "Start Date",
+    "recoveryTime": "Recovery Time",
+    "recoveryDate": "Recovery Date",
+    "eventLocation": "Event Location",
+    "location": "Location",
+    "eventReview": "Event Review",
+    "reviewComment": "Review Comment (Optional)",
+    "reject": "Reject",
+    "approve": "Approve"
   }
 }

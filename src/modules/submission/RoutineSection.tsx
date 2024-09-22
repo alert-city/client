@@ -1,0 +1,258 @@
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  TextField,
+  Button
+} from '@mui/material';
+import { LocalizationProvider, DateField, DatePicker, TimeField, TimePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createEventSchema } from '@/validation/schemas/event/event.schema';
+import { IS_DARK } from '@/shared/constants/storage';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import '@fontsource/poppins';
+import { useEffect } from 'react';
+
+type EventValues = z.infer<typeof createEventSchema>;
+
+interface RoutineSectionProps {
+  onSubmit: (data: EventValues) => void;
+  submissionStatus: boolean;
+  submissionInfo: string | null;
+  submissionError: string | null;
+};
+
+const RoutineSection: React.FC<RoutineSectionProps> = ({
+  onSubmit, submissionStatus, submissionInfo, submissionError
+}) => {
+  const t = useTranslations('RoutineSection');
+  const router = useRouter();
+  const isDark = localStorage.getItem(IS_DARK) === "1";
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset
+  } = useForm<EventValues>({
+    resolver: zodResolver(createEventSchema),
+    defaultValues: {
+      date: new Date().toDateString(),
+      time: new Date().toTimeString(),
+      location: '',
+      subject: '',
+      matter: '',
+      ERTime: '',
+      ERDate: '',
+    },
+  });
+
+  useEffect(() => {
+    if (submissionStatus) {
+      reset();
+    }
+  }, [submissionStatus]);
+
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      display="flex"
+      flexDirection="column"
+      gap={2}
+      alignItems="center"
+      sx={{
+        width: '100%',
+        maxWidth: 800,
+        minHeight: "80vh",
+        maxHeight: "100vh",
+        overflow: 'auto',
+        padding: {xs: 1, sm: 2, md: 4},
+        border: isDark ? '1px solid #fff' : 'none',
+        borderRadius: '16px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+        fontFamily: 'Poppins, sans-serif',
+      }}
+    >
+      <Box sx={{ position: 'relative', width: '100%', mb: 6 }}>
+        <Tooltip title={t('return')} placement="right">
+          <IconButton
+            onClick={() => router.back()}
+            sx={{ position: 'absolute' }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      <Typography
+        variant="h5"
+        gutterBottom
+        mb={2}
+        sx={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 600,
+          color: isDark ? '#ccc' : '#333',
+        }}
+      >
+        {t('routineSubmission')}
+      </Typography>
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        width="100%"
+        justifyContent="space-between"
+        sx={{
+          flexDirection: { xs: 'column', md: 'row' }
+        }}
+      >
+        {/* Event Description */}
+        <Card sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(50% - 8px)' }, borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}
+            >
+              {t('eventDescription')}
+            </Typography>
+            <Box display="flex" flexDirection="column" gap={2} mb={2}>
+              <TextField
+                label={t('subject')}
+                fullWidth
+                {...register('subject')}
+                error={!!errors.subject}
+                helperText={errors.subject?.message}
+              />
+              <TextField
+                label={t('matter')}
+                multiline
+                rows={4}
+                variant='outlined'
+                placeholder={t('details')}
+                fullWidth
+                {...register('matter')}
+                error={!!errors.matter}
+                helperText={errors.matter?.message}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Event Information */}
+        <Card sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(50% - 8px)' }, borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}
+            >
+              {t('eventTime')}
+            </Typography>
+            <Box display="flex" gap={2} mb={2}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label={t('startTime')}
+                  defaultValue={dayjs(new Date().getTime())}
+                  onChange={(newValue) => setValue('time', newValue!.toString())}
+                  sx={{ width: '100%' }}
+                />
+                <DatePicker
+                  label={t('startDate')}
+                  defaultValue={dayjs(new Date().toDateString())}
+                  onChange={(newValue) => setValue('date', newValue!.toString())}
+                  sx={{ width: '100%' }}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimeField
+                  label={t('estimatedRecoveryTime')}
+                  format="HH:mm"
+                  onChange={(newValue) => setValue('ERTime', newValue?.toString())}
+                  fullWidth
+                />
+                <DateField
+                  label={t('estimatedRecoveryDate')}
+                  onChange={(newValue) => setValue('ERDate', newValue?.toString())}
+                  fullWidth
+                />
+              </LocalizationProvider>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Event Location */}
+        <Card sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(50% - 8px)' }, borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}
+            >
+              {t('eventLocation')}
+            </Typography>
+            <Box gap={2} mb={2}>
+              <TextField
+                label={t('location')}
+                fullWidth
+                {...register('location')}
+                error={!!errors.location}
+                helperText={errors.location?.message}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <Box className="flex justify-center">
+        {submissionInfo && (
+          <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="primary" variant="body2">
+            {submissionInfo}
+          </Typography>
+        )}
+        {submissionError && (
+          <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error" variant="body2">
+            {submissionError}
+          </Typography>
+        )}
+      </Box>
+
+      <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{
+            padding: '12px',
+            fontWeight: 'bold',
+            textTransform: 'none',
+            fontFamily: 'Poppins, sans-serif',
+            backgroundColor: '#1976d2',
+            '&:hover': {
+              backgroundColor: '#125b9b',
+              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
+            },
+          }}
+        >
+          {t('submit')}
+        </Button>
+    </Box>
+  );
+};
+
+export default RoutineSection;
+

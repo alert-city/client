@@ -102,6 +102,7 @@ function createApolloClient() {
     operation,
     forward,
   ) => {
+    console.log(`GraphQL operation: ${operation.operationName}`);
     return forward(operation).map((response) => {
       console.log(`Connection: GraphQL request completed successfully. GraphQL operation: ${operation.operationName}`);
       return response;

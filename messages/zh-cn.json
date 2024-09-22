@@ -20,7 +20,9 @@
   },
   "Sidebar": {
     "Review": "事件审核",
-    "Submission": "事件提交",
+    "Dashboard": "控制板",
+    "Emergency": "紧急事件",
+    "Routine": "常规事件",
     "Staff": "员工管理"
   },
   "NotFoundPage": {
@@ -48,7 +50,11 @@
     "cancel": "取消",
     "resend": "重新发送",
     "close": "关闭",
-    "setting": "打开设置"
+    "setting": "打开设置",
+    "quickLogin": "快速登录",
+    "quickLoginHover": "作为个人账户登录",
+    "signInAgreement": "登录即表示您同意我们的",
+    "privacyPolicy": "隐私政策"
   },
   "RegistrationPage": {
     "title": "注册",
@@ -66,7 +72,6 @@
     "phoneNumber": "电话号码",
     "verification": "验证",
     "register": "注册",
-    "returnToLogin": "返回登录",
     "alreadyHaveAccount": "已有账号？登录",
     "return": "返回",
     "orgName": "组织名称",
@@ -143,6 +148,7 @@
       "avatar": "头像"
     },
     "phoneNumber": "电话号码",
+    "phoneNotProvided": "尚未提供电话号码",
     "twoFA": {
       "2FATitle": "双因素认证",
       "2FAStatus": "双重认证当前:",
@@ -191,6 +197,70 @@
     "comma": "，",
     "exclamation": "！"
   },
+  "DashboardPage": {
+    "dashboard": "控制面板",
+    "inReview": "审核列表",
+    "emergencyEvents": "紧急事件列表",
+    "routineEvents": "常规事件列表",
+    "subject": "主题",
+    "matter": "事项"
+  },
+  "DashboardSideBar": {
+    "postAnEvent": "一键发布",
+    "emergency": "发布紧急事件",
+    "routine": "发布常规事件"
+  },
+  "EmergencySubmissionPage": {
+    "return": "返回",
+    "confirm": "确认",
+    "areYouSureYouWantToPost": "你确定要发布",
+    "question": "吗?",
+    "submissionSuccessful": "提交成功!",
+    "theEventHasBeenSubmitted": "事件已提交！",
+    "cancel": "取消",
+    "submissionError": "提交错误!"
+  },
+  "EasyToPostSection": {
+    "return": "返回",
+    "fires": "火灾",
+    "earthquakes": "地震",
+    "internetDisconnect": "网络中断",
+    "waterSupplyDisruptions": "供水中断",
+    "powerOutages": "停电",
+    "civilUnrest": "骚乱",
+    "cyclones": "气旋",
+    "floods": "洪水",
+    "terrorism": "恐怖袭击",
+    "tsunamis": "海啸",
+    "pandemics": "疫情",
+    "heatwaves": "热浪",
+    "industrialAccidents": "工业事故",
+    "marineRescue": "海上救援",
+    "livestockDiseaseOutbreaks": "牲畜疾病",
+    "drought": "干旱",
+    "more": "更多"
+  },
+  "RoutineSubmissionPage": {
+    "return": "返回",
+    "submissionInfo": "提交成功!",
+    "seconds": "秒后将重定向到控制面板"
+  },
+  "RoutineSection": {
+    "return": "返回",
+    "routineSubmission": "常规事件发布",
+    "eventDescription": "事件描述",
+    "subject": "主题",
+    "matter": "详细信息",
+    "details": "请描述详细信息",
+    "eventTime": "事件时间",
+    "startTime": "开始时间",
+    "startDate": "开始日期",
+    "estimatedRecoveryTime": "预计恢复时间",
+    "estimatedRecoveryDate": "预计恢复日期",
+    "eventLocation": "事件地点",
+    "location": "地点",
+    "submit": "提交"
+  },
   "validation": {
     "username": {
       "required": "用户名是必填项",
@@ -216,18 +286,69 @@
     },
     "firstName": {
       "required": "个人账户类型需要填写名字",
-      "length": "名字必须在 2 到 255 个字符之间"
+      "length": "名字必须在 1 到 100 个字符之间"
     },
     "lastName": {
       "required": "个人账户类型需要填写姓氏",
-      "length": "姓氏必须在 2 到 255 个字符之间"
+      "length": "姓氏必须在 1 到 100 个字符之间"
     },
     "orgName": {
       "required": "组织账户类型需要填写组织名称",
-      "length": "组织名称必须在 2 到 255 个字符之间"
+      "length": "组织名称必须在 1 到 255 个字符之间"
     },
     "verificationCode": {
       "minLength": "验证码长度必须至少为 6 个字符"
     }
+  },
+  "privacyPolicy": {
+    "title": "隐私政策",
+    "effectiveDate": "生效日期：2024年9月12日",
+    "section1Title": "1. 我们收集的信息",
+    "section1Content": "在您使用 Alert City 平台时，我们可能会收集以下信息：",
+    "personalInformation": "个人信息：包括您的名字、姓氏、用户名、显示名称、组织名称和电话号码。",
+    "loginInformation": "登录信息：包括您的用户名、密码、Google ID 和 Facebook ID。",
+    "accountInformation": "账户信息：包括您的账户类型、角色、组织详细信息和员工详细信息。",
+    "securityInformation": "安全信息：包括是否启用了双因素身份验证（2FA）、您的 2FA 密钥、账户激活状态和首次登录状态。",
+    "authenticationTokens": "身份验证令牌：我们保存您的访问令牌和刷新令牌，以确保登录后可以安全访问。",
+    "otherInformation": "其他信息：包括您的头像 URL 以及验证码失败尝试的次数。",
+    "section2Title": "2. 我们如何使用您的信息",
+    "section2Content": "我们使用您的信息来提供和改进我们的服务，包括但不限于以下目的：",
+    "section3Title": "3. 信息共享和披露",
+    "section3Content": "在未经您同意的情况下，我们不会向第三方出售、出租或以其他方式披露您的个人信息，除非在以下情况下：",
+    "legalRequirements": "法律要求：如果我们认为需要披露您的信息以遵守法律义务、法院命令或其他法律程序，我们可能会披露您的信息。",
+    "serviceProviders": "服务提供商：我们可能会与可信赖的第三方服务提供商共享您的信息，以帮助我们提供服务。",
+    "section4Title": "4. 信息存储与安全",
+    "section4Content": "我们采取合理的措施保护您的个人信息，防止未经授权的访问、使用或披露。您的数据存储在加密的服务器上，我们采用了多种安全措施，包括数据加密、访问控制和定期的安全审计。",
+    "section5Title": "5. 您的权利",
+    "section5Content": "根据适用法律，您有权访问、更正或删除我们持有的您的个人信息。您还可以选择取消接收我们的电子邮件通知或其他通讯。如果您希望行使这些权利，请使用以下信息联系我们。",
+    "section6Title": "6. 隐私政策的变更",
+    "section6Content": "我们保留随时修改本隐私政策的权利。任何更改将立即生效，并会在本页面发布更新版本。我们鼓励您定期查看本隐私政策，以了解我们如何保护您的信息。",
+    "section7Title": "7. 联系我们",
+    "contactUs": "如果您对本隐私政策有任何疑问或需要进一步的信息，请通过以下方式联系我们：",
+    "email": "电子邮件",
+    "phone": "电话",
+    "address": "地址"
+  },
+  "ReviewPage": {
+    "confirm": "确认",
+    "confirmSubmission": "您确定要提交审核吗？",
+    "reviewSubmitted": "已提交审核！",
+    "hasBeenSubmited": "审核已提交！",
+    "submissionError": "提交错误",
+    "eventDescription": "事件描述",
+    "submitter": "提交人",
+    "subject": "主题",
+    "matter": "事项",
+    "eventTime": "事件时间",
+    "startTime": "开始时间",
+    "startDate": "开始日期",
+    "recoveryTime": "恢复时间",
+    "recoveryDate": "恢复日期",
+    "eventLocation": "事件地点",
+    "location": "地点",
+    "eventReview": "事件审核",
+    "reviewComment": "审核意见（可选）",
+    "reject": "拒绝",
+    "approve": "批准"
   }
 }

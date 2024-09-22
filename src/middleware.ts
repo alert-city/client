@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { RouteConfig } from '@/routes/route';
 import { ACCESS_TOKEN, ACCOUNT_TYPE, ROLE } from '@/shared/constants/storage';
 import createMiddleware from 'next-intl/middleware';
@@ -6,7 +6,7 @@ import { IndexConfig } from '@/routes';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
-const commonPaths = ['profile', 'update', 'preferences', 'activate', 'enable-2FA'];
+const commonPaths = ['profile', 'update', 'preferences', 'activate', 'enable-2FA','privacy-policy'];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get(ACCESS_TOKEN);
@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) {
     `^\/(?:en|zh-cn)?\/?(?:${pagesWithoutToken.join('|')})$`,
   );
   const locale = request.cookies.get('NEXT_LOCALE')?.value || 'en';
-
   const validLocales = ['en', 'zh-cn'];
   const isValidLocale = validLocales.some((loc) => pathname.startsWith(`/${loc}`));
   if (!isValidLocale) {
@@ -73,17 +72,17 @@ export const config = {
   matcher: [
     '/',
     '/(zh-cn|en)/:path*',
-    '/((?!api|_next/static|_next/image|favicon.ico|images/).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|images/).*)',
   ],
 };
 
 
 const getRedirectUrl = async (locale: string, accountType: string, role: string[]) => {
   if (accountType === IndexConfig.Organization.AccountType) {
-    return `/${locale}${RouteConfig.AdminSubmission.Path}`;
+    return `/${locale}${RouteConfig.Admin.Path + RouteConfig.Dashboard.Path}`;
   } else if (accountType === IndexConfig.Personal.AccountType) {
     if (role?.includes('staff')) {
-      return `/${locale}${RouteConfig.StaffSubmission.Path}`;
+      return `/${locale}${RouteConfig.Staff.Path + RouteConfig.Dashboard.Path}`;
     }
   }
   return `/${locale}${RouteConfig.Login.Path}`;

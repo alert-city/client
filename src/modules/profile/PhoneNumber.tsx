@@ -48,7 +48,7 @@ const PhoneNumber: React.FC = () => {
             },
           })}
         />
-        : <Typography>{userInfo.phoneNumber}</Typography>}
+        : <Typography>{userInfo.phoneNumber ? userInfo.phoneNumber : t('phoneNotProvided') }</Typography>}
       {requestError && (
         <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error"
                     variant="body2">

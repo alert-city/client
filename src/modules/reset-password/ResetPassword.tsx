@@ -31,7 +31,6 @@ import { useTranslations } from 'next-intl';
 
 const ResetPassword: React.FC = () => {
   const t = useTranslations('ResetPasswordPage');
-  const logout = useLogout();
   const router = useRouter();
   const [getCode] = useMutation(GET_VERIFICATION_CODE);
   const [resetPassword] = useMutation(RESET_PASSWORD);
@@ -48,6 +47,7 @@ const ResetPassword: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { getCodeSchema, resetPasswordSchema } = useValidationSchemas();
+  const { revokeTokens } = useLogout();
 
   useEffect(() => {
     const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
@@ -154,7 +154,7 @@ const ResetPassword: React.FC = () => {
           setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
           if (countdown === 0) {
             clearInterval(intervalId);
-            logout();
+            revokeTokens();
           }
         }, 1000);
       }

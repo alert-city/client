@@ -46,7 +46,7 @@ export const useCreateUserSchema = () => {
             message: t('firstName.required'),
             code: 'custom',
           });
-        } else if (data.firstName.length < 2 || data.firstName.length > 255) {
+        } else if (data.firstName.length < 1 || data.firstName.length > 100) {
           ctx.addIssue({
             path: ['firstName'],
             message: t('firstName.length'),
@@ -59,7 +59,7 @@ export const useCreateUserSchema = () => {
             message: t('lastName.required'),
             code: 'custom',
           });
-        } else if (data.lastName.length < 2 || data.lastName.length > 255) {
+        } else if (data.lastName.length < 1 || data.lastName.length > 100) {
           ctx.addIssue({
             path: ['lastName'],
             message: t('lastName.length'),
@@ -75,7 +75,7 @@ export const useCreateUserSchema = () => {
             message: t('orgName.required'),
             code: 'custom',
           });
-        } else if (data.orgName.length < 2 || data.orgName.length > 255) {
+        } else if (data.orgName.length < 1 || data.orgName.length > 255) {
           ctx.addIssue({
             path: ['orgName'],
             message: t('orgName.length'),
