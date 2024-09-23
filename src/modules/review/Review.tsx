@@ -22,7 +22,6 @@ const ReviewModule: React.FC = () => {
     const [openSuccessDialog, setOpenSuccessDialog] = useState<boolean>(false);
     const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
     const [updateError, setUpdateError] = useState<string | null>(null);
-    const [reloadEvents, setReloadEvents] = useState<boolean>(false);
     const [updateEvent] = useMutation(UPDATE_EVENT);
 
     const handleOpenConfirmDialog = (
@@ -65,18 +64,10 @@ const ReviewModule: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        if (openSuccessDialog) {
-            setReloadEvents(true);
-            setTimeout(() => setReloadEvents(false), 1000);
-        }
-    }, [openSuccessDialog]);
-
     return (
         <>
             <DisplayUnreviewedEvents
                 handleOpenConfirmDialog={handleOpenConfirmDialog}
-                reload={reloadEvents}
             />
             <ConfirmationDialog
                 open={openConfirmDialog}

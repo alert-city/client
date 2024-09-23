@@ -131,3 +131,25 @@ export const UPDATE_EVENT = gql`
         }
     }
 `;
+
+export const EVENT_CREATED = gql`
+    subscription {
+        eventCreated {
+            id
+            eventType
+            subject
+            matter
+        }
+    }
+`;
+
+export const EVENT_UPDATED = gql`
+    subscription {
+        eventUpdated {
+            id
+            eventType
+            subject
+            matter
+        }
+    }
+`;

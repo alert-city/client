@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import { FIND_ONE_USER } from '@/graphql/user';
-import { FIND_UNREVIEWED_EVENTS_BY_ORG_NAME } from '@/graphql/event';
+import { FIND_UNREVIEWED_EVENTS_BY_ORG_NAME, EVENT_CREATED, EVENT_UPDATED } from '@/graphql/event';
 import { useTranslations } from 'next-intl';
 import { ID, IS_DARK } from '@/shared/constants/storage';
 import { Box, Typography, Button, Card, TextField } from '@mui/material';
@@ -12,7 +12,6 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface DisplayUnreviewedEventsProp {
     handleOpenConfirmDialog: (eventId: string, passed: boolean, reviewComment: string | null) => void;
-    reload: boolean;
 };
 type EventValues = {
     id: string;
@@ -31,7 +30,7 @@ type EventValues = {
 };
 
 const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
-    handleOpenConfirmDialog, reload
+    handleOpenConfirmDialog
 }) => {
     const t = useTranslations("ReviewPage");
     const isDark = localStorage.getItem(IS_DARK) === "1";
@@ -45,7 +44,7 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
         }
     );
     const orgName = userData?.findOneUser?.orgName;
-    const { data: eventData, refetch } = useQuery(
+    const { data: eventData, refetch: unreviewedRefetch } = useQuery(
         FIND_UNREVIEWED_EVENTS_BY_ORG_NAME,
         {
             variables: { orgName: orgName },
@@ -54,12 +53,14 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
         }
     )
     const orgEvents = eventData?.findUnreviewedEventsByOrgName;
+    const {data: eventCreated} = useSubscription(EVENT_CREATED);
+    const {data: eventUpdated} = useSubscription(EVENT_UPDATED);
 
     useEffect(() => {
-        if (reload) {
-            refetch();
+        if (eventCreated || eventUpdated) {
+            unreviewedRefetch();
         }
-    }, [reload]);
+    }, [eventCreated, eventUpdated]);
 
     return (
         <Card
