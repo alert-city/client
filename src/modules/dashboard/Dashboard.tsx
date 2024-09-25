@@ -12,8 +12,20 @@ import AdminReviewList from "@/modules/dashboard/AdminReviewList";
 import AdminEventList from "@/modules/dashboard/AdminEventList";
 import StaffReviewList from "@/modules/dashboard/StaffReviewList";
 import StaffEventList from "@/modules/dashboard/StaffEventList";
+import DisplayEventInfo from "@/modules/dashboard/DisplayEventInfo";
 import { IndexConfig } from "@/routes";
 import "@fontsource/poppins";
+
+type EventInfo = {
+    id: string;
+    subject: string;
+    matter: string;
+    time: string;
+    date: string;
+    ERTime: string | null;
+    ERDate: string | null;
+    location: string | null;
+};
 
 const Dashboard: React.FC = () => {
     const [accountType, setAccountType] = useState<string | null>(null);
@@ -22,6 +34,17 @@ const Dashboard: React.FC = () => {
 
     const t = useTranslations("DashboardPage");
     const isDark = localStorage.getItem(IS_DARK) === "1";
+
+    //DisplayUnreviewedEvents Params
+    const [openInfo, setOpenInfo] = useState<boolean>(false);
+    const [eventInfo, setEventInfo] = useState<EventInfo | null>();
+
+    const handleOpenEventInfo = (input: EventInfo) => {
+        setEventInfo(input);
+        setOpenInfo(true);
+    };
+
+    const handleCloseEventInfo = () => setOpenInfo(false);
 
     useEffect(() => {
         const accountType = typeof window !== 'undefined' ? Cookies.get(ACCOUNT_TYPE) : null;
@@ -77,12 +100,24 @@ const Dashboard: React.FC = () => {
                     <SideBar accountType={accountType!} />
                 </Box>
                 <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(70% - 8px)' } }}>
-                    {isAdmin && <AdminReviewList />}
-                    {!isAdmin && <StaffReviewList />}
+                    {isAdmin && <AdminReviewList handleOpenEventInfo={handleOpenEventInfo} />}
+                    {!isAdmin && <StaffReviewList handleOpenEventInfo={handleOpenEventInfo} />}
                 </Box>
             </Box>
-            {isAdmin && <AdminEventList />}
-            {!isAdmin && <StaffEventList />}
+            {isAdmin && <AdminEventList handleOpenEventInfo={handleOpenEventInfo} />}
+            {!isAdmin && <StaffEventList handleOpenEventInfo={handleOpenEventInfo} />}
+            {eventInfo && <DisplayEventInfo
+                open={openInfo}
+                handleClose={handleCloseEventInfo}
+                windowTitle={t("eventDetails")}
+                subject={eventInfo?.subject!}
+                matter={eventInfo?.matter!}
+                time={eventInfo?.time!}
+                date={eventInfo?.date!}
+                ERTime={eventInfo?.ERTime || null}
+                ERDate={eventInfo?.ERDate || null}
+                location={eventInfo?.location || null}
+            />}
             {isFirstLogin === 'true' && <WelcomeSnackbar />}
         </Box>
     )

@@ -9,7 +9,6 @@ import '@fontsource/poppins';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-
 interface DisplayUnreviewedEventsProp {
     handleOpenConfirmDialog: (eventId: string, passed: boolean, reviewComment: string | null) => void;
 };
@@ -35,6 +34,7 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
     const t = useTranslations("ReviewPage");
     const isDark = localStorage.getItem(IS_DARK) === "1";
     const [reviewComment, setReviewComment] = useState<string | null>(null);
+
     const userId = localStorage.getItem(ID);
     const { data: userData } = useQuery(
         FIND_ONE_USER,
@@ -44,7 +44,7 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
         }
     );
     const orgName = userData?.findOneUser?.orgName;
-    const { data: eventData, refetch: unreviewedRefetch } = useQuery(
+    const { data: eventData, refetch } = useQuery(
         FIND_UNREVIEWED_EVENTS_BY_ORG_NAME,
         {
             variables: { orgName: orgName },
@@ -52,13 +52,13 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
             fetchPolicy: "no-cache"
         }
     )
-    const orgEvents = eventData?.findUnreviewedEventsByOrgName;
+    const orgEvents = eventData?.findUnreviewedEventsByOrgName || [];
     const {data: eventCreated} = useSubscription(EVENT_CREATED);
     const {data: eventUpdated} = useSubscription(EVENT_UPDATED);
 
     useEffect(() => {
         if (eventCreated || eventUpdated) {
-            unreviewedRefetch();
+            refetch();
         }
     }, [eventCreated, eventUpdated]);
 

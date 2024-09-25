@@ -203,7 +203,8 @@
     "emergencyEvents": "紧急事件列表",
     "routineEvents": "常规事件列表",
     "subject": "主题",
-    "matter": "事项"
+    "matter": "事项",
+    "eventDetails": "事件详情"
   },
   "DashboardSideBar": {
     "postAnEvent": "一键发布",

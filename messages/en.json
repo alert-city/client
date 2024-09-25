@@ -201,7 +201,8 @@
     "emergencyEvents": "Emergency Events",
     "routineEvents": "Routine Events",
     "subject": "Subject",
-    "matter": "Matter"
+    "matter": "Matter",
+    "eventDetails": "Event Details"
   },
   "DashboardSideBar": {
     "postAnEvent": "Post an event",

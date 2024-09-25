@@ -8,6 +8,7 @@ export const FIND_UNREVIEWED_EVENTS_BY_ID = gql`
             userId: $userId
         ) {
             id
+            eventType
             subject
             matter
             time
@@ -51,6 +52,7 @@ export const FIND_UNREVIEWED_EVENTS_BY_ORG_NAME = gql`
             orgName: $orgName
         ) {
             id
+            eventType
             submitter {
                 firstName
                 lastName
