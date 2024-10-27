@@ -22,16 +22,6 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = React.memo(({
   const router = useRouter();
   const isDark = useMemo(() => localStorage.getItem(IS_DARK) === "1", []);
 
-  const getRandomColor = useCallback((isDark: boolean): string => {
-    let color = 'rgba(';
-    for (let i = 0; i < 3; i++) {
-      color += Math.floor(Math.random() * 175) + 80;
-      color += ',';
-    }
-    color += ` ${isDark ? 0.8 : 0.5})`;
-    return color;
-  }, []);
-
   const ButtonStyle = useMemo(() => ({
     height: "70px",
     width: "70px",
@@ -60,6 +50,8 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = React.memo(({
       sx={{
         width: "100%",
         maxWidth: 800,
+        maxHeight: "100vh",
+        overflow: 'auto',
         border: "1px solid #ddd",
         borderRadius: "24px",
         boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.15)",
@@ -127,7 +119,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = React.memo(({
               }}
               sx={{
                 ...ButtonStyle,
-                backgroundColor: getRandomColor(isDark),
+                backgroundColor: (isDark ? item.light : item.dark),
                 backgroundImage: `url(/images/submission-icons/${item.icon_name}.svg)`,
               }}
             />
@@ -166,7 +158,7 @@ const EasyToPostSection: React.FC<EasyToPostSectionProps> = React.memo(({
                 onClick={() => handleOpenDialog(item.subject, item.matter, item.t_key)}
                 sx={{
                   ...ButtonStyle,
-                  backgroundColor: getRandomColor(isDark),
+                  backgroundColor:(isDark ? item.light : item.dark),
                   backgroundImage: `url(/images/submission-icons/${item.icon_name}.svg)`,
                 }}
               />

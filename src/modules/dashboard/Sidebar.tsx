@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, List, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from '@/i18n/routing';
 import WarningIcon from '@mui/icons-material/Warning';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -24,7 +24,7 @@ const SideBar: React.FC<{ accountType: string }> = ({
     };
 
     const buttonStyles = {
-        minWidth: "150px",
+        width: "100%",
         padding: { xs: 1, sm: 1.5, md: 2 },
         marginBottom: 2,
         color: "white",
@@ -47,9 +47,8 @@ const SideBar: React.FC<{ accountType: string }> = ({
                 padding: { xs: 1, sm: 1.5, md: 3 },
                 borderRadius: '24px',
                 boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.1)',
-                width: '100%',
-                minWidth: '200px',
-                maxWidth: { xs: '600px', sm: '800px', md: 800 },
+                // width: '100%',
+                height: '250px',
                 backgroundColor: isDark ? "#222" : "#f9f9f9"
             }}
         >
@@ -59,61 +58,60 @@ const SideBar: React.FC<{ accountType: string }> = ({
                 sx={{
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
-                    color: isDark ? '#ccc' : '#333' // Elegant dark color
+                    color: isDark ? '#ccc' : '#333',
+                    mb: 3
                 }}
             >
                 {t("postAnEvent")}
             </Typography>
-            <List>
-                <Button
-                    variant='contained'
-                    fullWidth
-                    sx={{
-                        ...buttonStyles,
-                        backgroundColor: `rgba(255, 165, 0, ${isDark ? 0.7 : 1})`
-                    }}
-                    onClick={() => handleNavigation(RouteConfig.EmergencySubmission.Path)}
-                >
-                    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                        {/* <WarningIcon /> */}
-                        <Typography
-                            variant='subtitle2'
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                fontSize: "12px",
-                                fontFamily: 'Poppins, sans-serif'
-                            }}>
-                            {t("emergency")}
-                        </Typography>
-                    </Box>
-                </Button>
-                <Button
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{
-                        ...buttonStyles,
-                        backgroundColor: `rgba(3, 138, 255, ${isDark ? 0.7 : 1})`
-                    }}
-                    onClick={() => handleNavigation(RouteConfig.RoutineSubmission.Path)}
-                >
-                    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                        {/* <CalendarMonthIcon /> */}
-                        <Typography
-                            variant='subtitle2'
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                fontSize: "12px", fontFamily: 'Poppins, sans-serif'
-                            }}>
-                            {t("routine")}
-                        </Typography>
-                    </Box>
-                </Button>
-            </List>
+            <Button
+                variant='contained'
+                fullWidth
+                sx={{
+                    ...buttonStyles,
+                    backgroundColor: `rgba(255, 165, 0, ${isDark ? 0.7 : 1})`
+                }}
+                onClick={() => handleNavigation(RouteConfig.EmergencySubmission.Path)}
+            >
+                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                    {/* <WarningIcon /> */}
+                    <Typography
+                        variant='subtitle2'
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            fontSize: "12px",
+                            fontFamily: 'Poppins, sans-serif'
+                        }}>
+                        {t("emergency")}
+                    </Typography>
+                </Box>
+            </Button>
+            <Button
+                variant='contained'
+                color='primary'
+                fullWidth
+                sx={{
+                    ...buttonStyles,
+                    backgroundColor: `rgba(3, 138, 255, ${isDark ? 0.7 : 1})`
+                }}
+                onClick={() => handleNavigation(RouteConfig.RoutineSubmission.Path)}
+            >
+                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                    {/* <CalendarMonthIcon /> */}
+                    <Typography
+                        variant='subtitle2'
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            fontSize: "12px", fontFamily: 'Poppins, sans-serif'
+                        }}>
+                        {t("routine")}
+                    </Typography>
+                </Box>
+            </Button>
         </Box>
     )
 };

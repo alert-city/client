@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql,useSubscription } from '@apollo/client';
 
 export const FIND_ALL_USERS = gql`
     query FindAllUsers {
@@ -37,6 +37,24 @@ export const UPDATE_USER = gql`
         }
     }
 `;
+
+export const USER_UPDATED = gql`
+    subscription {
+        userUpdated {
+            id
+            role
+            organization
+            firstName
+            lastName
+            avatarUrl
+            username
+            displayName
+            phoneNumber
+            orgName
+            is2FAEnabled
+        }
+    }
+`
 
 export const CREATE_USER = gql`
     mutation  CreateUser($input:UserRequestDto!, $platform:String!) {

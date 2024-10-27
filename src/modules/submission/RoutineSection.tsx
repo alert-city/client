@@ -73,6 +73,10 @@ const RoutineSection: React.FC<RoutineSectionProps> = ({
       alignItems="center"
       sx={{
         width: '100%',
+        maxWidth: 800,
+        minHeight: "80vh",
+        maxHeight: "100vh",
+        overflow: 'auto',
         padding: {xs: 1, sm: 2, md: 4},
         border: isDark ? '1px solid #fff' : 'none',
         borderRadius: '16px',

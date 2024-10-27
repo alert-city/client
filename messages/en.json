@@ -198,7 +198,11 @@
   "DashboardPage": {
     "dashboard": "Dashboard",
     "inReview": "In Review",
-    "posts": "Posts"
+    "emergencyEvents": "Emergency Events",
+    "routineEvents": "Routine Events",
+    "subject": "Subject",
+    "matter": "Matter",
+    "eventDetails": "Event Details"
   },
   "DashboardSideBar": {
     "postAnEvent": "Post an event",
@@ -323,5 +327,27 @@
     "email": "Email",
     "phone": "Phone",
     "address": "Address"
+  },
+  "ReviewPage": {
+    "confirm": "Confirm",
+    "confirmSubmission": "Are you sure to submit the review?",
+    "reviewSubmitted": "Review submitted!",
+    "hasBeenSubmited": "The review has been submited!",
+    "submissionError": "Submission Error",
+    "eventDescription": "Event Description",
+    "submitter": "Submitter",
+    "subject": "Subject",
+    "matter": "Matter",
+    "eventTime": "Event Time",
+    "startTime": "Start Time",
+    "startDate": "Start Date",
+    "recoveryTime": "Recovery Time",
+    "recoveryDate": "Recovery Date",
+    "eventLocation": "Event Location",
+    "location": "Location",
+    "eventReview": "Event Review",
+    "reviewComment": "Review Comment (Optional)",
+    "reject": "Reject",
+    "approve": "Approve"
   }
 }
