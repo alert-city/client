@@ -77,6 +77,7 @@ const EmergencySubmissionPage: React.FC = () => {
         return "";
     }
 
+
     const handleMouseDownConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
