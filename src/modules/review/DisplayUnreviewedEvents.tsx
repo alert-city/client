@@ -28,6 +28,7 @@ type EventValues = {
     location: string | null;
 };
 
+
 const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
     handleOpenConfirmDialog
 }) => {
