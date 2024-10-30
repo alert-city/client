@@ -37,7 +37,7 @@ const RoutineSubmissionPage: React.FC = () => {
       submitter: data?.findOneUser?.id,
       orgName: data?.findOneUser?.orgName,
       isReviewed: accountType === IndexConfig.Organization.AccountType ? true : false,
-      isApproved: accountType === IndexConfig.Organization.AccountType ? true : null
+      isApproved: accountType === IndexConfig.Organization.AccountType ? true : false,
     };
     try {
       const { data } = await createEvent({ variables: { input: formattedData } });

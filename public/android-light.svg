@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <style>
+        .background { fill: #ECF0F1; }
+        .icon { stroke: #2C3E50; stroke-width: 2.5; fill: none; }
+        .filled { fill: #2C3E50; }
+    </style>
+
+    <!-- Circular background -->
+    <circle class="background" cx="60" cy="60" r="50" />
+
+    <!-- Modified icon, scaled and centered -->
+    <g transform="translate(15, 15) scale(1)">
+        <path class="icon" d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" />
+        <circle class="filled" cx="30" cy="50" r="4" />
+        <circle class="filled" cx="70" cy="50" r="4" />
+    </g>
+</svg>
