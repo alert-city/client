@@ -115,12 +115,13 @@ const RegistrationPage: React.FC = () => {
     const formData = {
       ...data,
       role: role,
+      orgName:"Alert City",
       captchaToken: captchaToken,
     };
 
-    if (formData.accountType === 'Personal') {
-      delete formData.orgName;
-    }
+    // if (formData.accountType === 'Personal') {
+    //   delete formData.orgName;
+    // }
 
     if (formData.accountType === 'Organization') {
       delete formData.firstName;
