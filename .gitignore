@@ -46,3 +46,5 @@ next-env.d.ts
 /.idea/copilot.data.migration.ask.xml
 /.idea/copilot.data.migration.ask2agent.xml
 /.idea/copilot.data.migration.edit.xml
+/git_toolbox_prj.xml
+/.idea/git_toolbox_prj.xml
