@@ -10,8 +10,8 @@ import "@fontsource/poppins";
 import { IS_DARK } from '@/shared/constants/storage';
 
 const SideBar: React.FC<{ accountType: string }> = ({
-    accountType
-}) => {
+                                                        accountType
+                                                    }) => {
     const t = useTranslations("DashboardSideBar");
     const router = useRouter();
     const isDark = localStorage.getItem(IS_DARK) === "1";
@@ -42,13 +42,13 @@ const SideBar: React.FC<{ accountType: string }> = ({
     return (
         <Box
             gap={2}
-            mb={2}
             sx={{
-                padding: { xs: 1, sm: 1.5, md: 3 },
+                padding: { xs: 2, sm: 2, md: 3 },
                 borderRadius: '24px',
                 boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.1)',
-                // width: '100%',
-                height: '250px',
+                width: '100%',
+                height: 'auto',
+                minHeight: { xs: 'auto', md: '250px' },
                 backgroundColor: isDark ? "#222" : "#f9f9f9"
             }}
         >
@@ -59,7 +59,7 @@ const SideBar: React.FC<{ accountType: string }> = ({
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
                     color: isDark ? '#ccc' : '#333',
-                    mb: 3
+                    mb: 2
                 }}
             >
                 {t("postAnEvent")}
@@ -74,7 +74,6 @@ const SideBar: React.FC<{ accountType: string }> = ({
                 onClick={() => handleNavigation(RouteConfig.EmergencySubmission.Path)}
             >
                 <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                    {/* <WarningIcon /> */}
                     <Typography
                         variant='subtitle2'
                         sx={{
@@ -94,19 +93,20 @@ const SideBar: React.FC<{ accountType: string }> = ({
                 fullWidth
                 sx={{
                     ...buttonStyles,
-                    backgroundColor: `rgba(3, 138, 255, ${isDark ? 0.7 : 1})`
+                    backgroundColor: `rgba(3, 138, 255, ${isDark ? 0.7 : 1})`,
+                    marginBottom: 0
                 }}
                 onClick={() => handleNavigation(RouteConfig.RoutineSubmission.Path)}
             >
                 <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                    {/* <CalendarMonthIcon /> */}
                     <Typography
                         variant='subtitle2'
                         sx={{
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
-                            fontSize: "12px", fontFamily: 'Poppins, sans-serif'
+                            fontSize: "12px",
+                            fontFamily: 'Poppins, sans-serif'
                         }}>
                         {t("routine")}
                     </Typography>

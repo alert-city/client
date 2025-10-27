@@ -4,6 +4,7 @@ import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client/link/core';
+import { setContext } from '@apollo/client/link/context';
 import { ACCESS_TOKEN } from '@/shared/constants/storage';
 import Cookies from 'js-cookie';
 import { RouteConfig } from '@/routes/route';
@@ -13,125 +14,129 @@ let apolloClient: ApolloClient<any>;
 const env = process.env.NODE_ENV;
 
 function createApolloClient() {
-  const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_API_URL,
-    credentials: 'include',
-  });
-
-  const responseLink = new ApolloLink((
-    operation,
-    forward,
-  ) => {
-    return forward(operation).map((response) => {
-      if (typeof window !== 'undefined') {
-        const context = operation.getContext();
-        const headers = context.response?.headers;
-        const newAccessToken = headers?.get('New-Access-Token');
-        const authStatus = headers?.get('Auth-Status');
-        if (newAccessToken) Cookies.set(ACCESS_TOKEN, newAccessToken);
-        if (authStatus === 'invalid') {
-          const currentLocale = Cookies.get('NEXT_LOCALE') ?? 'en';
-          IndexConfig.RemoveLocalStorage.Item.forEach((item) => {
-            localStorage.removeItem(item);
-          });
-          IndexConfig.RemoveCookie.Item.forEach((item) => {
-            Cookies.remove(item);
-          });
-          window.location.href = RouteConfig.Login.PathWithLocale(currentLocale);
-        }
-      }
-      return response;
+    const httpLink = new HttpLink({
+        uri: process.env.NEXT_PUBLIC_API_URL,
+        credentials: 'include',
     });
-  });
 
-  const wsLink =
-          typeof window !== 'undefined'
+    // 添加认证 Link - 从 Cookies 读取 token 并添加到请求头
+    const authLink = setContext((_, { headers }) => {
+        const token = Cookies.get(ACCESS_TOKEN);
+        return {
+            headers: {
+                ...headers,
+                authorization: token ? `Bearer ${token}` : '',
+            },
+        };
+    });
+
+    const responseLink = new ApolloLink((operation, forward) => {
+        return forward(operation).map((response) => {
+            if (typeof window !== 'undefined') {
+                const context = operation.getContext();
+                const headers = context.response?.headers;
+                const newAccessToken = headers?.get('New-Access-Token');
+                const authStatus = headers?.get('Auth-Status');
+                if (newAccessToken) Cookies.set(ACCESS_TOKEN, newAccessToken);
+                if (authStatus === 'invalid') {
+                    const currentLocale = Cookies.get('NEXT_LOCALE') ?? 'en';
+                    IndexConfig.RemoveLocalStorage.Item.forEach((item) => {
+                        localStorage.removeItem(item);
+                    });
+                    IndexConfig.RemoveCookie.Item.forEach((item) => {
+                        Cookies.remove(item);
+                    });
+                    window.location.href = RouteConfig.Login.PathWithLocale(currentLocale);
+                }
+            }
+            return response;
+        });
+    });
+
+    const wsLink =
+        typeof window !== 'undefined'
             ? new GraphQLWsLink(
-              createClient({
-                url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51004/graphql',
-                connectionParams: {
-                  reconnect: true,
-                },
-                retryAttempts: Infinity, // 自动重连
-                keepAlive: 30000, // 30 seconds
-                on: {
-                  connected: () => console.log('websocket connected'),
-                  closed: () => console.log('websocket closed'),
-                  error: (err: any) => console.error('websocket error: ', err),
-                },
-              }),
+                createClient({
+                    url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? 'ws://localhost:51004/graphql',
+                    connectionParams: {
+                        reconnect: true,
+                    },
+                    retryAttempts: Infinity,
+                    keepAlive: 30000,
+                    on: {
+                        connected: () => console.log('websocket connected'),
+                        closed: () => console.log('websocket closed'),
+                        error: (err: any) => console.error('websocket error: ', err),
+                    },
+                }),
             )
             : null;
 
-  const splitLink =
-          typeof window !== 'undefined' && wsLink
+    const splitLink =
+        typeof window !== 'undefined' && wsLink
             ? split(
-              ({ query }) => {
-                const definition = getMainDefinition(query);
-                return (
-                  definition.kind === 'OperationDefinition' &&
-                  definition.operation === 'subscription'
-                );
-              },
-              wsLink,
-              httpLink,
+                ({ query }) => {
+                    const definition = getMainDefinition(query);
+                    return (
+                        definition.kind === 'OperationDefinition' &&
+                        definition.operation === 'subscription'
+                    );
+                },
+                wsLink,
+                httpLink,
             )
             : httpLink;
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
-      graphQLErrors.forEach(({ message, path, extensions }) => {
-        const { status, code, data } = extensions || {};
-        const errorDetails = {
-          message,
-          path,
-          code,
-          status,
-          ...(typeof data === 'object' && data !== null && { data }),
-        };
-        console.error(`Error: ${JSON.stringify(errorDetails, null, 2)}`);
-      });
-    }
+    const errorLink = onError(({ graphQLErrors, networkError }) => {
+        if (graphQLErrors) {
+            graphQLErrors.forEach(({ message, path, extensions }) => {
+                const { status, code, data } = extensions || {};
+                const errorDetails = {
+                    message,
+                    path,
+                    code,
+                    status,
+                    ...(typeof data === 'object' && data !== null && { data }),
+                };
+                console.error(`Error: ${JSON.stringify(errorDetails, null, 2)}`);
+            });
+        }
 
-    if (networkError) {
-      console.error(`[Network error]: ${networkError}`);
-    }
-  });
-
-  const logLink = new ApolloLink((
-    operation,
-    forward,
-  ) => {
-    return forward(operation).map((response) => {
-      console.log(`Connection: GraphQL request completed successfully. GraphQL operation: ${operation.operationName}`);
-      return response;
+        if (networkError) {
+            console.error(`[Network error]: ${networkError}`);
+        }
     });
-  });
 
-  let link: ApolloLink | null = null;
-  if (env === 'development') {
-    link = ApolloLink.from([errorLink, responseLink, logLink, splitLink]);
-  } else if (env === 'production') {
-    link = ApolloLink.from([responseLink, splitLink]);
-  }
+    const logLink = new ApolloLink((operation, forward) => {
+        return forward(operation).map((response) => {
+            console.log(`Connection: GraphQL request completed successfully. GraphQL operation: ${operation.operationName}`);
+            return response;
+        });
+    });
 
+    let link: ApolloLink | null = null;
+    if (env === 'development') {
+        link = ApolloLink.from([authLink, errorLink, responseLink, logLink, splitLink]);
+    } else if (env === 'production') {
+        link = ApolloLink.from([authLink, responseLink, splitLink]);
+    }
 
-  return new ApolloClient({
-    ssrMode: typeof window === 'undefined',
-    link: link!,
-    cache: new InMemoryCache(),
-  });
+    return new ApolloClient({
+        ssrMode: typeof window === 'undefined',
+        link: link!,
+        cache: new InMemoryCache(),
+    });
 }
 
 export function initializeApollo(initialState = null) {
-  const _apolloClient = apolloClient ?? createApolloClient();
+    const _apolloClient = apolloClient ?? createApolloClient();
 
-  if (initialState) {
-    _apolloClient.cache.restore(initialState);
-  }
+    if (initialState) {
+        _apolloClient.cache.restore(initialState);
+    }
 
-  if (typeof window === 'undefined') return _apolloClient;
-  if (!apolloClient) apolloClient = _apolloClient;
+    if (typeof window === 'undefined') return _apolloClient;
+    if (!apolloClient) apolloClient = _apolloClient;
 
-  return _apolloClient;
+    return _apolloClient;
 }

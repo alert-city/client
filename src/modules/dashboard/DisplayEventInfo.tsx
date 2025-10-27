@@ -55,55 +55,75 @@ export default function DisplayEventInfo(
             keepMounted
             onClose={handleClose}
             aria-describedby="event-slide-description"
+            fullScreen={false}
             sx={{
-                minWidth: "500px",
-                borderRadius: "16px",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.25)",
-                transition: "transform 0.3s ease-in-out",
-                "& .MuiPaper-root": {
-                    minWidth: "500px",
-                    borderRadius: "16px",
+                "& .MuiDialog-paper": {
+                    width: { xs: '95%', sm: '90%', md: '600px' },  
+                    maxWidth: { xs: '95%', sm: '90%', md: '600px' },
+                    margin: { xs: 1, sm: 2 },
+                    borderRadius: { xs: '12px', md: '16px' },
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                     backdropFilter: "blur(8px)"
                 }
             }}
         >
-            <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: isDark ? "#ddd" : "#333" }}>
+            <DialogTitle sx={{
+                fontWeight: 'bold',
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },  
+                color: isDark ? "#ddd" : "#333",
+                padding: { xs: 2, sm: 3 } 
+            }}>
                 {windowTitle}
             </DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{ padding: { xs: 2, sm: 3 } }}>
                 <Box
                     display="flex"
                     flexWrap="wrap"
-                    gap={2}
+                    gap={{ xs: 1.5, sm: 2 }}  
                     width="100%"
                     justifyContent="space-between"
                     sx={{
                         flexDirection: { xs: 'column', md: 'row' },
-                        paddingBottom: 2
+                        paddingBottom: { xs: 1, sm: 2 }
                     }}
                 >
                     <Box
                         display="flex"
                         flexDirection="column"
                         sx={{
-                            flex: { xs: '1 1 100%', md: '1 1 calc(50% - 5px)' },
-                            borderRadius: '12px',
+                            flex: { xs: '1 1 100%', md: '1 1 calc(50% - 8px)' },
+                            borderRadius: { xs: '8px', sm: '12px' },
                             boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
-                            padding: 1,
+                            padding: { xs: 1.5, sm: 2 }, 
                             backgroundColor: isDark ? "#222" : "#f9f9f9"
                         }}
                     >
-                        <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1 }}>
+                        <Typography
+                            variant='h6'
+                            sx={{
+                                fontWeight: 'bold',
+                                mb: 1,
+                                fontSize: { xs: '1rem', sm: '1.25rem' }  
+                            }}
+                        >
                             {t("eventDescription")}
                         </Typography>
-                        <Typography variant='body2'>
+                        <Typography
+                            variant='body2'
+                            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}  
+                        >
                             {t("subject")}: {subject}
                         </Typography>
-                        <Typography variant='body2'>
+                        <Typography
+                            variant='body2'
+                            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                        >
                             {t("matter")}: {matter}
                         </Typography>
-                        <Typography variant='body2'>
+                        <Typography
+                            variant='body2'
+                            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                        >
                             {t("location")}: {location ? location : "N/A"}
                         </Typography>
                     </Box>
@@ -111,29 +131,48 @@ export default function DisplayEventInfo(
                         display="flex"
                         flexDirection="column"
                         sx={{
-                            flex: { xs: '1 1 100%', md: '1 1 calc(40% - 5px)' },
-                            borderRadius: '12px',
+                            flex: { xs: '1 1 100%', md: '1 1 calc(50% - 8px)' },
+                            borderRadius: { xs: '8px', sm: '12px' },
                             boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
-                            padding: 1,
+                            padding: { xs: 1.5, sm: 2 },
                             backgroundColor: isDark ? "#222" : "#f9f9f9"
                         }}
                     >
-                        <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1 }}>
+                        <Typography
+                            variant='h6'
+                            sx={{
+                                fontWeight: 'bold',
+                                mb: 1,
+                                fontSize: { xs: '1rem', sm: '1.25rem' }
+                            }}
+                        >
                             {t("eventTime")}
                         </Typography>
-                        <Box gap={2}>
-                            <Typography variant='body2'>
+                        <Box gap={{ xs: 1, sm: 2 }}>
+                            <Typography
+                                variant='body2'
+                                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                            >
                                 {t("startTime")}: {time.split(" ")[0]}
                             </Typography>
-                            <Typography variant='body2'>
+                            <Typography
+                                variant='body2'
+                                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                            >
                                 {t("startDate")}: {date}
                             </Typography>
                         </Box>
-                        <Box gap={2}>
-                            <Typography variant='body2'>
+                        <Box gap={{ xs: 1, sm: 2 }} mt={1}>
+                            <Typography
+                                variant='body2'
+                                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                            >
                                 {t("recoveryTime")}: {ERTime ? ERTime.split(" ")[0] : "N/A"}
                             </Typography>
-                            <Typography variant='body2'>
+                            <Typography
+                                variant='body2'
+                                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                            >
                                 {t("recoveryDate")}: {ERDate ? ERDate : "N/A"}
                             </Typography>
                         </Box>

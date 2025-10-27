@@ -26,14 +26,14 @@ export default function SuccessDialog(
             open={open}
             onClose={onClose}
             sx={{
-                borderRadius: "16px",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.25)",
-                transition: "transform 0.3s ease-in-out",
                 "& .MuiPaper-root": {
                     borderRadius: "16px",
-                    padding: theme.spacing(3),
+                    padding: { xs: theme.spacing(2), sm: theme.spacing(3) },
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                    backdropFilter: "blur(8px)"
+                    backdropFilter: "blur(8px)",
+                    maxWidth: { xs: '90%', sm: '500px' },
+                    width: '100%',
+                    margin: { xs: 2, sm: 'auto' }
                 }
             }}
         >
@@ -42,16 +42,17 @@ export default function SuccessDialog(
                     display: "flex",
                     justifyContent: "center",
                     fontWeight: "bold",
-                    fontSize: "1.5rem",
-                    paddingBottom: theme.spacing(1),
+                    fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                    paddingBottom: { xs: theme.spacing(0.5), sm: theme.spacing(1) },
                     color: theme.palette.success.main,
+                    padding: { xs: theme.spacing(1), sm: theme.spacing(2) }
                 }}
             >
                 {title}
             </DialogTitle>
             <DialogContent
                 sx={{
-                    padding: theme.spacing(2),
+                    padding: { xs: theme.spacing(1.5), sm: theme.spacing(2) },
                     textAlign: "center"
                 }}
             >
@@ -61,14 +62,15 @@ export default function SuccessDialog(
                     sx={{
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        fontSize: { xs: '0.875rem', sm: '1rem' }
                     }}>
                     {content}
                 </Typography>
             </DialogContent>
             <DialogActions
                 sx={{
-                    padding: theme.spacing(2),
+                    padding: { xs: theme.spacing(1.5), sm: theme.spacing(2) },
                     display: "flex",
                     justifyContent: "center"
                 }}
@@ -79,7 +81,9 @@ export default function SuccessDialog(
                     color="success"
                     sx={{
                         borderRadius: "8px",
-                        padding: theme.spacing(1, 3),
+                        padding: { xs: theme.spacing(0.75, 2), sm: theme.spacing(1, 3) },
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        minWidth: { xs: '80px', sm: '100px' },
                         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                         "&:hover": {
                             backgroundColor: theme.palette.success.dark,

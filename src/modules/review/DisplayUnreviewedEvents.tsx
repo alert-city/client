@@ -29,8 +29,8 @@ type EventValues = {
 };
 
 const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
-    handleOpenConfirmDialog
-}) => {
+                                                                            handleOpenConfirmDialog
+                                                                        }) => {
     const t = useTranslations("ReviewPage");
     const isDark = localStorage.getItem(IS_DARK) === "1";
     const [reviewComment, setReviewComment] = useState<string | null>(null);
@@ -67,15 +67,23 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
             sx={{
                 minHeight: "80vh",
                 maxHeight: "100vh",
-                maxWidth: 800,
+                maxWidth: { xs: '100%', sm: 900, md: 1000 },
                 overflow: "auto",
                 width: "100%",
                 borderRadius: '16px',
-                padding: { xs: 1, sm: 2, md: 4 },
-                fontFamily: "Poppins, sans-seirf",
+                padding: { xs: 2, sm: 3, md: 4 },
+                fontFamily: "Poppins, sans-serif",
             }}
         >
-            <Typography variant='h4' gutterBottom>
+            <Typography
+                variant='h4'
+                gutterBottom
+                sx={{
+                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
+                    fontWeight: 600,
+                    mb: { xs: 2, md: 3 }
+                }}
+            >
                 In Review: {orgEvents ? orgEvents.length : "Loading ..."}
             </Typography>
             <Box width="100%">
@@ -88,7 +96,7 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                             borderRadius: '16px',
                             boxShadow: '0px 12px 40px rgba(0, 0, 0, 0.1)',
                             border: isDark ? "1px solid #fff" : "none",
-                            padding: { xs: 1, sm: 2, md: 2 },
+                            padding: { xs: 2, sm: 2.5, md: 3 },
                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                             "&:hover": {
                                 transform: 'translateY(-5px)',
@@ -112,23 +120,41 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                 flexDirection="column"
                                 sx={{
                                     flex: { xs: '1 1 100%', md: '1 1 calc(35% - 8px)' },
+                                    width: '100%',
+                                    maxWidth: { xs: '100%', md: 'calc(35% - 8px)' },
                                     borderRadius: '12px',
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                    padding: 1,
+                                    padding: { xs: 1.5, sm: 2 },
                                     mb: 0.5,
                                     backgroundColor: isDark ? "#333" : "none"
                                 }}
                             >
-                                <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                    variant='h6'
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                                        mb: 1
+                                    }}
+                                >
                                     {t("eventDescription")}
                                 </Typography>
-                                <Typography variant='body2'>
+                                <Typography
+                                    variant='body2'
+                                    sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                >
                                     {t("submitter")}: {item.submitter.firstName} {item.submitter.lastName}
                                 </Typography>
-                                <Typography variant='body2'>
+                                <Typography
+                                    variant='body2'
+                                    sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                >
                                     {t("subject")}: {item.subject}
                                 </Typography>
-                                <Typography variant='body2'>
+                                <Typography
+                                    variant='body2'
+                                    sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                >
                                     {t("matter")}: {item.matter}
                                 </Typography>
                             </Box>
@@ -137,29 +163,50 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                 flexDirection="column"
                                 sx={{
                                     flex: { xs: '1 1 100%', md: '1 1 calc(30% - 8px)' },
+                                    width: '100%',
+                                    maxWidth: { xs: '100%', md: 'calc(30% - 8px)' },
                                     borderRadius: '12px',
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                    padding: 1,
+                                    padding: { xs: 1.5, sm: 2 },
                                     mb: 0.5,
                                     backgroundColor: isDark ? "#333" : "none"
                                 }}
                             >
-                                <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                    variant='h6'
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                                        mb: 1
+                                    }}
+                                >
                                     {t("eventTime")}
                                 </Typography>
                                 <Box gap={2}>
-                                    <Typography variant='body2'>
+                                    <Typography
+                                        variant='body2'
+                                        sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                    >
                                         {t("startTime")}: {item.time.split(" ")[0]}
                                     </Typography>
-                                    <Typography variant='body2'>
+                                    <Typography
+                                        variant='body2'
+                                        sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                    >
                                         {t("startDate")}: {item.date}
                                     </Typography>
                                 </Box>
                                 <Box gap={2}>
-                                    <Typography variant='body2'>
+                                    <Typography
+                                        variant='body2'
+                                        sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                    >
                                         {t("recoveryTime")}: {item.ERTime ? item.ERTime.split(" ")[0] : "N/A"}
                                     </Typography>
-                                    <Typography variant='body2'>
+                                    <Typography
+                                        variant='body2'
+                                        sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                    >
                                         {t("recoveryDate")}: {item.ERDate ? item.ERDate : "N/A"}
                                     </Typography>
                                 </Box>
@@ -169,17 +216,29 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                 flexDirection="column"
                                 sx={{
                                     flex: { xs: '1 1 100%', md: '1 1 calc(25% - 8px)' },
+                                    width: '100%',
+                                    maxWidth: { xs: '100%', md: 'calc(25% - 8px)' },
                                     borderRadius: '12px',
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                    padding: 1,
+                                    padding: { xs: 1.5, sm: 2 },
                                     mb: 0.5,
                                     backgroundColor: isDark ? "#333" : "none"
                                 }}
                             >
-                                <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                    variant='h6'
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                                        mb: 1
+                                    }}
+                                >
                                     {t("eventLocation")}
                                 </Typography>
-                                <Typography variant='body2'>
+                                <Typography
+                                    variant='body2'
+                                    sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                                >
                                     {t("location")}: {item.location ? item.location : "N/A"}
                                 </Typography>
                             </Box>
@@ -190,12 +249,19 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                     width: "100%",
                                     borderRadius: '12px',
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                    padding: 1,
+                                    padding: { xs: 1.5, sm: 2 },
                                     mb: 0.5,
                                     backgroundColor: isDark ? "#333" : "none"
                                 }}
                             >
-                                <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                    variant='h6'
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                                        mb: 1
+                                    }}
+                                >
                                     {t("eventReview")}
                                 </Typography>
                                 <TextField
@@ -205,21 +271,29 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                     }}
                                     sx={{
                                         borderRadius: '12px',
-                                        mb: 1
+                                        mb: 1,
+                                        '& .MuiInputBase-input': {
+                                            fontSize: { xs: '0.875rem', sm: '1rem' }
+                                        }
                                     }}
                                 />
                                 <Box
                                     display="flex"
                                     justifyContent="flex-end"
-                                    gap={2}
+                                    gap={{ xs: 1, sm: 2 }}
+                                    sx={{
+                                        flexDirection: { xs: 'column', sm: 'row' }
+                                    }}
                                 >
                                     <Button
                                         variant='contained'
                                         startIcon={<HighlightOffIcon />}
                                         sx={{
-                                            width: '120px',
+                                            width: { xs: '100%', sm: '120px' },
                                             backgroundColor: 'rgba(180, 0, 0, 0.8)',
                                             fontWeight: 700,
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            padding: { xs: '8px 16px', sm: '10px 20px' },
                                             color: "#fff",
                                             transition: 'transform 0.3s ease',
                                             '&:hover': {
@@ -235,9 +309,11 @@ const DisplayUnreviewedEvents: React.FC<DisplayUnreviewedEventsProp> = ({
                                         variant='contained'
                                         startIcon={<CheckCircleOutlineIcon />}
                                         sx={{
-                                            width: '120px',
+                                            width: { xs: '100%', sm: '120px' },
                                             backgroundColor: 'rgba(0, 150, 10, 0.8)',
                                             fontWeight: 700,
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            padding: { xs: '8px 16px', sm: '10px 20px' },
                                             color: "#fff",
                                             transition: 'transform 0.3s ease',
                                             '&:hover': {

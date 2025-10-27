@@ -77,7 +77,6 @@ const EmergencySubmissionPage: React.FC = () => {
         return "";
     }
 
-
     const handleMouseDownConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
@@ -118,7 +117,9 @@ const EmergencySubmissionPage: React.FC = () => {
             gap={2}
             mb={2}
             sx={{
-                borderRadius: '16px'
+                borderRadius: '16px',
+                padding: { xs: 2, sm: 3, md: 4 },
+                paddingTop: { xs: 20, sm: 6, md: 4 }
             }}
         >
             <EasyToPostSection

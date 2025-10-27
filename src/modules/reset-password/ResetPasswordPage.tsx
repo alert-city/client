@@ -6,28 +6,28 @@ import { ACCESS_TOKEN } from '@/shared/constants/storage';
 import Cookies from 'js-cookie';
 
 const ResetPasswordPage: React.FC = () => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
-    setAccessToken(accessToken || null);
-  }, []);
+    useEffect(() => {
+        const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
+        setAccessToken(accessToken || null);
+    }, []);
 
-  if (accessToken === null) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <ResetPassword />
-      </div>
-    );
-  } else {
-    return (
-      <NavigationBarLayout>
-        <div className="flex justify-center items-center">
-          <ResetPassword />
-        </div>
-      </NavigationBarLayout>
-    );
-  }
+    if (accessToken === null) {
+        return (
+            <div className="min-h-screen flex justify-center items-center px-4 py-6">
+                <ResetPassword />
+            </div>
+        );
+    } else {
+        return (
+            <NavigationBarLayout>
+                <div className="flex justify-center items-center px-4 py-6">
+                    <ResetPassword />
+                </div>
+            </NavigationBarLayout>
+        );
+    }
 };
 
 export default ResetPasswordPage;

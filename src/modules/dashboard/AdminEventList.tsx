@@ -23,8 +23,8 @@ type EventValues = {
 const AdminEventList: React.FC<{
     handleOpenEventInfo: (input: EventValues) => void
 }> = ({
-    handleOpenEventInfo
-}) => {
+          handleOpenEventInfo
+      }) => {
     const t = useTranslations("DashboardPage");
     const isDark = localStorage.getItem(IS_DARK) === "1";
 
@@ -66,12 +66,18 @@ const AdminEventList: React.FC<{
         <Box
             display="flex"
             flexWrap="wrap"
-            flexDirection={{ xs: "column", md: "row" }}
-            justifyContent="space-between"
             width="100%"
             gap={2}
+            sx={{
+                flexDirection: { xs: "column", md: "row" }
+            }}
         >
-            <Card sx={{ ...CardStyle, flex: { xs: "1 1 100%", md: "1 1 calc(40% - 10px)" } }}>
+            <Card sx={{
+                ...CardStyle,
+                flex: { xs: "1 1 100%", md: "1 1 calc(50% - 8px)" },
+                width: '100%',
+                maxWidth: { xs: '100%', md: 'calc(50% - 8px)' }
+            }}>
                 <CardContent>
                     <Typography
                         variant='h6'
@@ -128,7 +134,12 @@ const AdminEventList: React.FC<{
                     </Box>
                 </CardContent>
             </Card>
-            <Card sx={{ ...CardStyle, flex: { xs: "1 1 100%", md: "1 1 calc(40% - 10px)" } }}>
+            <Card sx={{
+                ...CardStyle,
+                flex: { xs: "1 1 100%", md: "1 1 calc(50% - 8px)" },
+                width: '100%',
+                maxWidth: { xs: '100%', md: 'calc(50% - 8px)' }
+            }}>
                 <CardContent>
                     <Typography
                         variant='h6'

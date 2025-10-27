@@ -1,0 +1,26 @@
+services:
+  client:
+    container_name: alertcity-client
+    image: alertcity-client:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - NEXT_PUBLIC_REST_API_URL=${NEXT_PUBLIC_REST_API_URL}
+        - NEXT_PUBLIC_WEBSOCKET_URL=${NEXT_PUBLIC_WEBSOCKET_URL}
+        - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+    environment:
+      - NODE_ENV=production
+      - PORT=55007
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+    ports:
+      - "55007:55007"
+    restart: unless-stopped
+    networks:
+      - dts
+
+networks:
+  dts:
+    external: true

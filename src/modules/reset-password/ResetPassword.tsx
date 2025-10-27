@@ -1,13 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import {
-  Container,
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Grid,
-  Collapse, InputAdornment, Card,
+    Container,
+    TextField,
+    Button,
+    Box,
+    Typography,
+    Grid,
+    Collapse, InputAdornment, Card,
 } from '@mui/material';
 import { useValidationSchemas } from '@/validation/schemas/reset-password/reset-password.schema';
 import { z } from 'zod';
@@ -30,369 +30,478 @@ import LoadingOverlay from '@/modules/loadingOverlay/LoadingOverlay';
 import { useTranslations } from 'next-intl';
 
 const ResetPassword: React.FC = () => {
-  const t = useTranslations('ResetPasswordPage');
-  const router = useRouter();
-  const [getCode] = useMutation(GET_VERIFICATION_CODE);
-  const [resetPassword] = useMutation(RESET_PASSWORD);
-  const [getCodeReminder, setGetCodeReminder] = useState<string | null>(null);
-  const [getCodeError, setGetCodeError] = useState<string | null>(null);
-  const [resetReminder, setResetReminder] = useState<string | null>(null);
-  const [resetError, setResetError] = useState<string | null>(null);
-  const [resetStatus, setResetStatus] = useState<boolean | null>(false);
-  const [countdown, setCountdown] = useState<number | null>(null);
-  const [isCodeEntered, setIsCodeEntered] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const { getCodeSchema, resetPasswordSchema } = useValidationSchemas();
-  const { revokeTokens } = useLogout();
+    const t = useTranslations('ResetPasswordPage');
+    const router = useRouter();
+    const [getCode] = useMutation(GET_VERIFICATION_CODE);
+    const [resetPassword] = useMutation(RESET_PASSWORD);
+    const [getCodeReminder, setGetCodeReminder] = useState<string | null>(null);
+    const [getCodeError, setGetCodeError] = useState<string | null>(null);
+    const [resetReminder, setResetReminder] = useState<string | null>(null);
+    const [resetError, setResetError] = useState<string | null>(null);
+    const [resetStatus, setResetStatus] = useState<boolean | null>(false);
+    const [countdown, setCountdown] = useState<number | null>(null);
+    const [isCodeEntered, setIsCodeEntered] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const { getCodeSchema, resetPasswordSchema } = useValidationSchemas();
+    const { revokeTokens } = useLogout();
 
-  useEffect(() => {
-    const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
-    const user = localStorage.getItem(USERNAME);
-    setAccessToken(accessToken || null);
-    setUsername(user);
-  }, []);
+    useEffect(() => {
+        const accessToken = typeof window !== 'undefined' ? Cookies.get(ACCESS_TOKEN) : null;
+        const user = localStorage.getItem(USERNAME);
+        setAccessToken(accessToken || null);
+        setUsername(user);
+    }, []);
 
-  type GetCodeFormValues = z.infer<typeof getCodeSchema>;
-  type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+    type GetCodeFormValues = z.infer<typeof getCodeSchema>;
+    type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
-  const {
-          register: registerGetCode,
-          handleSubmit: handleSubmitGetCode,
-          getValues: getCodeValue,
-          setValue: setCodeValue,
-          formState: { errors: getCodeErrors },
-        } = useForm<GetCodeFormValues>({
-    resolver: zodResolver(getCodeSchema),
-    defaultValues: {
-      username: '',
-    },
-  });
-
-  useEffect(() => {
-    if (username) {
-      setCodeValue('username', username);
-    }
-  }, [username, setCodeValue]);
-
-  const {
-          register: registerResetPassword,
-          handleSubmit: handleSubmitResetPassword,
-          setValue: setResetPasswordValue,
-          formState: { errors: resetPasswordErrors },
-        } = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(resetPasswordSchema),
-  });
-
-  const onGetCodeSubmit: SubmitHandler<GetCodeFormValues> = async (data) => {
-    setLoading(true);
-    setResetPasswordValue('verificationCode', '');
-    setIsCodeEntered(false);
-    let timeLeft = 60;
-    setCountdown(timeLeft);
-
-    const intervalId = setInterval(() => {
-      timeLeft -= 1;
-      setCountdown(timeLeft);
-      if (timeLeft <= 0) {
-        clearInterval(intervalId);
-        setCountdown(null);
-      }
-    }, 1000);
-
-    try {
-      const response = await getCode(
-        { variables: { username: data.username, emailInfoType: 1 } },
-      );
-      if (response.data.sendVerificationEmail) {
-        setGetCodeReminder(t('getCodeReminder'));
-        setGetCodeError(null);
-        setLoading(false);
-      }
-    } catch (err) {
-      setGetCodeError((err as Error).message || 'Get Code failed');
-      setGetCodeReminder(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onResetPasswordSubmit: SubmitHandler<ResetPasswordFormValues> = async (data) => {
-    setLoading(true);
-    const username = getCodeValue('username');
-    try {
-      const response = await resetPassword(
-        {
-          variables: {
-            username: username,
-            input: {
-              password: data.password,
-              confirmPassword: data.confirmPassword,
-              verificationCode: data.verificationCode.trim(),
-            },
-          },
+    const {
+        register: registerGetCode,
+        handleSubmit: handleSubmitGetCode,
+        getValues: getCodeValue,
+        setValue: setCodeValue,
+        formState: { errors: getCodeErrors },
+    } = useForm<GetCodeFormValues>({
+        resolver: zodResolver(getCodeSchema),
+        defaultValues: {
+            username: '',
         },
-      );
-      if (response.data.resetPassword) {
-        setCodeValue('username', '');
+    });
+
+    useEffect(() => {
+        if (username) {
+            setCodeValue('username', username);
+        }
+    }, [username, setCodeValue]);
+
+    const {
+        register: registerResetPassword,
+        handleSubmit: handleSubmitResetPassword,
+        setValue: setResetPasswordValue,
+        formState: { errors: resetPasswordErrors },
+    } = useForm<ResetPasswordFormValues>({
+        resolver: zodResolver(resetPasswordSchema),
+    });
+
+    const onGetCodeSubmit: SubmitHandler<GetCodeFormValues> = async (data) => {
+        setLoading(true);
         setResetPasswordValue('verificationCode', '');
-        setResetPasswordValue('password', '');
-        setResetPasswordValue('confirmPassword', '');
-        setGetCodeReminder(null);
-        setGetCodeError(null);
+        setIsCodeEntered(false);
+        let timeLeft = 60;
+        setCountdown(timeLeft);
 
-        setResetError(null);
-        setResetStatus(true);
-
-        let countdown = 4;
-        setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
         const intervalId = setInterval(() => {
-          countdown -= 1;
-          setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
-          if (countdown === 0) {
-            clearInterval(intervalId);
-            revokeTokens();
-          }
+            timeLeft -= 1;
+            setCountdown(timeLeft);
+            if (timeLeft <= 0) {
+                clearInterval(intervalId);
+                setCountdown(null);
+            }
         }, 1000);
-      }
-    } catch (err) {
-      setResetError((err as Error).message || 'Reset Password failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+        try {
+            const response = await getCode(
+                { variables: { username: data.username, emailInfoType: 1 } },
+            );
+            if (response.data.sendVerificationEmail) {
+                setGetCodeReminder(t('getCodeReminder'));
+                setGetCodeError(null);
+                setLoading(false);
+            }
+        } catch (err) {
+            setGetCodeError((err as Error).message || 'Get Code failed');
+            setGetCodeReminder(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const handleClickShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  return (
-    <Card
-      sx={{
-        width: '100%',
-        maxWidth: 400,
-        padding: '20px',
-        borderRadius: '16px',
-        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      {!accessToken &&
-        <Box sx={{ position: 'relative', width: '100%', mb: 5 }}>
-          <Tooltip title={t('return')} placement="right">
-            <IconButton
-              onClick={() => router.back()}
-              sx={{ position: 'absolute' }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      }
-      <Container>
-        <Box sx={{ width: '100%', marginTop: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography component="h1" variant="h5">
-            {t('title')}
-          </Typography>
-          <Box component="form" onSubmit={handleSubmitGetCode(onGetCodeSubmit)} sx={{ mb: 3, mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label={t('username')}
-                  {...registerGetCode('username', {
-                    onChange: (e) => {
-                      if (e.target.value) {
-                        setGetCodeError(null);
-                        setResetStatus(null);
-                        setIsCodeEntered(false);
-                      }
-                    },
-                  })}
-                  InputProps={{
-                    readOnly: !!username,
-                    endAdornment: !!username && (
-                      <LockIcon style={{ opacity: 0.54 }} />
-                    ),
-                  }}
-                  error={!!getCodeErrors.username}
-                  helperText={getCodeErrors.username?.message}
-                />
-              </Grid>
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  sx={{ height: '100%' }}
-                  disabled={!!countdown}
-                >
-                  {`${t('getCode')} ${countdown ? `(${countdown})` : ''}`}
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  placeholder={t('codePlaceholder')}
-                  label={t('verificationCode')}
-                  {...registerResetPassword('verificationCode', {
-                    onChange: (e) => {
-                      if (e.target.value) {
-                        setGetCodeReminder(null);
-                        setResetError(null);
-                        setResetReminder(null);
-                      }
-                      if (e.target.value.length >= 6) {
-                        setIsCodeEntered(true);
-                      } else {
-                        setIsCodeEntered(false);
-                      }
-                    },
-                  })}
-                  error={!!resetPasswordErrors.verificationCode}
-                  helperText={resetPasswordErrors.verificationCode?.message}
-                />
-              </Grid>
-            </Grid>
-            <Box>
-              {getCodeReminder && (
-                <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="primary" variant="body2">
-                  {getCodeReminder}
-                </Typography>
-              )}
-              {getCodeError && (
-                <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error" variant="body2">
-                  {getCodeError}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-          <Collapse in={isCodeEntered}>
-            <Box component="form" onSubmit={handleSubmitResetPassword(onResetPasswordSubmit)}>
-              <Grid container spacing={2} sx={{ mb: 1 }}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label={t('newPassword')}
-                    type={showPassword ? 'text' : 'password'}
-                    {...registerResetPassword(
-                      'password',
-                      {
-                        onChange: (e) => {
-                          if (e.target.value) {
-                            setResetError(null);
-                            setResetReminder(null);
-                          }
+    const onResetPasswordSubmit: SubmitHandler<ResetPasswordFormValues> = async (data) => {
+        setLoading(true);
+        const username = getCodeValue('username');
+        try {
+            const response = await resetPassword(
+                {
+                    variables: {
+                        username: username,
+                        input: {
+                            password: data.password,
+                            confirmPassword: data.confirmPassword,
+                            verificationCode: data.verificationCode.trim(),
                         },
-                      },
-                    )}
-                    error={!!resetPasswordErrors.password}
-                    helperText={resetPasswordErrors.password?.message}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle new password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            size="small"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label={t('confirmPassword')}
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    {...registerResetPassword(
-                      'confirmPassword',
-                      {
-                        onChange: (e) => {
-                          if (e.target.value) {
-                            setResetError(null);
-                            setResetReminder(null);
-                          }
-                        },
-                      },
-                    )}
-                    error={!!resetPasswordErrors.confirmPassword}
-                    helperText={resetPasswordErrors.confirmPassword?.message}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle confirm new password visibility"
-                            onClick={handleClickShowConfirmPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            size="small"
-                          >
-                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              <Box className="flex justify-center">
-                {resetReminder && (
-                  <Typography sx={{ mt: 1.5, mb: accessToken ? 4 : 0, display: 'flex', justifyContent: 'center' }}
-                              color="primary" variant="body2">
-                    {resetReminder}
-                  </Typography>
-                )}
-                {resetError && (
-                  <Typography sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }} color="error" variant="body2">
-                    {resetError}
-                  </Typography>
-                )}
-              </Box>
-              {!resetStatus &&
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2, mb: 4 }}
-                  type="submit"
-                >
-                  {t('resetPassword')}
-                </Button>}
-              {(resetStatus && !accessToken) &&
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  sx={{ mt: 2, mb: 4 }}
-                  type="button"
-                  onClick={() => router.push(RouteConfig.Login.Path)}
-                >
-                  {t('returnToLogin')}
-                </Button>}
-            </Box>
-          </Collapse>
-        </Box>
-        <LoadingOverlay loading={loading} />
-      </Container>
-    </Card>
-  );
+                    },
+                },
+            );
+            if (response.data.resetPassword) {
+                setCodeValue('username', '');
+                setResetPasswordValue('verificationCode', '');
+                setResetPasswordValue('password', '');
+                setResetPasswordValue('confirmPassword', '');
+                setGetCodeReminder(null);
+                setGetCodeError(null);
+
+                setResetError(null);
+                setResetStatus(true);
+
+                let countdown = 4;
+                setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
+                const intervalId = setInterval(() => {
+                    countdown -= 1;
+                    setResetReminder(`${t('resetReminder')} ${countdown} ${t('seconds')}`);
+                    if (countdown === 0) {
+                        clearInterval(intervalId);
+                        revokeTokens();
+                    }
+                }, 1000);
+            }
+        } catch (err) {
+            setResetError((err as Error).message || 'Reset Password failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleClickShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+    return (
+        <Card
+            sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', sm: 400 },
+                padding: { xs: '16px', sm: '20px' },
+                borderRadius: '16px',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                margin: { xs: '16px', sm: '0' },
+            }}
+        >
+            {!accessToken &&
+                <Box sx={{ position: 'relative', width: '100%', mb: { xs: 3, sm: 5 } }}>
+                    <Tooltip title={t('return')} placement="right">
+                        <IconButton
+                            onClick={() => router.back()}
+                            sx={{
+                                position: 'absolute',
+                                padding: { xs: '8px', sm: '12px' },
+                            }}
+                        >
+                            <ArrowBackIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+            }
+            <Container sx={{ padding: { xs: '0', sm: '0 16px' } }}>
+                <Box sx={{ width: '100%', marginTop: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{
+                            fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                            mb: { xs: 2, sm: 0 },
+                        }}
+                    >
+                        {t('title')}
+                    </Typography>
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmitGetCode(onGetCodeSubmit)}
+                        sx={{
+                            mb: 3,
+                            mt: 3,
+                            width: '100%',
+                        }}
+                    >
+                        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label={t('username')}
+                                    {...registerGetCode('username', {
+                                        onChange: (e) => {
+                                            if (e.target.value) {
+                                                setGetCodeError(null);
+                                                setResetStatus(null);
+                                                setIsCodeEntered(false);
+                                            }
+                                        },
+                                    })}
+                                    InputProps={{
+                                        readOnly: !!username,
+                                        endAdornment: !!username && (
+                                            <LockIcon style={{ opacity: 0.54 }} />
+                                        ),
+                                    }}
+                                    error={!!getCodeErrors.username}
+                                    helperText={getCodeErrors.username?.message}
+                                    sx={{
+                                        '& .MuiInputBase-root': {
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        },
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                    sx={{
+                                        height: '100%',
+                                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        padding: { xs: '8px 16px', sm: '10px 20px' },
+                                    }}
+                                    disabled={!!countdown}
+                                >
+                                    {`${t('getCode')} ${countdown ? `(${countdown})` : ''}`}
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    placeholder={t('codePlaceholder')}
+                                    label={t('verificationCode')}
+                                    {...registerResetPassword('verificationCode', {
+                                        onChange: (e) => {
+                                            if (e.target.value) {
+                                                setGetCodeReminder(null);
+                                                setResetError(null);
+                                                setResetReminder(null);
+                                            }
+                                            if (e.target.value.length >= 6) {
+                                                setIsCodeEntered(true);
+                                            } else {
+                                                setIsCodeEntered(false);
+                                            }
+                                        },
+                                    })}
+                                    error={!!resetPasswordErrors.verificationCode}
+                                    helperText={resetPasswordErrors.verificationCode?.message}
+                                    sx={{
+                                        '& .MuiInputBase-root': {
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        },
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Box>
+                            {getCodeReminder && (
+                                <Typography
+                                    sx={{
+                                        mt: 1.5,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                                    }}
+                                    color="primary"
+                                    variant="body2"
+                                >
+                                    {getCodeReminder}
+                                </Typography>
+                            )}
+                            {getCodeError && (
+                                <Typography
+                                    sx={{
+                                        mt: 1.5,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                                    }}
+                                    color="error"
+                                    variant="body2"
+                                >
+                                    {getCodeError}
+                                </Typography>
+                            )}
+                        </Box>
+                    </Box>
+                    <Collapse in={isCodeEntered} sx={{ width: '100%' }}>
+                        <Box component="form" onSubmit={handleSubmitResetPassword(onResetPasswordSubmit)}>
+                            <Grid container spacing={{ xs: 1.5, sm: 2 }} sx={{ mb: 1 }}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label={t('newPassword')}
+                                        type={showPassword ? 'text' : 'password'}
+                                        {...registerResetPassword(
+                                            'password',
+                                            {
+                                                onChange: (e) => {
+                                                    if (e.target.value) {
+                                                        setResetError(null);
+                                                        setResetReminder(null);
+                                                    }
+                                                },
+                                            },
+                                        )}
+                                        error={!!resetPasswordErrors.password}
+                                        helperText={resetPasswordErrors.password?.message}
+                                        sx={{
+                                            '& .MuiInputBase-root': {
+                                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            },
+                                        }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle new password visibility"
+                                                        onClick={handleClickShowPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                        edge="end"
+                                                        size="small"
+                                                        sx={{ padding: { xs: '6px', sm: '8px' } }}
+                                                    >
+                                                        {showPassword ?
+                                                            <VisibilityOff sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} /> :
+                                                            <Visibility sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
+                                                        }
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label={t('confirmPassword')}
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        {...registerResetPassword(
+                                            'confirmPassword',
+                                            {
+                                                onChange: (e) => {
+                                                    if (e.target.value) {
+                                                        setResetError(null);
+                                                        setResetReminder(null);
+                                                    }
+                                                },
+                                            },
+                                        )}
+                                        error={!!resetPasswordErrors.confirmPassword}
+                                        helperText={resetPasswordErrors.confirmPassword?.message}
+                                        sx={{
+                                            '& .MuiInputBase-root': {
+                                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                            },
+                                        }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle confirm new password visibility"
+                                                        onClick={handleClickShowConfirmPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                        edge="end"
+                                                        size="small"
+                                                        sx={{ padding: { xs: '6px', sm: '8px' } }}
+                                                    >
+                                                        {showConfirmPassword ?
+                                                            <VisibilityOff sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} /> :
+                                                            <Visibility sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
+                                                        }
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Box className="flex justify-center">
+                                {resetReminder && (
+                                    <Typography
+                                        sx={{
+                                            mt: 1.5,
+                                            mb: accessToken ? 4 : 0,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                                        }}
+                                        color="primary"
+                                        variant="body2"
+                                    >
+                                        {resetReminder}
+                                    </Typography>
+                                )}
+                                {resetError && (
+                                    <Typography
+                                        sx={{
+                                            mt: 1.5,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                                        }}
+                                        color="error"
+                                        variant="body2"
+                                    >
+                                        {resetError}
+                                    </Typography>
+                                )}
+                            </Box>
+                            {!resetStatus &&
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        mt: 2,
+                                        mb: 4,
+                                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        padding: { xs: '8px 16px', sm: '10px 20px' },
+                                    }}
+                                    type="submit"
+                                >
+                                    {t('resetPassword')}
+                                </Button>}
+                            {(resetStatus && !accessToken) &&
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{
+                                        mt: 2,
+                                        mb: 4,
+                                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        padding: { xs: '8px 16px', sm: '10px 20px' },
+                                    }}
+                                    type="button"
+                                    onClick={() => router.push(RouteConfig.Login.Path)}
+                                >
+                                    {t('returnToLogin')}
+                                </Button>}
+                        </Box>
+                    </Collapse>
+                </Box>
+                <LoadingOverlay loading={loading} />
+            </Container>
+        </Card>
+    );
 };
 
 export default ResetPassword;

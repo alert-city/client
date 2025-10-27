@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Next.js
+.next/
+out/
+build/
+
+# 环境变量
+.env
+.env.*
+!.env.example
+
+# 测试
+coverage/
+.nyc_output/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 其他
+*.md
+!README.md
+.editorconfig
+.eslintrc*
+.prettierrc*
+
+# 日志
+logs/
+*.log
+
+# 临时文件
+*.tmp
+*.bak

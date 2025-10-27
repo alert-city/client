@@ -58,15 +58,13 @@ const Dashboard: React.FC = () => {
         <Box
             display="flex"
             flexDirection="column"
-            justifyContent="space-between"
             gap={2}
             sx={{
                 width: '100%',
-                maxWidth: { xs: window.innerWidth, md: 800 },
+                maxWidth: { xs: '100%', sm: 900, md: 1000 },
                 minHeight: "80vh",
-                maxHeight: "100vh",
                 overflow: 'auto',
-                padding: { xs: 1, sm: 2, md: 4 },
+                padding: { xs: 2, sm: 3, md: 4 },
                 border: isDark ? '1px solid #fff' : 'none',
                 borderRadius: '16px',
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
@@ -75,37 +73,52 @@ const Dashboard: React.FC = () => {
         >
             <Typography
                 variant="h4"
-                mb={3}
                 textAlign="center"
                 sx={{
                     fontFamily: 'Poppins, sans-serif',
                     fontWeight: 600,
                     color: isDark ? '#ccc' : '#333',
+                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
+                    mb: { xs: 1, md: 2 }
                 }}
             >
                 {t("dashboard")}
             </Typography>
+
+            {/* 第一行：Sidebar 和 Review List */}
             <Box
                 display="flex"
                 flexWrap="wrap"
                 gap={2}
                 width="100%"
-                justifyContent="space-between"
-                mb={1}
                 sx={{
                     flexDirection: { xs: 'column', md: 'row' }
                 }}
             >
-                <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(25% - 8px)' } }}>
+                {/* Sidebar */}
+                <Box sx={{
+                    width: { xs: '100%', md: 'calc(25% - 8px)' },
+                    flexShrink: 0
+                }}>
                     <SideBar accountType={accountType!} />
                 </Box>
-                <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(70% - 8px)' } }}>
+
+                {/* Review List */}
+                <Box sx={{
+                    width: { xs: '100%', md: 'calc(75% - 8px)' },
+                    flexShrink: 0
+                }}>
                     {isAdmin && <AdminReviewList handleOpenEventInfo={handleOpenEventInfo} />}
                     {!isAdmin && <StaffReviewList handleOpenEventInfo={handleOpenEventInfo} />}
                 </Box>
             </Box>
-            {isAdmin && <AdminEventList handleOpenEventInfo={handleOpenEventInfo} />}
-            {!isAdmin && <StaffEventList handleOpenEventInfo={handleOpenEventInfo} />}
+
+            {/* 第二行：Event Lists */}
+            <Box sx={{ width: '100%' }}>
+                {isAdmin && <AdminEventList handleOpenEventInfo={handleOpenEventInfo} />}
+                {!isAdmin && <StaffEventList handleOpenEventInfo={handleOpenEventInfo} />}
+            </Box>
+
             {eventInfo && <DisplayEventInfo
                 open={openInfo}
                 handleClose={handleCloseEventInfo}

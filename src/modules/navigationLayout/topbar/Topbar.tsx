@@ -26,6 +26,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import { VpnKey } from '@mui/icons-material';
 import getIconUrl from '@/utils/getIconUrl';
 import { OAUTH } from '@/shared/constants/storage';
+import { DRAWER_WIDTH, MOBILE_DRAWER_WIDTH } from '../NavigationBarLayout';
 
 interface TopBarProps {
   open: boolean;
@@ -40,19 +41,31 @@ const iconMap: { [key: string]: React.ReactNode } = {
 };
 
 const StyledAppBar = styled(AppBar)<{ open: boolean }>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: 240,
-    width: `calc(100% - 240px)`,
+    zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
     }),
-  }),
+    ...(open && {
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+    // 手机端
+    [theme.breakpoints.down('sm')]: {
+        ...(open && {
+            marginLeft: MOBILE_DRAWER_WIDTH,
+            width: `calc(100% - ${MOBILE_DRAWER_WIDTH}px)`,
+        }),
+    },
+    // 桌面端
+    [theme.breakpoints.up('sm')]: {
+        ...(open && {
+            marginLeft: DRAWER_WIDTH,
+            width: `calc(100% - ${DRAWER_WIDTH}px)`,
+        }),
+    },
 }));
 
 const TopBar: React.FC<TopBarProps> = ({ open, handleDrawerOpen }) => {
